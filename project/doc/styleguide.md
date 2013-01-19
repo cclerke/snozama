@@ -71,4 +71,7 @@ Use capital TODO to mark something as a TODO item in a comment.  Use
 capital FIXME to mark an item that needs to be fixed (over even, better
 fix it!) when appropriate.
 
+For function calls. use f(a, b, c), NOT f( a , b ) or some other strange
+syntax.
+
 THANKS FOR READING YOU PEOPLE ARE THE BEST! :D
