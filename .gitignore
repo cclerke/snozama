@@ -1,0 +1,30 @@
+###############################################################################
+# Author: Graeme Douglas
+# Things for git to ignore.
+# 
+# Note: If you really want to add something to git, simply git add -f <file>
+###############################################################################
+
+## All binary directories
+bin/
+
+## Ignore contiki example dir, except what I force add.
+contiki_ex
+
+## General Files
+# Compiled files
+*~
+*.com
+*class
+*.dll
+*.exe
+*.so
+*.o
+# Annoying OS files
+.DS_Store*
+Icon?
+ethumbs.db
+Thumbs.db
+*bak
+# Annoying vim files
+*.swp
