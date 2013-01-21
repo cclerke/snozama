@@ -14,7 +14,8 @@ import ubco.ai.games.GamePlayer;
  * 
  * Note that this code is based off of Yong Gao's COSC322TestA.java
  */
-public class SnozamaPlayer implements GamePlayer{
+public class SnozamaPlayer implements GamePlayer
+{
 	private GameClient gameClient;
 	
 	/**
@@ -22,11 +23,14 @@ public class SnozamaPlayer implements GamePlayer{
 	 * @param name		User name to be used on the game server.
 	 * @param passwd	Password to be used on the game server.
 	 */
-	public SnozamaPlayer(String name, String passwd) {
-		if (null == name) {
+	public SnozamaPlayer(String name, String passwd)
+	{
+		if (null == name)
+		{
 			name = "snozama";
 		}
-		if (null == passwd) {
+		if (null == passwd)
+		{
 			passwd = "alex2cody7!graeme";
 		}
 	    gameClient = new GameClient(name, passwd, this);
@@ -35,7 +39,8 @@ public class SnozamaPlayer implements GamePlayer{
 	/**
 	 * Constructor where player name and password may be arbitrarily set.
 	 */
-	public SnozamaPlayer() {  
+	public SnozamaPlayer()
+	{  
 	    gameClient = new GameClient("snozama", "alex2cody7!graeme", this);
 	}
 	
@@ -45,7 +50,8 @@ public class SnozamaPlayer implements GamePlayer{
 	 * @return @value true if message handled successfully, @value false otherwise.
 	 */
 	@Override
-	public boolean handleMessage(String arg0) throws Exception {
+	public boolean handleMessage(String arg0) throws Exception
+	{
 		// TODO Auto-generated method stub
 		return false;
 	}
@@ -56,7 +62,8 @@ public class SnozamaPlayer implements GamePlayer{
 	 * @return @value true if message handled successfully, @value false otherwise.
 	 */
 	@Override
-	public boolean handleMessage(GameMessage arg0) throws Exception {
+	public boolean handleMessage(GameMessage arg0) throws Exception
+	{
 		// TODO Auto-generated method stub
 		return false;
 	}
@@ -64,10 +71,12 @@ public class SnozamaPlayer implements GamePlayer{
 	/**
 	 * Print room names/IDs.
 	 */
-	public void printRooms() {
+	public void printRooms()
+	{
 		ArrayList<GameRoom> list = gameClient.getRoomLists();
 		Iterator<GameRoom> itr = list.iterator();
-		while (itr.hasNext()) {
+		while (itr.hasNext())
+		{
 			GameRoom next = itr.next();
 			System.out.println("Game Room " + next.roomID + ": " + next.roomName);
 			System.out.println("\t-Number of users: " + next.userCount);

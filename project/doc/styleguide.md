@@ -14,16 +14,16 @@ Code Styling
 
 ### Braces
 
-No braces are placed on a newline.  In other words,
+Braces are placed on a newline.  In other words,
 
- public static void main() {
+ public static void main()
+ {
  	...
  }
 
 is preferred to
 
- public static void main()
- {
+ public static void main() {
  	...
  }
 
