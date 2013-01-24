@@ -1,7 +1,5 @@
 package snozama.amazons.mechanics;
 
-import ubco.ai.games.Amazon.GameBoard;
-
 public class SnozamaHeuristic {
 
 	
@@ -16,20 +14,6 @@ public class SnozamaHeuristic {
 	 * 	This is suggested later when owning squares becomes more important
 	 */
 	
-	//board and player/arrow idea: byte is the smallest type to store this (that I'm aware of)
-	//temporary location, not sure where it will go just yet
-	/*
-	 * Starting setup
-	 *  -WHITE at [6][0], [9][3], [9][6], [6][9]
-	 *  -BLACK at [3][0], [0][3], [0][6], [3][9]
-	 *  -the rest will be empty
-	 */
-	byte board[][] = new byte[10][10];
-	public static byte EMPTY = 0;
-	public static byte WHITE = 1;
-	public static byte BLACK = 2;
-	public static byte ARROW = 3;
-	
 	/**
 	* Calculates closest player to each open square on the board
 	* The closest player to a square owns that square
@@ -37,7 +21,7 @@ public class SnozamaHeuristic {
 	* @param activePlayer	The player (white or black) whose turn it is
 	* @return	The difference between the number of squares the active player owns and the number of squares the inactive player owns
 	*/
-	public int MSP(GameBoard board, activePlayer) //TODO Check type of activePlayer is correct
+	public int MSP(Board board, activePlayer) //TODO Check type of activePlayer is correct
 	{
 		int whiteSquares = 0;
 		int blackSquares = 0;
@@ -70,7 +54,7 @@ public class SnozamaHeuristic {
 	* @return	The difference between the minimum moves across all amazons of the active player and
 	*  the minimum moves across all amazons of the inactive player
 	*/
-	public int minMobility(GameBoard board, activePlayer) //TODO Check type of activePlayer is correct
+	public int minMobility(Board board, activePlayer) //TODO Check type of activePlayer is correct
 	{
 		int whiteMoves = Integer.MAX_VALUE;
 		int blackMoves = Integer.MAX_VALUE;
@@ -102,7 +86,7 @@ public class SnozamaHeuristic {
 	* @param player	The player (white or black) we want to find the minimum distance to
 	* @return	The minimum number of plies for player of given colour to reach square
 	*/
-	private int minPliesToSquare(GameBoard board, player) //TODO Check type of player is correct
+	private int minPliesToSquare(Board board, player) //TODO Check type of player is correct
 	{
 		int min = Integer.MAX_VALUE;
 		//TODO Create this function
@@ -121,7 +105,7 @@ public class SnozamaHeuristic {
 	* @param amazon	An individual amazon
 	* @return	The number of moves available to the amazon
 	*/
-	private int getNumberAvailableMoves(GameBoard board, amazon) //TODO Check type of amazon is correct
+	private int getNumberAvailableMoves(Board board, amazon) //TODO Check type of amazon is correct
 	{
 		int moves = 0;
 		//TODO Create this function
