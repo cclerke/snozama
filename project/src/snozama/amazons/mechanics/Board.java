@@ -145,10 +145,10 @@ public class Board
 		}
 		
 		// Move must be made within the board boundaries
-		if (row_s < 0 || row_s > 8 ||
-			row_f < 0 || row_f > 8 ||
-			col_s < 0 || col_s > 8 ||
-			col_f < 0 || col_f > 8)
+		if (row_s < 0 || row_s > 9 ||
+			row_f < 0 || row_f > 9 ||
+			col_s < 0 || col_s > 9 ||
+			col_f < 0 || col_f > 9)
 		{
 			return false;
 		}

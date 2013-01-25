@@ -38,7 +38,7 @@ public class BoardTest {
 	 * Test valid move checking function.
 	 */
 	@Test
-	public void testValidMove()
+	public void testValidMoves()
 	{
 		Board board = new Board();
 		
@@ -52,6 +52,38 @@ public class BoardTest {
 		
 		assertTrue(board.isValidMove(6, 1, 6, 2));
 		
-		// TODO: Many more.  Including negative case.
+		assertTrue(board.isValidMove(0, 0, 9, 9));
+		
+		assertTrue(board.isValidMove(9, 0, 0, 9));
+		
+		assertTrue(board.isValidMove(0, 9, 9, 0));
+		
+		assertTrue(board.isValidMove(2, 1, 2, 3));
+		
+		// TODO: Add some tests 
+	}
+	
+	/**
+	 * Test invalid moves are invalid.
+	 */
+	@Test
+	public void testInvalidMoves()
+	{
+		Board board = new Board();
+		
+		assertFalse(board.isValidMove(1, 1, 2, 3));
+		
+		assertFalse(board.isValidMove(2, 1, 1, 3));
+		
+		// Add an arrow at (5, 5)
+		assertTrue(board.placeArrow(1, 1, 5, 5));
+		
+		assertFalse(board.isValidMove(1, 1, 5, 5));
+		
+		assertFalse(board.isValidMove(1, 1, 6, 6));
+		
+		assertFalse(board.isValidMove(1, 1, 7, 6));
+		
+		// TODO: Test for amazons.
 	}
 }
