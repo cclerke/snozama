@@ -138,10 +138,10 @@ public class Board
 			) ||
 			(row_s == row_f && col_s == col_f) || //move cannot start and end in same place
 			//move must be made within the board boundaries
-			row_s < 0 || row_s > 9 ||
-			row_f < 0 || row_f > 9 ||
-			col_s < 0 || col_s > 9 ||
-			col_f < 0 || col_f > 9
+			row_s < 0 || row_s > 8 ||
+			row_f < 0 || row_f > 8 ||
+			col_s < 0 || col_s > 8 ||
+			col_f < 0 || col_f > 8
 		)
 		{
 			return false;
@@ -156,10 +156,10 @@ public class Board
 		}
 		
 		// Move must be made within the board boundaries
-		if (row_s < 0 || row_s > 9 ||
-			row_f < 0 || row_f > 9 ||
-			col_s < 0 || col_s > 9 ||
-			col_f < 0 || col_f > 9)
+		if (row_s < 0 || row_s > 8 ||
+			row_f < 0 || row_f > 8 ||
+			col_s < 0 || col_s > 8 ||
+			col_f < 0 || col_f > 8)
 		{
 			return false;
 		}
@@ -277,6 +277,22 @@ public class Board
 		}
 		
 		board[row_f][row_f] = ARROW;
+		return true;
+	}
+	
+	/**
+	 * Move an amazon and shoot an arrow
+	 * @param row_s		Row of the starting position of the amazon
+	 * @param col_s		Column of the starting position of the amazon
+	 * @param row_f		Row of the finishing position of the amazon
+	 * @param col_f		Column of the finishing position of the amazon
+	 * @param arow		Row of the position where arrow is desired
+	 * @param acol		Column of the position where arrow is desired
+	 * @return	@value true if complete move was successful
+	 * 			@value false otherwise
+	 */
+	public boolean move(int row_s, int col_s, int row_f, int col_f, int arow, int acol, byte colour)
+	{
 		return true;
 	}
 }

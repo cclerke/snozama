@@ -21,7 +21,7 @@ public class SnozamaHeuristic {
 	* @param activePlayer	The player (white or black) whose turn it is
 	* @return	The difference between the number of squares the active player owns and the number of squares the inactive player owns
 	*/
-	public int MSP(Board board, activePlayer) //TODO Check type of activePlayer is correct
+	public int MSP(Board board, byte activePlayer)
 	{
 		int whiteSquares = 0;
 		int blackSquares = 0;
@@ -31,10 +31,10 @@ public class SnozamaHeuristic {
 		{
 			for (int col = 0; col < 10; col++)
 			{
-				if (board.valueAt(row, col) == board.EMPTY)
+				if (board.valueAt(row, col) == Board.EMPTY)
 				{
-					int whiteStonePly = minPliesToSquare(board, white); //TODO create function that calculates min moves to a square
-					int blackStonePly = minPliesToSquare(board, black);
+					int whiteStonePly = minPliesToSquare(board, Board.WHITE);
+					int blackStonePly = minPliesToSquare(board, Board.BLACK);
 
 					if (whiteStonePly < blackStonePly) //white is closer to the square
 						whiteSquares++;
@@ -42,7 +42,7 @@ public class SnozamaHeuristic {
 						blackSquares++;
 					//else both players are equal plies from the square -> square is neutral
 
-					if (activePlayer == white)
+					if (activePlayer == Board.WHITE)
 						return whiteSquares-blackSquares; //returns white's advantage
 					else // activePlayer is black
 						return blackSquares-whiteSquares; //returns black's advantage
@@ -59,7 +59,7 @@ public class SnozamaHeuristic {
 	* @return	The difference between the minimum moves across all amazons of the active player and
 	*  the minimum moves across all amazons of the inactive player
 	*/
-	public int minMobility(Board board, activePlayer) //TODO Check type of activePlayer is correct
+	public int minMobility(Board board, byte activePlayer)
 	{
 		int whiteMoves = Integer.MAX_VALUE;
 		int blackMoves = Integer.MAX_VALUE;
@@ -79,7 +79,7 @@ public class SnozamaHeuristic {
 				blackMoves = amazonMoves;
 		}
 		
-		if (activePlayer == white)
+		if (activePlayer == Board.WHITE)
 			return whiteMoves-blackMoves;
 		else //activePLayer is black
 			return blackMoves-whiteMoves;
@@ -91,7 +91,7 @@ public class SnozamaHeuristic {
 	* @param player	The player (white or black) we want to find the minimum distance to
 	* @return	The minimum number of plies for player of given colour to reach square
 	*/
-	private int minPliesToSquare(Board board, player) //TODO Check type of player is correct
+	private int minPliesToSquare(Board board, byte player)
 	{
 		int min = Integer.MAX_VALUE;
 		//TODO Create this function
@@ -101,6 +101,16 @@ public class SnozamaHeuristic {
 		 * 	Expand vertically, horizontally, diagonally to find players one move away
 		 * 	I don't know what to do after this yet for best efficiency
 		 */
+		for (int x = 0; x < 10; x++)
+		{
+			for (int y = 0; y < 10; y++)
+			{
+				if (board.isOccupied(x, y))
+					continue;
+				
+				//TODO The smart stuff mentioned above
+			}
+		}
 		return min;
 	}
 	
