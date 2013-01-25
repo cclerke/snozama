@@ -110,6 +110,17 @@ public class Board
 	}
 	
 	/**
+	 * Returns the contents of the square
+	 * @param row	The row of the position to check
+	 * @param col	The column of the position to check
+	 * @return	The value in this square
+	 */
+	public byte valueAt(int row, int col)
+	{
+		return board[row][col];
+	}
+	
+	/**
 	 * Makes sure a proposed move is allowed
 	 * @param row_s		Row of starting position.
 	 * @param col_s		Column of starting position.
@@ -197,7 +208,7 @@ public class Board
 		{
 			int a = Math.min(row_s, row_f);
 			int b = Math.max(row_s, row_f);
-			int c = col_f - 1;
+			int c = Math.max(col_s, col_f) - 1;
 			for (a++; a < b; a++, c--)
 			{
 				if (this.isOccupied(a, c))
@@ -210,7 +221,7 @@ public class Board
 		{
 			int a = Math.min(row_s, row_f);
 			int b = Math.max(row_s, row_f);
-			int c = col_f + 1;
+			int c = Math.min(col_s, col_f) + 1;
 			for (a++; a < b; a++, c++)
 			{
 				if (this.isOccupied(a, c))
