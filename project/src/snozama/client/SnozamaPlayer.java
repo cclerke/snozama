@@ -6,6 +6,7 @@ import java.util.Iterator;
 
 import net.n3.nanoxml.IXMLElement;
 
+import snozama.amazons.mechanics.Board;
 import ubco.ai.GameRoom;
 import ubco.ai.connection.ServerMessage;
 import ubco.ai.games.GameClient;
@@ -23,6 +24,7 @@ public class SnozamaPlayer implements GamePlayer
 	private GameClient gameClient;
 	private GameRoom room;
 	
+	private Board board;
 	private boolean isWhite = false;
 	
 	/**
@@ -32,11 +34,11 @@ public class SnozamaPlayer implements GamePlayer
 	 */
 	public SnozamaPlayer(String name, String passwd)
 	{
-		if (null == name)
+		if (name == null)
 		{
 			name = "snozama";
 		}
-		if (null == passwd)
+		if (passwd == null)
 		{
 			passwd = "alex2cody7!graeme";
 		}
@@ -81,11 +83,12 @@ public class SnozamaPlayer implements GamePlayer
 		}
 		else if (type.equals(GameMessage.ACTION_GAME_START))
 		{
-			//TODO Handle GameStart message
+			onGameStart(xml);
 		}
 		else if (type.equals(GameMessage.ACTION_MOVE))
 		{
 			//TODO Handle MoveAction message
+			handleOpponentMove(xml);
 		}
 		
 		return false;
@@ -105,6 +108,78 @@ public class SnozamaPlayer implements GamePlayer
 			int id = user.getAttribute("id", -1);
 			String name = user.getAttribute("name", "snozama"); //second value is default, maybe an error message instead
 		}
+	}
+	
+	/**
+	 * Starts Amazons game by assigning colour and initializing board
+	 * @param xml	XML message received from the server
+	 */
+	private void onGameStart(IXMLElement xml)
+	{
+		IXMLElement users = xml.getFirstChildNamed("usrlist");
+		int userCount = users.getAttribute("ucount", -1);
+		
+		Enumeration<?> children = users.enumerateChildren();
+		while (children.hasMoreElements())
+		{
+			IXMLElement user = (IXMLElement)children.nextElement();
+			int id = user.getAttribute("id", -1);
+			String name = user.getAttribute("name", "snozama");
+			
+			// Loop continues until finds team name "snozama"
+			if (!name.equalsIgnoreCase("snozama")) //FIXME global name variable?
+				continue;
+			
+			String role = user.getAttribute("role", "W"); //default to first player
+			if (role.equalsIgnoreCase("W"))
+				isWhite = true;
+			else
+				isWhite = false;
+			
+			board.initialize(isWhite);
+		}
+		
+		System.out.println("The game has started!");
+		if (isWhite)
+			System.out.println("Snozama moves first");
+		else
+			System.out.println("The opponent moves first");
+	}
+	
+	/**
+	 * 
+	 * @param xml	XML message received from the server
+	 */
+	private void handleOpponentMove(IXMLElement xml)
+	{
+		/*
+		 * Message for amazon move in format:
+		 * 	<queen move='a7-b7'></queen>
+		 */
+		IXMLElement amazon = xml.getFirstChildNamed("queen");
+		String move = amazon.getAttribute("move", "default");
+		char sX = move.charAt(0);
+		int amazonStartX = sX-97;
+		int amazonStartY = move.charAt(1);
+		char fX= move.charAt(3);
+		int amazonFinalX = fX-97;
+		int amazonFinalY= move.charAt(4);
+		
+		/*
+		 * Message for arrow shot in format:
+		 * 	<arrow move='c6'></arrow>
+		 */
+		IXMLElement arrow = xml.getFirstChildNamed("arrow");
+		String shot = arrow.getAttribute("move", "default");
+		char aX = shot.charAt(0);
+		int arrowX = aX-97;
+		int arrowY = shot.charAt(1);
+		
+		System.out.println("Opponent move: "+ sX + amazonStartY + "-" + fX + amazonFinalY + 
+				" (" + aX + arrowY + ")");
+		
+		//TODO Create a function that does this
+		board.move(amazonStartX, amazonStartY, amazonFinalX, amazonFinalY, arrowX, arrowY);
 	}
 	
 	/**

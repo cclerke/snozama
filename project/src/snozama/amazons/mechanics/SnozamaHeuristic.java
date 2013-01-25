@@ -26,23 +26,28 @@ public class SnozamaHeuristic {
 		int whiteSquares = 0;
 		int blackSquares = 0;
 		
-		// for each empty square x
-		//TODO Create a proper loop for each empty square on the board
-		while(true)
+		// Loops through each empty square on board
+		for (int row = 0; row < 10; row++)
 		{
-			int whiteStonePly = minPliesToSquare(board, white); //TODO create function that calculates min moves to a square
-			int blackStonePly = minPliesToSquare(board, black);
-			
-			if (whiteStonePly < blackStonePly) //white is closer to the square
-				whiteSquares++;
-			else if (blackStonePly < whiteStonePly) //black is closer to the square
-				blackSquares++;
-			//else both players are equal plies from the square -> square is neutral
-			
-			if (activePlayer == white)
-				return whiteSquares-blackSquares; //returns white's advantage
-			else // activePlayer is black
-				return blackSquares-whiteSquares; //returns black's advantage
+			for (int col = 0; col < 10; col++)
+			{
+				if (board.valueAt(row, col) == board.EMPTY)
+				{
+					int whiteStonePly = minPliesToSquare(board, white); //TODO create function that calculates min moves to a square
+					int blackStonePly = minPliesToSquare(board, black);
+
+					if (whiteStonePly < blackStonePly) //white is closer to the square
+						whiteSquares++;
+					else if (blackStonePly < whiteStonePly) //black is closer to the square
+						blackSquares++;
+					//else both players are equal plies from the square -> square is neutral
+
+					if (activePlayer == white)
+						return whiteSquares-blackSquares; //returns white's advantage
+					else // activePlayer is black
+						return blackSquares-whiteSquares; //returns black's advantage
+				}
+			}
 		}
 	}
 	
