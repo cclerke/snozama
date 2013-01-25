@@ -2,11 +2,14 @@ package snozama.amazons.mechanics;
 
 import java.util.Arrays;
 
+/**
+ * Game of the Amazons Board class.
+ * @author Graeme Douglas
+ * @author Cody Clerke
+ *
+ */
 public class Board
 {
-
-	//board and player/arrow idea: byte is the smallest type to store this (that I'm aware of)
-		//yes it is.  Turns out enum's are bigger, and actually classes unto themselves.
 	/**
 	 * The game board, represented as a two-dimensional array.  The first
 	 * dimension is the row, the second the column.
@@ -47,11 +50,14 @@ public class Board
 	public Board()
 	{
 		// Initially setup the board.
-		Arrays.fill(board, EMPTY);
+		for (int i = 0; i < board.length; i++)
+		{
+			Arrays.fill(board[i], EMPTY);
+		}
 		
 		// WHITE initial setup.
-		board[6][3] = WHITE;
-		board[9][0] = WHITE;
+		board[6][0] = WHITE;
+		board[9][3] = WHITE;
 		board[9][6] = WHITE;
 		board[6][9] = WHITE;
 		
@@ -82,7 +88,7 @@ public class Board
 	 */
 	public boolean isWhite(int row, int col)
 	{
-		return board[row][col] != WHITE;
+		return board[row][col] == WHITE;
 	}
 	
 	/**
@@ -94,7 +100,7 @@ public class Board
 	 */
 	public boolean isBlack(int row, int col)
 	{
-		return board[row][col] != BLACK;
+		return board[row][col] == BLACK;
 	}
 	
 	/**
@@ -106,7 +112,7 @@ public class Board
 	 */
 	public boolean isArrow(int row, int col)
 	{
-		return board[row][col] != ARROW;
+		return board[row][col] == ARROW;
 	}
 	
 	/**
@@ -130,23 +136,6 @@ public class Board
 	 */
 	public boolean isValidMove(int row_s, int col_s, int row_f, int col_f)
 	{
-		// Make sure move makes superficial sense.
-		/*if (!( //move must be made horizontally, vertically or diagonally
-			row_s == row_f ||
-			col_s == col_f ||
-			Math.abs(row_f - row_s) == Math.abs(col_f - col_s)
-			) ||
-			(row_s == row_f && col_s == col_f) || //move cannot start and end in same place
-			//move must be made within the board boundaries
-			row_s < 0 || row_s > 8 ||
-			row_f < 0 || row_f > 8 ||
-			col_s < 0 || col_s > 8 ||
-			col_f < 0 || col_f > 8
-		)
-		{
-			return false;
-		}*/
-		
 		// Move must be made horizontally, vertically or diagonally
 		if (!(row_s == row_f ||
 				col_s == col_f ||
