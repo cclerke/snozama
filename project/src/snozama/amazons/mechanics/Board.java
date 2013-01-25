@@ -120,22 +120,105 @@ public class Board
 	public boolean isValidMove(int row_s, int col_s, int row_f, int col_f)
 	{
 		// Make sure move makes superficial sense.
-		if (!(
+		/*if (!( //move must be made horizontally, vertically or diagonally
 			row_s == row_f ||
 			col_s == col_f ||
 			Math.abs(row_f - row_s) == Math.abs(col_f - col_s)
 			) ||
-			row_s < 0 || row_s > 10 ||
-			row_f < 0 || row_f > 10 ||
-			col_s < 0 || col_s > 10 ||
-			col_f < 0 || col_f > 10
+			(row_s == row_f && col_s == col_f) || //move cannot start and end in same place
+			//move must be made within the board boundaries
+			row_s < 0 || row_s > 9 ||
+			row_f < 0 || row_f > 9 ||
+			col_s < 0 || col_s > 9 ||
+			col_f < 0 || col_f > 9
 		)
+		{
+			return false;
+		}*/
+		
+		// Move must be made horizontally, vertically or diagonally
+		if (!(row_s == row_f ||
+				col_s == col_f ||
+				Math.abs(row_f - row_s) == Math.abs(col_f - col_s)))
 		{
 			return false;
 		}
 		
-		// Make sure squares in between are clear.
-		// TODO:  Graeme's geometric brain isn't working right now.
+		// Move must be made within the board boundaries
+		if (row_s < 0 || row_s > 9 ||
+			row_f < 0 || row_f > 9 ||
+			col_s < 0 || col_s > 9 ||
+			col_f < 0 || col_f > 9)
+		{
+			return false;
+		}
+		
+		// Make sure squares in between are clear
+		// Move cannot start and end in same place
+		if (row_s == row_f && col_s == col_f)
+		{
+			return false;
+		}
+
+		// Final square must be empty
+		if (this.isOccupied(row_f, col_f))
+		{
+			return false;
+		}
+		
+		// Check horizontally
+		if (row_s == row_f)
+		{
+			int a = Math.min(col_s, col_f);
+			int b = Math.max(col_s, col_f);
+			for (a++; a < b; a++)
+			{
+				if (this.isOccupied(row_s, a))
+				{
+					return false;
+				}
+			}
+		}
+		// Check vertically
+		else if (col_s == col_f)
+		{
+			int a = Math.min(row_s, row_f);
+			int b = Math.max(row_s, row_f);
+			for (a++; a < b; a++)
+			{
+				if (this.isOccupied(a, col_f))
+				{
+					return false;
+				}
+			}
+		}
+		// Check anti-diagonally
+		else if (row_s - row_f > 0 != col_s - col_f > 0)
+		{
+			int a = Math.min(row_s, row_f);
+			int b = Math.max(row_s, row_f);
+			int c = col_f - 1;
+			for (a++; a < b; a++, c--)
+			{
+				if (this.isOccupied(a, c))
+				{
+					return false;
+				}
+			}
+		}
+		else // Check diagonally
+		{
+			int a = Math.min(row_s, row_f);
+			int b = Math.max(row_s, row_f);
+			int c = col_f + 1;
+			for (a++; a < b; a++, c++)
+			{
+				if (this.isOccupied(a, c))
+				{
+					return false;
+				}
+			}
+		}
 		
 		return true;
 	}
