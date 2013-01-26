@@ -156,17 +156,6 @@ public class Board
 	}
 	
 	/**
-	 * Returns the contents of the square
-	 * @param row	The row of the position to check
-	 * @param col	The column of the position to check
-	 * @return	The value in this square
-	 */
-	public byte valueAt(int row, int col)
-	{
-		return board[row][col];
-	}
-	
-	/**
 	 * Makes sure a proposed move is allowed
 	 * @param row_s		Row of starting position.
 	 * @param col_s		Column of starting position.

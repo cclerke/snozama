@@ -31,7 +31,7 @@ public class SnozamaHeuristic {
 		{
 			for (int col = 0; col < 10; col++)
 			{
-				if (board.valueAt(row, col) == Board.EMPTY)
+				if (!board.isOccupied(row, col))
 				{
 					int whiteStonePly = minPliesToSquare(board, Board.WHITE);
 					int blackStonePly = minPliesToSquare(board, Board.BLACK);
@@ -67,14 +67,14 @@ public class SnozamaHeuristic {
 		//for each white amazon
 		for (int i = 0; i < 4; i++)
 		{
-			int amazonMoves = getNumberAvailableMoves(board, white[i]); //calculates number of moves available to amazon
+			int amazonMoves = getNumberAvailableMoves(board, board.amazons[WHITE][i]); //calculates number of moves available to amazon
 			if (amazonMoves < whiteMoves)
 				whiteMoves = amazonMoves;
 		}
 		//for each black amazon
 		for (int i = 0; i < 4; i++)
 		{
-			int amazonMoves = getNumberAvailableMoves(board, black[i]);
+			int amazonMoves = getNumberAvailableMoves(board, board.amazons[WHITE][i]);
 			if (amazonMoves < blackMoves)
 				blackMoves = amazonMoves;
 		}
@@ -120,7 +120,7 @@ public class SnozamaHeuristic {
 	* @param amazon	An individual amazon
 	* @return	The number of moves available to the amazon
 	*/
-	private int getNumberAvailableMoves(Board board, amazon) //TODO Check type of amazon is correct
+	private int getNumberAvailableMoves(Board board, byte amazon)
 	{
 		int moves = 0;
 		//TODO Create this function
@@ -130,6 +130,115 @@ public class SnozamaHeuristic {
 		 * 	Create list of all possible moves for this amazon (will likely have a similar function somewhere else)
 		 * 	Return number of elements in the list
 		 */
+		int arow = Board.decodeAmazonRow(amazon);		//amazon's starting row position
+		int acol = Board.decodeAmazonColumn(amazon);	//amazon's starting column position
+		
+		// The following comments assume [0][0] is considered top left
+		// Find moves to the right
+		for (int c = acol+1; c < Board.SIZE; c++)
+		{
+			if (board.isOccupied(arow, c))
+			{
+				break;
+			}
+			else // this is a legal move
+			{
+				//TODO Find arrow shots, count move (should be done in arrow shots)
+				//moves += findAvailableArrowPlacements(arow, i);
+			}
+		}
+		// Find moves to the left
+		for (int c = acol-1; c > -1; c--)
+		{
+			if (board.isOccupied(arow, c))
+			{
+				break;
+			}
+			else // this is a legal move
+			{
+				//TODO Find arrow shots, count move (should be done in arrow shots)
+				//moves += findAvailableArrowPlacements(arow, i);
+			}
+		}
+		// Find moves below
+		for (int r = arow; r < Board.SIZE; r++)
+		{
+			if (board.isOccupied(r, acol))
+			{
+				break;
+			}
+			else // this is a legal move
+			{
+				//TODO Find arrow shots, count move (should be done in arrow shots)
+				//moves += findAvailableArrowPlacements(arow, i);
+			}
+		}
+		// Find moves above
+		for (int r = arow; r > -1; r--)
+		{
+			if (board.isOccupied(r, acol))
+			{
+				break;
+			}
+			else // this is a legal move
+			{
+				//TODO Find arrow shots, count move (should be done in arrow shots)
+				//moves += findAvailableArrowPlacements(arow, i);
+			}
+		}
+		// Find moves diagonally (\) to the right
+		for (int r = arow, c = acol; r < Board.SIZE && c < Board.SIZE; r++, c++)
+		{
+			if (board.isOccupied(r, c))
+			{
+				break;
+			}
+			else // this is a legal move
+			{
+				//TODO Find arrow shots, count move (should be done in arrow shots)
+				//moves += findAvailableArrowPlacements(arow, i);
+			}
+		}
+		// Find moves diagonally (\) to the left
+		for (int r = arow, c = acol; r > -1 && c > -1; r--, c--)
+		{
+			if (board.isOccupied(r, c))
+			{
+				break;
+			}
+			else // this is a legal move
+			{
+				//TODO Find arrow shots, count move (should be done in arrow shots)
+				//moves += findAvailableArrowPlacements(arow, i);
+			}
+		}
+		// Find moves anti-diagonally (/) to the right
+		for (int r = arow, c = acol; r > -1 && c < Board.SIZE; r--, c++)
+		{
+			if (board.isOccupied(r, c))
+			{
+				break;
+			}
+			else // this is a legal move
+			{
+				//TODO Find arrow shots, count move (should be done in arrow shots)
+				//moves += findAvailableArrowPlacements(arow, i);
+			}
+		}
+		// Find moves anti-diagonally (/) to the left
+		for (int r = arow, c = acol; r < Board.SIZE && c > -1; r++, c--)
+		{
+			if (board.isOccupied(r, c))
+			{
+				break;
+			}
+			else // this is a legal move
+			{
+				//TODO Find arrow shots, count move (should be done in arrow shots)
+				//moves += findAvailableArrowPlacements(arow, i);
+			}
+		}
+		
 		return moves;
 	}
 }
