@@ -11,6 +11,11 @@ import java.util.Arrays;
 public class Board
 {
 	/**
+	 * Size of a dimension of the board.xs
+	 */
+	public static final int SIZE = 10;
+	
+	/**
 	 * The game board, represented as a two-dimensional array.  The first
 	 * dimension is the row, the second the column.
 	 * 
@@ -19,7 +24,13 @@ public class Board
 	 *  -BLACK at [3][0], [0][3], [0][6], [3][9]
 	 *  -the rest will be empty
 	 */
-	byte board[][] = new byte[10][10];
+	byte board[][] = new byte[SIZE][SIZE];
+	
+	/**
+	 * The position of the amazons.  WHITE positions is first element, BLACK
+	 * second.
+	 */
+	byte amazons[][] = new byte[2][4];
 	
 	/**
 	 * Constant byte value representing an empty position on the board.
@@ -27,22 +38,19 @@ public class Board
 	public static final byte EMPTY = 0;
 	
 	/**
-	 * Constant byte value representing an position occupied by a white amazon.
+	 * Constant byte value representing a non-empty position on the board.
 	 */
-	public static final byte WHITE = 1;
+	public static final byte OCCUPIED = 1;
 	
 	/**
-	 * Constant byte value representing an position occupied by a black amazon.
+	 * Constant integer value representing the white player.
 	 */
-	public static final byte BLACK = 2;
+	public static final int WHITE = 0;
 	
 	/**
-	 * Constant byte value representing an position occupied by an arrow.
+	 * Constant integer value representing the black player.
 	 */
-	public static final byte ARROW = 3;
-	
-	
-	
+	public static final int BLACK = 1;
 	
 	/**
 	 * Basic constructor.  Will generate a board in game ready form.
@@ -50,22 +58,30 @@ public class Board
 	public Board()
 	{
 		// Initially setup the board.
-		for (int i = 0; i < board.length; i++)
+		for (int i = 0; i < SIZE; i++)
 		{
 			Arrays.fill(board[i], EMPTY);
 		}
 		
 		// WHITE initial setup.
-		board[6][0] = WHITE;
-		board[9][3] = WHITE;
-		board[9][6] = WHITE;
-		board[6][9] = WHITE;
+		board[6][0] = OCCUPIED;
+		board[9][3] = OCCUPIED;
+		board[9][6] = OCCUPIED;
+		board[6][9] = OCCUPIED;
+		amazons[WHITE][0] = encodeAmazonPosition(6, 0);
+		amazons[WHITE][1] = encodeAmazonPosition(9, 3);
+		amazons[WHITE][2] = encodeAmazonPosition(9, 6);
+		amazons[WHITE][3] = encodeAmazonPosition(6, 9);
 		
 		// BLACK initial setup.
-		board[3][0] = BLACK;
-		board[0][3] = BLACK;
-		board[0][6] = BLACK;
-		board[3][9] = BLACK;
+		board[3][0] = OCCUPIED;
+		board[0][3] = OCCUPIED;
+		board[0][6] = OCCUPIED;
+		board[3][9] = OCCUPIED;
+		amazons[BLACK][0] = encodeAmazonPosition(3, 0);
+		amazons[BLACK][1] = encodeAmazonPosition(0, 3);
+		amazons[BLACK][2] = encodeAmazonPosition(0, 6);
+		amazons[BLACK][3] = encodeAmazonPosition(3, 9);
 	}
 	
 	/**
@@ -88,7 +104,18 @@ public class Board
 	 */
 	public boolean isWhite(int row, int col)
 	{
-		return board[row][col] == WHITE;
+		for (int i = 0; i < amazons[WHITE].length; i++)
+		{
+			int arow = decodeAmazonRow((amazons[WHITE][i]));
+			int acol = decodeAmazonColumn((amazons[WHITE][i]));
+			
+			if (arow == row && acol == col)
+			{
+				return true;
+			}
+		}
+		
+		return false;
 	}
 	
 	/**
@@ -100,11 +127,24 @@ public class Board
 	 */
 	public boolean isBlack(int row, int col)
 	{
-		return board[row][col] == BLACK;
+		for (int i = 0; i < amazons[BLACK].length; i++)
+		{
+			int arow = decodeAmazonRow((amazons[BLACK][i]));
+			int acol = decodeAmazonColumn((amazons[BLACK][i]));
+			
+			if (arow == row && acol == col)
+			{
+				return true;
+			}
+		}
+		
+		return false;
 	}
 	
 	/**
 	 * Determine if a board position is currently occupied by an arrow.
+	 * 
+	 * Note: If you can avoid using this method, do so.  Use isOccupied() instead.
 	 * @param row		The row of the position to check.
 	 * @param col		The column of the position to check.
 	 * @return	@value true if it is occupied by an arrow, @value false
@@ -112,7 +152,7 @@ public class Board
 	 */
 	public boolean isArrow(int row, int col)
 	{
-		return board[row][col] == ARROW;
+		return isOccupied(row, col) && !isBlack(row, col) && !isWhite(row, col);
 	}
 	
 	/**
@@ -265,7 +305,7 @@ public class Board
 			return false;
 		}
 		
-		board[row_f][row_f] = ARROW;
+		board[row_f][row_f] = OCCUPIED;
 		return true;
 	}
 	
@@ -283,5 +323,36 @@ public class Board
 	public boolean move(int row_s, int col_s, int row_f, int col_f, int arow, int acol, byte colour)
 	{
 		return true;
+	}
+	
+	/**
+	 * Get the row of an amazon from its encoded position.
+	 * @param encodedPosition	The encoded position of the amazon.
+	 * @return	The row of the position of the amazon.
+	 */
+	public static int decodeAmazonRow(byte encodedPosition)
+	{
+		return (int)(encodedPosition % SIZE);
+	}
+	
+	/**
+	 * Get the column of an amazon from its encoded position.
+	 * @param encodedPosition	The encoded position of the amazon.
+	 * @return	The column of the position of the amazon.
+	 */
+	public static int decodeAmazonColumn(byte encodedPosition)
+	{
+		return (int)(encodedPosition / SIZE);
+	}
+	
+	/**
+	 * Generate an encoded position for an amazon from its (row, col) position.
+	 * @param row		The row of the position of the amazon.
+	 * @param col		The column of the position of the amazon.
+	 * @return	The encoded position of the amazon.
+	 */
+	public static byte encodeAmazonPosition(int row, int col)
+	{
+		return (byte)(col*(SIZE) + row);
 	}
 }
