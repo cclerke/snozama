@@ -67,14 +67,14 @@ public class SnozamaHeuristic {
 		//for each white amazon
 		for (int i = 0; i < 4; i++)
 		{
-			int amazonMoves = getNumberAvailableMoves(board, board.amazons[WHITE][i]); //calculates number of moves available to amazon
+			int amazonMoves = getNumberAvailableMoves(board, board.amazons[Board.WHITE][i]); //calculates number of moves available to amazon
 			if (amazonMoves < whiteMoves)
 				whiteMoves = amazonMoves;
 		}
 		//for each black amazon
 		for (int i = 0; i < 4; i++)
 		{
-			int amazonMoves = getNumberAvailableMoves(board, board.amazons[WHITE][i]);
+			int amazonMoves = getNumberAvailableMoves(board, board.amazons[Board.BLACK][i]);
 			if (amazonMoves < blackMoves)
 				blackMoves = amazonMoves;
 		}
@@ -269,7 +269,7 @@ public class SnozamaHeuristic {
 			}
 		}
 		// Find moves below
-		for (int r = arow; r < Board.SIZE; r++)
+		for (int r = arow+1; r < Board.SIZE; r++)
 		{
 			if (board.isOccupied(r, acol))
 			{
@@ -281,7 +281,7 @@ public class SnozamaHeuristic {
 			}
 		}
 		// Find moves above
-		for (int r = arow; r > -1; r--)
+		for (int r = arow-1; r > -1; r--)
 		{
 			if (board.isOccupied(r, acol))
 			{
@@ -293,7 +293,7 @@ public class SnozamaHeuristic {
 			}
 		}
 		// Find moves diagonally (\) to the right
-		for (int r = arow, c = acol; r < Board.SIZE && c < Board.SIZE; r++, c++)
+		for (int r = arow+1, c = acol+1; r < Board.SIZE && c < Board.SIZE; r++, c++)
 		{
 			if (board.isOccupied(r, c))
 			{
@@ -305,7 +305,7 @@ public class SnozamaHeuristic {
 			}
 		}
 		// Find moves diagonally (\) to the left
-		for (int r = arow, c = acol; r > -1 && c > -1; r--, c--)
+		for (int r = arow-1, c = acol-1; r > -1 && c > -1; r--, c--)
 		{
 			if (board.isOccupied(r, c))
 			{
@@ -317,7 +317,7 @@ public class SnozamaHeuristic {
 			}
 		}
 		// Find moves anti-diagonally (/) to the right
-		for (int r = arow, c = acol; r > -1 && c < Board.SIZE; r--, c++)
+		for (int r = arow-1, c = acol+1; r > -1 && c < Board.SIZE; r--, c++)
 		{
 			if (board.isOccupied(r, c))
 			{
@@ -329,7 +329,7 @@ public class SnozamaHeuristic {
 			}
 		}
 		// Find moves anti-diagonally (/) to the left
-		for (int r = arow, c = acol; r < Board.SIZE && c > -1; r++, c--)
+		for (int r = arow+1, c = acol-1; r < Board.SIZE && c > -1; r++, c--)
 		{
 			if (board.isOccupied(r, c))
 			{
