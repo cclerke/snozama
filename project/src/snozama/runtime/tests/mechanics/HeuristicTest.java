@@ -15,7 +15,7 @@ import snozama.amazons.mechanics.SnozamaHeuristic;
 public class HeuristicTest {
 
 	/**
-	 * Test.
+	 * Test finding all arrow placements for a given amazon in a given board state.
 	 */
 	@Test
 	public void testFindArrowPlacements()
@@ -24,5 +24,19 @@ public class HeuristicTest {
 		SnozamaHeuristic heuristic = new SnozamaHeuristic();
 		
 		assertTrue(heuristic.findAvailableArrowPlacements(board, 6, 0) == 20);
+		assertTrue(heuristic.findAvailableArrowPlacements(board, 9, 6) == 20);
+		assertTrue(heuristic.findAvailableArrowPlacements(board, 0, 3) == 20);
+	}
+	
+	/**
+	 * Test min-mobility heuristic.
+	 */
+	@Test
+	public void testMinMobility()
+	{
+		Board board = new Board();
+		SnozamaHeuristic heuristic = new SnozamaHeuristic();
+		
+		assertTrue(heuristic.minMobility(board, Board.WHITE) == 0);
 	}
 }

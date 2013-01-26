@@ -59,7 +59,7 @@ public class SnozamaHeuristic {
 	* @return	The difference between the minimum moves across all amazons of the active player and
 	*  the minimum moves across all amazons of the inactive player
 	*/
-	public int minMobility(Board board, byte activePlayer)
+	public int minMobility(Board board, int activePlayer)
 	{
 		int whiteMoves = Integer.MAX_VALUE;
 		int blackMoves = Integer.MAX_VALUE;
@@ -158,7 +158,7 @@ public class SnozamaHeuristic {
 			}
 		}
 		// Find moves below
-		for (int r = arow; r < Board.SIZE; r++)
+		for (int r = arow+1; r < Board.SIZE; r++)
 		{
 			if (board.isOccupied(r, acol))
 			{
@@ -170,7 +170,7 @@ public class SnozamaHeuristic {
 			}
 		}
 		// Find moves above
-		for (int r = arow; r > -1; r--)
+		for (int r = arow-1; r > -1; r--)
 		{
 			if (board.isOccupied(r, acol))
 			{
@@ -182,7 +182,7 @@ public class SnozamaHeuristic {
 			}
 		}
 		// Find moves diagonally (\) to the right
-		for (int r = arow, c = acol; r < Board.SIZE && c < Board.SIZE; r++, c++)
+		for (int r = arow+1, c = acol+1; r < Board.SIZE && c < Board.SIZE; r++, c++)
 		{
 			if (board.isOccupied(r, c))
 			{
@@ -194,7 +194,7 @@ public class SnozamaHeuristic {
 			}
 		}
 		// Find moves diagonally (\) to the left
-		for (int r = arow, c = acol; r > -1 && c > -1; r--, c--)
+		for (int r = arow-1, c = acol-1; r > -1 && c > -1; r--, c--)
 		{
 			if (board.isOccupied(r, c))
 			{
@@ -206,7 +206,7 @@ public class SnozamaHeuristic {
 			}
 		}
 		// Find moves anti-diagonally (/) to the right
-		for (int r = arow, c = acol; r > -1 && c < Board.SIZE; r--, c++)
+		for (int r = arow-1, c = acol+1; r > -1 && c < Board.SIZE; r--, c++)
 		{
 			if (board.isOccupied(r, c))
 			{
@@ -218,7 +218,7 @@ public class SnozamaHeuristic {
 			}
 		}
 		// Find moves anti-diagonally (/) to the left
-		for (int r = arow, c = acol; r < Board.SIZE && c > -1; r++, c--)
+		for (int r = arow+1, c = acol-1; r < Board.SIZE && c > -1; r++, c--)
 		{
 			if (board.isOccupied(r, c))
 			{
