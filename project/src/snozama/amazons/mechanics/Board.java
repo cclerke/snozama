@@ -344,4 +344,23 @@ public class Board
 	{
 		return (byte)(col*(SIZE) + row);
 	}
+	
+	/**
+	 * Makes a copy of the game board.
+	 * @param original	The original game board.
+	 * @return	The copy of the game board.
+	 */
+	public byte[][] copy()
+	{
+		byte[][] original = board;
+		byte[][] copy = new byte[SIZE][SIZE];
+		for (int r = 0; r < SIZE; r++)
+		{
+			for (int c = 0; c < SIZE; c++)
+			{
+				copy[r][c] = original[r][c];
+			}
+		}
+		return copy;
+	}
 }

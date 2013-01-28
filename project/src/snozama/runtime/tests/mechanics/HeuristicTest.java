@@ -39,4 +39,13 @@ public class HeuristicTest {
 		
 		assertTrue(heuristic.minMobility(board, Board.WHITE) == 0);
 	}
+	
+	@Test
+	public void testMinPlies()
+	{
+		Board board = new Board();
+		SnozamaHeuristic heuristic = new SnozamaHeuristic();
+		
+		assertTrue(heuristic.minPliesToSquare(board) == 0);
+	}
 }

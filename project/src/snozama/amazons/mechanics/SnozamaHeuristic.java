@@ -15,40 +15,30 @@ public class SnozamaHeuristic {
 	 */
 	
 	/**
+	 * Evaluates the board based on the heuristics MSP and min-mobility
+	 * @param board		The current board state
+	 * @param activePlayer	The player whose turn it is
+	 * @return	The score for the active player of the given board position
+	 */
+	public int evaluateBoard(Board board, int activePlayer)
+	{
+		return 3*MSP(board, activePlayer) + 2*minMobility(board, activePlayer);
+	}
+	
+	/**
 	* Calculates closest player to each open square on the board
 	* The closest player to a square owns that square
 	* @param board	The current board state
 	* @param activePlayer	The player (white or black) whose turn it is
 	* @return	The difference between the number of squares the active player owns and the number of squares the inactive player owns
 	*/
-	public int MSP(Board board, byte activePlayer)
+	public int MSP(Board board, int activePlayer)
 	{
-		int whiteSquares = 0;
-		int blackSquares = 0;
-		
-		// Loops through each empty square on board
-		for (int row = 0; row < 10; row++)
-		{
-			for (int col = 0; col < 10; col++)
-			{
-				if (!board.isOccupied(row, col))
-				{
-					int whiteStonePly = minPliesToSquare(board, Board.WHITE);
-					int blackStonePly = minPliesToSquare(board, Board.BLACK);
-
-					if (whiteStonePly < blackStonePly) //white is closer to the square
-						whiteSquares++;
-					else if (blackStonePly < whiteStonePly) //black is closer to the square
-						blackSquares++;
-					//else both players are equal plies from the square -> square is neutral
-
-					if (activePlayer == Board.WHITE)
-						return whiteSquares-blackSquares; //returns white's advantage
-					else // activePlayer is black
-						return blackSquares-whiteSquares; //returns black's advantage
-				}
-			}
-		}
+		int whiteAdv = minPliesToSquare(board);
+		if (activePlayer == Board.WHITE)
+			return whiteAdv; //returns white's advantage
+		else // activePlayer is black
+			return -1*whiteAdv; //returns black's advantage
 	}
 	
 	
@@ -86,32 +76,156 @@ public class SnozamaHeuristic {
 	}
 
 	/**
-	* Calculates the number of moves available to the amazon of each colour with the minimum mobility
+	* Calculates the difference between squares white owns and squares black owns
 	* @param board	The current board state
-	* @param player	The player (white or black) we want to find the minimum distance to
-	* @return	The minimum number of plies for player of given colour to reach square
+	* @return	The white player's MSP advantage
 	*/
-	private int minPliesToSquare(Board board, byte player)
+	public int minPliesToSquare(Board board)
 	{
-		int min = Integer.MAX_VALUE;
-		//TODO Create this function
+		int whiteAdv = 0;
+		byte[][] markedBoard = board.copy();
 		/*
 		 * Given a square on the board, find the closest player of the given player
 		 * Strategy:
-		 * 	Expand vertically, horizontally, diagonally to find players one move away
-		 * 	I don't know what to do after this yet for best efficiency
+		 * 	Use a bi-directional approach
+		 * 	Start with position of amazons and expand, marking each square they can reach in one move
+		 * 	From unmarked squares expand vertically, horizontally, diagonally to find marked squares
+		 * 		-these squares will be two moves away from an amazon
+		 * 	Continue doing this with unmarked squares until there are no more unmarked squares
+		 * 	In the case of an enclosed region, we may need a maximum number of iterations before declaring square neutral
 		 */
-		for (int x = 0; x < 10; x++)
+		
+		/*
+		 * Step 1: Start with position of amazons and expand, marking each square they can reach in one move
+		 */
+		for (int i = 0; i < board.amazons.length; i++) //for each colour of amazon (2)
 		{
-			for (int y = 0; y < 10; y++)
+			for (int j = 0; j < board.amazons[i].length; j++) //for each amazon of a colour (4)
 			{
-				if (board.isOccupied(x, y))
-					continue;
+				int arow = Board.decodeAmazonRow(board.amazons[i][j]);		//amazon's starting row position
+				int acol = Board.decodeAmazonColumn(board.amazons[i][j]);	//amazon's starting column position
 				
-				//TODO The smart stuff mentioned above
-			}
+				// The following comments assume [0][0] is considered top left
+				// Find moves to the right
+				for (int c = acol+1; c < Board.SIZE; c++)
+				{
+					if (board.isOccupied(arow, c))
+					{
+						break;
+					}
+					else // this is a legal move
+					{
+						whiteAdv += markSquare(markedBoard, arow, c, i);
+					}
+				}
+				// Find moves to the left
+				for (int c = acol-1; c > -1; c--)
+				{
+					if (board.isOccupied(arow, c))
+					{
+						break;
+					}
+					else // this is a legal move
+					{
+						whiteAdv += markSquare(markedBoard, arow, c, i);
+					}
+				}
+				// Find moves below
+				for (int r = arow+1; r < Board.SIZE; r++)
+				{
+					if (board.isOccupied(r, acol))
+					{
+						break;
+					}
+					else // this is a legal move
+					{
+						whiteAdv += markSquare(markedBoard, r, acol, i);;
+					}
+				}
+				// Find moves above
+				for (int r = arow-1; r > -1; r--)
+				{
+					if (board.isOccupied(r, acol))
+					{
+						break;
+					}
+					else // this is a legal move
+					{
+						whiteAdv += markSquare(markedBoard, r, acol, i);
+					}
+				}
+				// Find moves diagonally (\) to the right
+				for (int r = arow+1, c = acol+1; r < Board.SIZE && c < Board.SIZE; r++, c++)
+				{
+					if (board.isOccupied(r, c))
+					{
+						break;
+					}
+					else // this is a legal move
+					{
+						whiteAdv += markSquare(markedBoard, r, c, i);
+					}
+				}
+				// Find moves diagonally (\) to the left
+				for (int r = arow-1, c = acol-1; r > -1 && c > -1; r--, c--)
+				{
+					if (board.isOccupied(r, c))
+					{
+						break;
+					}
+					else // this is a legal move
+					{
+						whiteAdv += markSquare(markedBoard, r, c, i);
+					}
+				}
+				// Find moves anti-diagonally (/) to the right
+				for (int r = arow-1, c = acol+1; r > -1 && c < Board.SIZE; r--, c++)
+				{
+					if (board.isOccupied(r, c))
+					{
+						break;
+					}
+					else // this is a legal move
+					{
+						whiteAdv += markSquare(markedBoard, r, c, i);
+					}
+				}
+				// Find moves anti-diagonally (/) to the left
+				for (int r = arow+1, c = acol-1; r < Board.SIZE && c > -1; r++, c--)
+				{
+					if (board.isOccupied(r, c))
+					{
+						break;
+					}
+					else // this is a legal move
+					{
+						whiteAdv += markSquare(markedBoard, r, c, i);
+					}
+				}
+			} // end of Step 1
+			//TODO Implement other steps
 		}
-		return min;
+		return whiteAdv;
+	}
+	
+	private int markSquare(byte[][] markedBoard, int row, int col, int colour)
+	{
+		int whiteAdv = 0;
+		byte mark = (byte)(colour*10+11); // white->11, black->21
+		if (markedBoard[row][col] == 0) // if not already marked
+		{
+			markedBoard[row][col] = mark;
+			if (colour == Board.WHITE)
+				whiteAdv++; //white may own square
+			else
+				whiteAdv--; //black owns square
+		}
+		else if (mark > markedBoard[row][col])
+		{
+			markedBoard[row][col] = 'N'; //square is neutral
+			whiteAdv--; 	//negates white's point given earlier
+		}
+		return whiteAdv;
 	}
 	
 	/**
