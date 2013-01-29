@@ -18,11 +18,19 @@ public class SnozamaHeuristic {
 	 * Evaluates the board based on the heuristics MSP and min-mobility
 	 * @param board		The current board state
 	 * @param activePlayer	The player whose turn it is
+	 * @param turn		The current turn number
 	 * @return	The score for the active player of the given board position
 	 */
-	public int evaluateBoard(Board board, int activePlayer)
+	public int evaluateBoard(Board board, int activePlayer, int turn)
 	{
-		return 3*MSP(board, activePlayer) + 2*minMobility(board, activePlayer);
+		if (turn <= 30)
+		{
+			return 3*MSP(board, activePlayer) + 2*minMobility(board, activePlayer);
+		}
+		else
+		{
+			return MSP(board, activePlayer);
+		}
 	}
 	
 	/**
@@ -202,11 +210,29 @@ public class SnozamaHeuristic {
 						whiteAdv += markSquare(markedBoard, r, c, i);
 					}
 				}
-			} // end of Step 1
-			//TODO Implement other steps
-		}
+			}
+		}// end of Step 1
+
+			/*
+			 * Step 2: For each unmarked square find a path to a marked square
+			 * 			Repeat until all squares are marked or we run a set number of iterations
+			 */
+			int maxIterations = 8;
+			for (int itr = 2; itr <= maxIterations; itr++)
+			{
+				for (int row = 0; row < Board.SIZE; row++)
+				{
+					for (int col = 0; col < Board.SIZE; col++)
+					{
+						if (markedBoard[row][col] == 0)
+						{
+							whiteAdv += findMarkedSquares(board, markedBoard, row, col, itr);
+						}
+					}
+				}
+			}
 		return whiteAdv;
-	}
+	} //end of Step 2
 	
 	private int markSquare(byte[][] markedBoard, int row, int col, int colour)
 	{
@@ -224,6 +250,349 @@ public class SnozamaHeuristic {
 		{
 			markedBoard[row][col] = 'N'; //square is neutral
 			whiteAdv--; 	//negates white's point given earlier
+		}
+		return whiteAdv;
+	}
+	
+	private int findMarkedSquares(Board board, byte[][] markedBoard, int row, int col, int iteration)
+	{
+		int whiteAdv = 0;
+		// The following comments assume [0][0] is considered top left
+		// Find moves to the right
+		for (int c = col+1; c < Board.SIZE; c++)
+		{
+			if (board.isOccupied(row, c))
+			{
+				break;
+			}
+			else if (markedBoard[row][c] != 0)
+			{
+				if (markedBoard[row][c] == 'N') //neutral
+				{
+					markedBoard[row][col] = 'N';
+					return 0;
+				}
+				else if (markedBoard[row][c] == 10+iteration-1) //marked by white in the previous iteration
+				{
+					if (markedBoard[row][col] == 0)
+					{
+						markedBoard[row][col] = (byte)(10+iteration);
+						whiteAdv = 1;
+					}
+					else if (markedBoard[row][col] == 20+iteration)
+					{
+						markedBoard[row][col] = 'N';
+						return 0;
+					}
+				}
+				else if (markedBoard[row][c] == 20+iteration-1) //marked by black in the previous iteration
+				{
+					if (markedBoard[row][col] == 0)
+					{
+						markedBoard[row][col] = (byte)(20+iteration);
+						whiteAdv = -1;
+					}
+					else if (markedBoard[row][col] == 10+iteration)
+					{
+						markedBoard[row][col] = 'N';
+						return 0;
+					}
+				}
+			}
+		}
+		// Find moves to the left
+		for (int c = col-1; c > -1; c--)
+		{
+			if (board.isOccupied(row, c))
+			{
+				break;
+			}
+			else if (markedBoard[row][c] != 0)
+			{
+				if (markedBoard[row][c] == 'N') //neutral
+				{
+					markedBoard[row][col] = 'N';
+					return 0;
+				}
+				else if (markedBoard[row][c] == 10+iteration-1) //marked by white in the previous iteration
+				{
+					if (markedBoard[row][col] == 0)
+					{
+						markedBoard[row][col] = (byte)(10+iteration);
+						whiteAdv++;
+					}
+					else if (markedBoard[row][col] == 20+iteration)
+					{
+						markedBoard[row][col] = 'N';
+						return 0;
+					}
+				}
+				else if (markedBoard[row][c] == 20+iteration-1) //marked by black in the previous iteration
+				{
+					if (markedBoard[row][col] == 0)
+					{
+						markedBoard[row][col] = (byte)(20+iteration);
+						return -1;
+					}
+					else if (markedBoard[row][col] == 10+iteration)
+					{
+						markedBoard[row][col] = 'N';
+						return 0;
+					}
+				}
+			}
+		}
+		// Find moves below
+		for (int r = row+1; r < Board.SIZE; r++)
+		{
+			if (board.isOccupied(r, col))
+			{
+				break;
+			}
+			else if (markedBoard[r][col] != 0)
+			{
+				if (markedBoard[r][col] == 'N') //neutral
+				{
+					markedBoard[row][col] = 'N';
+					return 0;
+				}
+				else if (markedBoard[r][col] == 10+iteration-1) //marked by white in the previous iteration
+				{
+					if (markedBoard[row][col] == 0)
+					{
+						markedBoard[row][col] = (byte)(10+iteration);
+						whiteAdv++;
+					}
+					else if (markedBoard[row][col] == 20+iteration)
+					{
+						markedBoard[row][col] = 'N';
+						return 0;
+					}
+				}
+				else if (markedBoard[r][col] == 20+iteration-1) //marked by black in the previous iteration
+				{
+					if (markedBoard[row][col] == 0)
+					{
+						markedBoard[row][col] = (byte)(20+iteration);
+						return -1;
+					}
+					else if (markedBoard[row][col] == 10+iteration)
+					{
+						markedBoard[row][col] = 'N';
+						return 0;
+					}
+				}
+			}
+		}
+		// Find moves above
+		for (int r = row-1; r > -1; r--)
+		{
+			if (board.isOccupied(r, col))
+			{
+				break;
+			}
+			else if (markedBoard[r][col] != 0)
+			{
+				if (markedBoard[r][col] == 'N') //neutral
+				{
+					markedBoard[row][col] = 'N';
+					return 0;
+				}
+				else if (markedBoard[r][col] == 10+iteration-1) //marked by white in the previous iteration
+				{
+					if (markedBoard[row][col] == 0)
+					{
+						markedBoard[row][col] = (byte)(10+iteration);
+						whiteAdv++;
+					}
+					else if (markedBoard[row][col] == 20+iteration)
+					{
+						markedBoard[row][col] = 'N';
+						return 0;
+					}
+				}
+				else if (markedBoard[r][col] == 20+iteration-1) //marked by black in the previous iteration
+				{
+					if (markedBoard[row][col] == 0)
+					{
+						markedBoard[row][col] = (byte)(20+iteration);
+						return -1;
+					}
+					else if (markedBoard[row][col] == 10+iteration)
+					{
+						markedBoard[row][col] = 'N';
+						return 0;
+					}
+				}
+			}
+		}
+		// Find moves diagonally (\) to the right
+		for (int r = row+1, c = col+1; r < Board.SIZE && c < Board.SIZE; r++, c++)
+		{
+			if (board.isOccupied(r, c))
+			{
+				break;
+			}
+			else if (markedBoard[r][c] != 0)
+			{
+				if (markedBoard[r][c] == 'N') //neutral
+				{
+					markedBoard[row][col] = 'N';
+					return 0;
+				}
+				else if (markedBoard[r][c] == 10+iteration-1) //marked by white in the previous iteration
+				{
+					if (markedBoard[row][col] == 0)
+					{
+						markedBoard[row][col] = (byte)(10+iteration);
+						whiteAdv++;
+					}
+					else if (markedBoard[row][col] == 20+iteration)
+					{
+						markedBoard[row][col] = 'N';
+						return 0;
+					}
+				}
+				else if (markedBoard[r][c] == 20+iteration-1) //marked by black in the previous iteration
+				{
+					if (markedBoard[row][col] == 0)
+					{
+						markedBoard[row][col] = (byte)(20+iteration);
+						return -1;
+					}
+					else if (markedBoard[row][col] == 10+iteration)
+					{
+						markedBoard[row][col] = 'N';
+						return 0;
+					}
+				}
+			}
+		}
+		// Find moves diagonally (\) to the left
+		for (int r = row-1, c = col-1; r > -1 && c > -1; r--, c--)
+		{
+			if (board.isOccupied(r, c))
+			{
+				break;
+			}
+			else if (markedBoard[r][c] != 0)
+			{
+				if (markedBoard[r][c] == 'N') //neutral
+				{
+					markedBoard[row][col] = 'N';
+					return 0;
+				}
+				else if (markedBoard[r][c] == 10+iteration-1) //marked by white in the previous iteration
+				{
+					if (markedBoard[row][col] == 0)
+					{
+						markedBoard[row][col] = (byte)(10+iteration);
+						whiteAdv++;
+					}
+					else if (markedBoard[row][col] == 20+iteration)
+					{
+						markedBoard[row][col] = 'N';
+						return 0;
+					}
+				}
+				else if (markedBoard[r][c] == 20+iteration-1) //marked by black in the previous iteration
+				{
+					if (markedBoard[row][col] == 0)
+					{
+						markedBoard[row][col] = (byte)(20+iteration);
+						return -1;
+					}
+					else if (markedBoard[row][col] == 10+iteration)
+					{
+						markedBoard[row][col] = 'N';
+						return 0;
+					}
+				}
+			}
+		}
+		// Find moves anti-diagonally (/) to the right
+		for (int r = row-1, c = col+1; r > -1 && c < Board.SIZE; r--, c++)
+		{
+			if (board.isOccupied(r, c))
+			{
+				break;
+			}
+			else if (markedBoard[r][c] != 0)
+			{
+				if (markedBoard[r][c] == 'N') //neutral
+				{
+					markedBoard[row][col] = 'N';
+					return 0;
+				}
+				else if (markedBoard[r][c] == 10+iteration-1) //marked by white in the previous iteration
+				{
+					if (markedBoard[row][col] == 0)
+					{
+						markedBoard[row][col] = (byte)(10+iteration);
+						whiteAdv++;
+					}
+					else if (markedBoard[row][col] == 20+iteration)
+					{
+						markedBoard[row][col] = 'N';
+						return 0;
+					}
+				}
+				else if (markedBoard[r][c] == 20+iteration-1) //marked by black in the previous iteration
+				{
+					if (markedBoard[row][col] == 0)
+					{
+						markedBoard[row][col] = (byte)(20+iteration);
+						return -1;
+					}
+					else if (markedBoard[row][col] == 10+iteration)
+					{
+						markedBoard[row][col] = 'N';
+						return 0;
+					}
+				}
+			}
+		}
+		// Find moves anti-diagonally (/) to the left
+		for (int r = row+1, c = col-1; r < Board.SIZE && c > -1; r++, c--)
+		{
+			if (board.isOccupied(r, c))
+			{
+				break;
+			}
+			else if (markedBoard[r][c] != 0)
+			{
+				if (markedBoard[r][c] == 'N') //neutral
+				{
+					markedBoard[row][col] = 'N';
+					return 0;
+				}
+				else if (markedBoard[r][c] == 10+iteration-1) //marked by white in the previous iteration
+				{
+					if (markedBoard[row][col] == 0)
+					{
+						markedBoard[row][col] = (byte)(10+iteration);
+						whiteAdv++;
+					}
+					else if (markedBoard[row][col] == 20+iteration)
+					{
+						markedBoard[row][col] = 'N';
+						return 0;
+					}
+				}
+				else if (markedBoard[r][c] == 20+iteration-1) //marked by black in the previous iteration
+				{
+					if (markedBoard[row][col] == 0)
+					{
+						markedBoard[row][col] = (byte)(20+iteration);
+						return -1;
+					}
+					else if (markedBoard[row][col] == 10+iteration)
+					{
+						markedBoard[row][col] = 'N';
+						return 0;
+					}
+				}
+			}
 		}
 		return whiteAdv;
 	}

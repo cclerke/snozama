@@ -45,7 +45,7 @@ public class HeuristicTest {
 	{
 		Board board = new Board();
 		SnozamaHeuristic heuristic = new SnozamaHeuristic();
-		
-		assertTrue(heuristic.minPliesToSquare(board) == 0);
+
+		assertTrue(heuristic.minPliesToSquare(board) == 0);	
 	}
 }
