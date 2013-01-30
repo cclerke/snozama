@@ -263,7 +263,7 @@ public class Board
 	 * @return	@value true if the amazon was successfully moved,
 	 * 			@value false otherwise.
 	 */
-	public boolean moveAmazon(int row_s, int col_s, int row_f, int col_f, byte colour)
+	public boolean moveAmazon(int row_s, int col_s, int row_f, int col_f, int colour)
 	{
 		// Sanity check.
 		if (!isWhite(row_s, col_s) ||
@@ -274,7 +274,19 @@ public class Board
 		}
 		
 		board[row_s][row_s] = EMPTY;
-		board[row_f][row_f] = colour;
+		board[row_f][row_f] = OCCUPIED;
+		
+		//Update amazon's new position
+		for (int i = 0; i < amazons[colour].length; i++)
+		{
+			int arow = decodeAmazonRow((amazons[colour][i]));
+			int acol = decodeAmazonColumn((amazons[colour][i]));
+			
+			if (arow == row_s && acol == col_s)
+			{
+				amazons[colour][i] = encodeAmazonPosition(row_f, row_s);
+			}
+		}
 		return true;
 	}
 	

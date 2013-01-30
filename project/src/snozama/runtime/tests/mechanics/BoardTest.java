@@ -85,5 +85,6 @@ public class BoardTest {
 		assertFalse(board.isValidMove(1, 1, 7, 6));
 		
 		// TODO: Test for amazons.
+		assertTrue(board.moveAmazon(9, 3, 1, 3, Board.WHITE));
 	}
 }
