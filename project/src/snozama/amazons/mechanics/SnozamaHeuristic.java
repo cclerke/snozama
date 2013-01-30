@@ -652,7 +652,7 @@ public class SnozamaHeuristic {
 			}
 			else // this is a legal move
 			{
-				moves += findAvailableArrowPlacements(board, arow, c);
+				moves += findAvailableArrowPlacements(board, arow, c, arow, acol);
 			}
 		}
 		// Find moves to the left
@@ -664,7 +664,7 @@ public class SnozamaHeuristic {
 			}
 			else // this is a legal move
 			{
-				moves += findAvailableArrowPlacements(board, arow, c);
+				moves += findAvailableArrowPlacements(board, arow, c, arow, acol);
 			}
 		}
 		// Find moves below
@@ -676,7 +676,7 @@ public class SnozamaHeuristic {
 			}
 			else // this is a legal move
 			{
-				moves += findAvailableArrowPlacements(board, r, acol);
+				moves += findAvailableArrowPlacements(board, r, acol, arow, acol);
 			}
 		}
 		// Find moves above
@@ -688,7 +688,7 @@ public class SnozamaHeuristic {
 			}
 			else // this is a legal move
 			{
-				moves += findAvailableArrowPlacements(board, r, acol);
+				moves += findAvailableArrowPlacements(board, r, acol, arow, acol);
 			}
 		}
 		// Find moves diagonally (\) to the right
@@ -700,7 +700,7 @@ public class SnozamaHeuristic {
 			}
 			else // this is a legal move
 			{
-				moves += findAvailableArrowPlacements(board, r, c);
+				moves += findAvailableArrowPlacements(board, r, c, arow, acol);
 			}
 		}
 		// Find moves diagonally (\) to the left
@@ -712,7 +712,7 @@ public class SnozamaHeuristic {
 			}
 			else // this is a legal move
 			{
-				moves += findAvailableArrowPlacements(board, r, c);
+				moves += findAvailableArrowPlacements(board, r, c, arow, acol);
 			}
 		}
 		// Find moves anti-diagonally (/) to the right
@@ -724,7 +724,7 @@ public class SnozamaHeuristic {
 			}
 			else // this is a legal move
 			{
-				moves += findAvailableArrowPlacements(board, r, c);
+				moves += findAvailableArrowPlacements(board, r, c, arow, acol);
 			}
 		}
 		// Find moves anti-diagonally (/) to the left
@@ -736,7 +736,7 @@ public class SnozamaHeuristic {
 			}
 			else // this is a legal move
 			{
-				moves += findAvailableArrowPlacements(board, r, c);
+				moves += findAvailableArrowPlacements(board, r, c, arow, acol);
 			}
 		}
 
@@ -748,16 +748,18 @@ public class SnozamaHeuristic {
 	 * @param board		The current state of the board.
 	 * @param arow		The row the amazon is in.
 	 * @param acol		The column the amazon is in.
+	 * @param row_s		The row the amazon began the move in.
+	 * @param col_s		The column the amazon began the move in.
 	 * @return		The number of places an arrow can be placed from specified square.
 	 */
-	public int findAvailableArrowPlacements(Board board, int arow, int acol)
+	private int findAvailableArrowPlacements(Board board, int arow, int acol, int row_s, int col_s)
 	{
 		int arrows = 0;
 		// The following comments assume [0][0] is considered top left
 		// Find moves to the right
 		for (int c = acol+1; c < Board.SIZE; c++)
 		{
-			if (board.isOccupied(arow, c))
+			if (board.isOccupied(arow, c) && !(arow == row_s && c == col_s))
 			{
 				break;
 			}
@@ -769,7 +771,7 @@ public class SnozamaHeuristic {
 		// Find moves to the left
 		for (int c = acol-1; c > -1; c--)
 		{
-			if (board.isOccupied(arow, c))
+			if (board.isOccupied(arow, c) && !(arow == row_s && c == col_s))
 			{
 				break;
 			}
@@ -781,7 +783,7 @@ public class SnozamaHeuristic {
 		// Find moves below
 		for (int r = arow+1; r < Board.SIZE; r++)
 		{
-			if (board.isOccupied(r, acol))
+			if (board.isOccupied(r, acol) && !(r == row_s && acol == col_s))
 			{
 				break;
 			}
@@ -793,7 +795,7 @@ public class SnozamaHeuristic {
 		// Find moves above
 		for (int r = arow-1; r > -1; r--)
 		{
-			if (board.isOccupied(r, acol))
+			if (board.isOccupied(r, acol) && !(r == row_s && acol == col_s))
 			{
 				break;
 			}
@@ -805,7 +807,7 @@ public class SnozamaHeuristic {
 		// Find moves diagonally (\) to the right
 		for (int r = arow+1, c = acol+1; r < Board.SIZE && c < Board.SIZE; r++, c++)
 		{
-			if (board.isOccupied(r, c))
+			if (board.isOccupied(r, c) && !(r == row_s && c == col_s))
 			{
 				break;
 			}
@@ -817,7 +819,7 @@ public class SnozamaHeuristic {
 		// Find moves diagonally (\) to the left
 		for (int r = arow-1, c = acol-1; r > -1 && c > -1; r--, c--)
 		{
-			if (board.isOccupied(r, c))
+			if (board.isOccupied(r, c) && !(r == row_s && c == col_s))
 			{
 				break;
 			}
@@ -829,7 +831,7 @@ public class SnozamaHeuristic {
 		// Find moves anti-diagonally (/) to the right
 		for (int r = arow-1, c = acol+1; r > -1 && c < Board.SIZE; r--, c++)
 		{
-			if (board.isOccupied(r, c))
+			if (board.isOccupied(r, c) && !(r == row_s && c == col_s))
 			{
 				break;
 			}
@@ -841,7 +843,7 @@ public class SnozamaHeuristic {
 		// Find moves anti-diagonally (/) to the left
 		for (int r = arow+1, c = acol-1; r < Board.SIZE && c > -1; r++, c--)
 		{
-			if (board.isOccupied(r, c))
+			if (board.isOccupied(r, c) && !(r == row_s && c == col_s))
 			{
 				break;
 			}
