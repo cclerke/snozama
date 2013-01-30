@@ -1,5 +1,11 @@
 package snozama.amazons.mechanics;
 
+/**
+ * Heuristic functions to be used to play the Game of the Amazons.
+ * @author Cody Clerke
+ *
+ */
+
 public class SnozamaHeuristic {
 
 	
@@ -15,11 +21,11 @@ public class SnozamaHeuristic {
 	 */
 	
 	/**
-	 * Evaluates the board based on the heuristics MSP and min-mobility
-	 * @param board		The current board state
-	 * @param activePlayer	The player whose turn it is
-	 * @param turn		The current turn number
-	 * @return	The score for the active player of the given board position
+	 * Evaluates the board based on the heuristics MSP and min-mobility.
+	 * @param board		The current board state.
+	 * @param activePlayer	The player whose turn it is.
+	 * @param turn		The current turn number.
+	 * @return	The score for the active player of the given board position.
 	 */
 	public int evaluateBoard(Board board, int activePlayer, int turn)
 	{
@@ -34,11 +40,11 @@ public class SnozamaHeuristic {
 	}
 	
 	/**
-	* Calculates closest player to each open square on the board
-	* The closest player to a square owns that square
-	* @param board	The current board state
-	* @param activePlayer	The player (white or black) whose turn it is
-	* @return	The difference between the number of squares the active player owns and the number of squares the inactive player owns
+	* Calculates closest player to each open square on the board.
+	* The closest player to a square owns that square.
+	* @param board	The current board state.
+	* @param activePlayer	The player (white or black) whose turn it is.
+	* @return	The difference between the number of squares the active player owns and the number of squares the inactive player owns.
 	*/
 	public int MSP(Board board, int activePlayer)
 	{
@@ -51,11 +57,11 @@ public class SnozamaHeuristic {
 	
 	
 	/**
-	* Calculates the number of moves available to the amazon of each colour with the minimum mobility
-	* @param board	The current board state
-	* @param activePlayer	The player (white or black) whose turn it is
+	* Calculates the number of moves available to the amazon of each colour with the minimum mobility.
+	* @param board	The current board state.
+	* @param activePlayer	The player (white or black) whose turn it is.
 	* @return	The difference between the minimum moves across all amazons of the active player and
-	*  the minimum moves across all amazons of the inactive player
+	*  the minimum moves across all amazons of the inactive player.
 	*/
 	public int minMobility(Board board, int activePlayer)
 	{
@@ -84,9 +90,9 @@ public class SnozamaHeuristic {
 	}
 
 	/**
-	* Calculates the difference between squares white owns and squares black owns
-	* @param board	The current board state
-	* @return	The white player's MSP advantage
+	* Calculates the difference between squares white owns and squares black owns.
+	* @param board	The current board state.
+	* @return	The white player's MSP advantage.
 	*/
 	public int minPliesToSquare(Board board)
 	{
@@ -234,6 +240,17 @@ public class SnozamaHeuristic {
 		return whiteAdv;
 	} //end of Step 2
 	
+	/**
+	 * Used for the first iteration of minPliesToSquare heuristic.
+	 * Marks square with a colour (white=10, black=20) plus the number of moves for the closest player to reach that square.
+	 * A square reached by a white player in one move will be marked 11, for example.
+	 * Squares that can be reached in equal number of turns by both colours with be marked 'N'.
+	 * @param markedBoard	The board maintaining the owners of each square.
+	 * @param row	The row of the square being marked.
+	 * @param col	The column of the square being marked.
+	 * @param colour	The colour of the amazon able to reach this square.
+	 * @return		The owner of the square. Will return 1 for white, -1 for black and 0 for neutral.
+	 */
 	private int markSquare(byte[][] markedBoard, int row, int col, int colour)
 	{
 		int whiteAdv = 0;
@@ -254,6 +271,16 @@ public class SnozamaHeuristic {
 		return whiteAdv;
 	}
 	
+	/**
+	 * Used for the second part of minPliesToSquare heuristic.
+	 * From each unmarked square attempts to find a path to the nearest amazon(s).
+	 * @param board		The current state of the entire board.
+	 * @param markedBoard	The board maintaining the owners of each square.
+	 * @param row		The row of the square being marked.
+	 * @param col		The column of the square being marked.
+	 * @param iteration	The minimum number of turns to reach an amazon from this square.
+	 * @return		The owner of the square. Will return 1 for white, -1 for black, 0 for neutral.
+	 */
 	private int findMarkedSquares(Board board, byte[][] markedBoard, int row, int col, int iteration)
 	{
 		int whiteAdv = 0;
@@ -274,12 +301,12 @@ public class SnozamaHeuristic {
 				}
 				else if (markedBoard[row][c] == 10+iteration-1) //marked by white in the previous iteration
 				{
-					if (markedBoard[row][col] == 0)
+					if (markedBoard[row][col] == 0) //if starting square is unmarked
 					{
 						markedBoard[row][col] = (byte)(10+iteration);
 						whiteAdv = 1;
 					}
-					else if (markedBoard[row][col] == 20+iteration)
+					else if (markedBoard[row][col] == 20+iteration) //if starting square was marked by black this iteration
 					{
 						markedBoard[row][col] = 'N';
 						return 0;
@@ -287,12 +314,12 @@ public class SnozamaHeuristic {
 				}
 				else if (markedBoard[row][c] == 20+iteration-1) //marked by black in the previous iteration
 				{
-					if (markedBoard[row][col] == 0)
+					if (markedBoard[row][col] == 0) //if starting square is unmarked
 					{
 						markedBoard[row][col] = (byte)(20+iteration);
 						whiteAdv = -1;
 					}
-					else if (markedBoard[row][col] == 10+iteration)
+					else if (markedBoard[row][col] == 10+iteration) //if starting square was marked by white this iteration
 					{
 						markedBoard[row][col] = 'N';
 						return 0;
@@ -598,10 +625,10 @@ public class SnozamaHeuristic {
 	}
 	
 	/**
-	* Calculates the number of moves available to the amazon
-	* @param board	The current board state
-	* @param amazon	An individual amazon
-	* @return	The number of moves available to the amazon
+	* Calculates the number of moves available to the amazon.
+	* @param board	The current board state.
+	* @param amazon	An individual amazon to find possible moves for.
+	* @return	The number of moves available to the amazon.
 	*/
 	private int getNumberAvailableMoves(Board board, byte amazon)
 	{
