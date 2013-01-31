@@ -165,7 +165,7 @@ public class Board
 	 */
 	public boolean isValidMove(int row_s, int col_s, int row_f, int col_f)
 	{
-		// Move must be made horizontally, vertically or diagonally
+		// Move must be made horizontally, vertically, diagonally or anti-diagonally
 		if (!(row_s == row_f ||
 				col_s == col_f ||
 				Math.abs(row_f - row_s) == Math.abs(col_f - col_s)))
@@ -266,15 +266,14 @@ public class Board
 	public boolean moveAmazon(int row_s, int col_s, int row_f, int col_f, int colour)
 	{
 		// Sanity check.
-		if (!isWhite(row_s, col_s) ||
-				!isValidMove(row_s, col_s, row_f, col_f) ||
+		if (!isValidMove(row_s, col_s, row_f, col_f) ||
 				colour != WHITE && colour != BLACK)
 		{
 			return false;
 		}
 		
-		board[row_s][row_s] = EMPTY;
-		board[row_f][row_f] = OCCUPIED;
+		board[row_s][col_s] = EMPTY;
+		board[row_f][col_f] = OCCUPIED;
 		
 		//Update amazon's new position
 		for (int i = 0; i < amazons[colour].length; i++)
@@ -285,6 +284,7 @@ public class Board
 			if (arow == row_s && acol == col_s)
 			{
 				amazons[colour][i] = encodeAmazonPosition(row_f, row_s);
+				break;
 			}
 		}
 		return true;
@@ -306,7 +306,7 @@ public class Board
 			return false;
 		}
 		
-		board[row_f][row_f] = OCCUPIED;
+		board[row_f][col_f] = OCCUPIED;
 		return true;
 	}
 	

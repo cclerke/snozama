@@ -60,7 +60,7 @@ public class BoardTest {
 		
 		assertTrue(board.isValidMove(2, 1, 2, 3));
 		
-		// TODO: Add some tests 
+		// TODO: Add some tests
 	}
 	
 	/**
@@ -84,7 +84,13 @@ public class BoardTest {
 		
 		assertFalse(board.isValidMove(1, 1, 7, 6));
 		
+		assertFalse(board.isValidMove(2, 2, 10, 2));
+		
+		assertFalse(board.isValidMove(0, 0, 1, 2));
+		
 		// TODO: Test for amazons.
 		assertTrue(board.moveAmazon(9, 3, 1, 3, Board.WHITE));
+		
+		assertFalse(board.moveAmazon(1, 3, 0, 3, Board.WHITE));
 	}
 }
