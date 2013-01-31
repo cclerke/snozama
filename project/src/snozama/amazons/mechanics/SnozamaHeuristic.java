@@ -294,36 +294,10 @@ public class SnozamaHeuristic {
 			}
 			else if (markedBoard[row][c] != 0)
 			{
-				if (markedBoard[row][c] == 'N') //neutral
+				whiteAdv = markSquare(markedBoard, row, c, row, col, iteration);
+				if (markedBoard[row][col] == 'N')
 				{
-					markedBoard[row][col] = 'N';
 					return 0;
-				}
-				else if (markedBoard[row][c] == 10+iteration-1) //marked by white in the previous iteration
-				{
-					if (markedBoard[row][col] == 0) //if starting square is unmarked
-					{
-						markedBoard[row][col] = (byte)(10+iteration);
-						whiteAdv = 1;
-					}
-					else if (markedBoard[row][col] == 20+iteration) //if starting square was marked by black this iteration
-					{
-						markedBoard[row][col] = 'N';
-						return 0;
-					}
-				}
-				else if (markedBoard[row][c] == 20+iteration-1) //marked by black in the previous iteration
-				{
-					if (markedBoard[row][col] == 0) //if starting square is unmarked
-					{
-						markedBoard[row][col] = (byte)(20+iteration);
-						whiteAdv = -1;
-					}
-					else if (markedBoard[row][col] == 10+iteration) //if starting square was marked by white this iteration
-					{
-						markedBoard[row][col] = 'N';
-						return 0;
-					}
 				}
 			}
 		}
@@ -336,36 +310,10 @@ public class SnozamaHeuristic {
 			}
 			else if (markedBoard[row][c] != 0)
 			{
-				if (markedBoard[row][c] == 'N') //neutral
+				whiteAdv = markSquare(markedBoard, row, c, row, col, iteration);
+				if (markedBoard[row][col] == 'N')
 				{
-					markedBoard[row][col] = 'N';
 					return 0;
-				}
-				else if (markedBoard[row][c] == 10+iteration-1) //marked by white in the previous iteration
-				{
-					if (markedBoard[row][col] == 0)
-					{
-						markedBoard[row][col] = (byte)(10+iteration);
-						whiteAdv++;
-					}
-					else if (markedBoard[row][col] == 20+iteration)
-					{
-						markedBoard[row][col] = 'N';
-						return 0;
-					}
-				}
-				else if (markedBoard[row][c] == 20+iteration-1) //marked by black in the previous iteration
-				{
-					if (markedBoard[row][col] == 0)
-					{
-						markedBoard[row][col] = (byte)(20+iteration);
-						return -1;
-					}
-					else if (markedBoard[row][col] == 10+iteration)
-					{
-						markedBoard[row][col] = 'N';
-						return 0;
-					}
 				}
 			}
 		}
@@ -378,36 +326,10 @@ public class SnozamaHeuristic {
 			}
 			else if (markedBoard[r][col] != 0)
 			{
-				if (markedBoard[r][col] == 'N') //neutral
+				whiteAdv = markSquare(markedBoard, r, col, row, col, iteration);
+				if (markedBoard[row][col] == 'N')
 				{
-					markedBoard[row][col] = 'N';
 					return 0;
-				}
-				else if (markedBoard[r][col] == 10+iteration-1) //marked by white in the previous iteration
-				{
-					if (markedBoard[row][col] == 0)
-					{
-						markedBoard[row][col] = (byte)(10+iteration);
-						whiteAdv++;
-					}
-					else if (markedBoard[row][col] == 20+iteration)
-					{
-						markedBoard[row][col] = 'N';
-						return 0;
-					}
-				}
-				else if (markedBoard[r][col] == 20+iteration-1) //marked by black in the previous iteration
-				{
-					if (markedBoard[row][col] == 0)
-					{
-						markedBoard[row][col] = (byte)(20+iteration);
-						return -1;
-					}
-					else if (markedBoard[row][col] == 10+iteration)
-					{
-						markedBoard[row][col] = 'N';
-						return 0;
-					}
 				}
 			}
 		}
@@ -420,36 +342,10 @@ public class SnozamaHeuristic {
 			}
 			else if (markedBoard[r][col] != 0)
 			{
-				if (markedBoard[r][col] == 'N') //neutral
+				whiteAdv = markSquare(markedBoard, r, col, row, col, iteration);
+				if (markedBoard[row][col] == 'N')
 				{
-					markedBoard[row][col] = 'N';
 					return 0;
-				}
-				else if (markedBoard[r][col] == 10+iteration-1) //marked by white in the previous iteration
-				{
-					if (markedBoard[row][col] == 0)
-					{
-						markedBoard[row][col] = (byte)(10+iteration);
-						whiteAdv++;
-					}
-					else if (markedBoard[row][col] == 20+iteration)
-					{
-						markedBoard[row][col] = 'N';
-						return 0;
-					}
-				}
-				else if (markedBoard[r][col] == 20+iteration-1) //marked by black in the previous iteration
-				{
-					if (markedBoard[row][col] == 0)
-					{
-						markedBoard[row][col] = (byte)(20+iteration);
-						return -1;
-					}
-					else if (markedBoard[row][col] == 10+iteration)
-					{
-						markedBoard[row][col] = 'N';
-						return 0;
-					}
 				}
 			}
 		}
@@ -462,36 +358,10 @@ public class SnozamaHeuristic {
 			}
 			else if (markedBoard[r][c] != 0)
 			{
-				if (markedBoard[r][c] == 'N') //neutral
+				whiteAdv = markSquare(markedBoard, r, c, row, col, iteration);
+				if (markedBoard[row][col] == 'N')
 				{
-					markedBoard[row][col] = 'N';
 					return 0;
-				}
-				else if (markedBoard[r][c] == 10+iteration-1) //marked by white in the previous iteration
-				{
-					if (markedBoard[row][col] == 0)
-					{
-						markedBoard[row][col] = (byte)(10+iteration);
-						whiteAdv++;
-					}
-					else if (markedBoard[row][col] == 20+iteration)
-					{
-						markedBoard[row][col] = 'N';
-						return 0;
-					}
-				}
-				else if (markedBoard[r][c] == 20+iteration-1) //marked by black in the previous iteration
-				{
-					if (markedBoard[row][col] == 0)
-					{
-						markedBoard[row][col] = (byte)(20+iteration);
-						return -1;
-					}
-					else if (markedBoard[row][col] == 10+iteration)
-					{
-						markedBoard[row][col] = 'N';
-						return 0;
-					}
 				}
 			}
 		}
@@ -504,36 +374,10 @@ public class SnozamaHeuristic {
 			}
 			else if (markedBoard[r][c] != 0)
 			{
-				if (markedBoard[r][c] == 'N') //neutral
+				whiteAdv = markSquare(markedBoard, r, c, row, col, iteration);
+				if (markedBoard[row][col] == 'N')
 				{
-					markedBoard[row][col] = 'N';
 					return 0;
-				}
-				else if (markedBoard[r][c] == 10+iteration-1) //marked by white in the previous iteration
-				{
-					if (markedBoard[row][col] == 0)
-					{
-						markedBoard[row][col] = (byte)(10+iteration);
-						whiteAdv++;
-					}
-					else if (markedBoard[row][col] == 20+iteration)
-					{
-						markedBoard[row][col] = 'N';
-						return 0;
-					}
-				}
-				else if (markedBoard[r][c] == 20+iteration-1) //marked by black in the previous iteration
-				{
-					if (markedBoard[row][col] == 0)
-					{
-						markedBoard[row][col] = (byte)(20+iteration);
-						return -1;
-					}
-					else if (markedBoard[row][col] == 10+iteration)
-					{
-						markedBoard[row][col] = 'N';
-						return 0;
-					}
 				}
 			}
 		}
@@ -546,36 +390,10 @@ public class SnozamaHeuristic {
 			}
 			else if (markedBoard[r][c] != 0)
 			{
-				if (markedBoard[r][c] == 'N') //neutral
+				whiteAdv = markSquare(markedBoard, r, c, row, col, iteration);
+				if (markedBoard[row][col] == 'N')
 				{
-					markedBoard[row][col] = 'N';
 					return 0;
-				}
-				else if (markedBoard[r][c] == 10+iteration-1) //marked by white in the previous iteration
-				{
-					if (markedBoard[row][col] == 0)
-					{
-						markedBoard[row][col] = (byte)(10+iteration);
-						whiteAdv++;
-					}
-					else if (markedBoard[row][col] == 20+iteration)
-					{
-						markedBoard[row][col] = 'N';
-						return 0;
-					}
-				}
-				else if (markedBoard[r][c] == 20+iteration-1) //marked by black in the previous iteration
-				{
-					if (markedBoard[row][col] == 0)
-					{
-						markedBoard[row][col] = (byte)(20+iteration);
-						return -1;
-					}
-					else if (markedBoard[row][col] == 10+iteration)
-					{
-						markedBoard[row][col] = 'N';
-						return 0;
-					}
 				}
 			}
 		}
@@ -588,39 +406,64 @@ public class SnozamaHeuristic {
 			}
 			else if (markedBoard[r][c] != 0)
 			{
-				if (markedBoard[r][c] == 'N') //neutral
+				whiteAdv = markSquare(markedBoard, r, c, row, col, iteration);
+				if (markedBoard[row][col] == 'N')
 				{
-					markedBoard[row][col] = 'N';
 					return 0;
-				}
-				else if (markedBoard[r][c] == 10+iteration-1) //marked by white in the previous iteration
-				{
-					if (markedBoard[row][col] == 0)
-					{
-						markedBoard[row][col] = (byte)(10+iteration);
-						whiteAdv++;
-					}
-					else if (markedBoard[row][col] == 20+iteration)
-					{
-						markedBoard[row][col] = 'N';
-						return 0;
-					}
-				}
-				else if (markedBoard[r][c] == 20+iteration-1) //marked by black in the previous iteration
-				{
-					if (markedBoard[row][col] == 0)
-					{
-						markedBoard[row][col] = (byte)(20+iteration);
-						return -1;
-					}
-					else if (markedBoard[row][col] == 10+iteration)
-					{
-						markedBoard[row][col] = 'N';
-						return 0;
-					}
 				}
 			}
 		}
+		return whiteAdv;
+	}
+	
+	/**
+	 * Used for the second part of the minPlies heuristic.
+	 * Marks an unmarked square with the colour of the player who can reach the square fastest.
+	 * If both players can reach the square equally fast, the square will be marked neutral.
+	 * @param markedBoard	The board maintaining the owners of each square.
+	 * @param row		The row of a previously marked square indicating a path to an amazon in this iteration.
+	 * @param col		The column of a previously marked square indicating a path to an amazon in this iteration.
+	 * @param row_s		The row of the square being marked.
+	 * @param col_s		The column of the square being marked.
+	 * @param itr		The minimum number of turns to reach an amazon from the square being marked.
+	 * @return		The owner of the square. Will return 1 for white, -1 for black, 0 for neutral.
+	 */
+	private int markSquare(byte[][] markedBoard, int row, int col, int row_s, int col_s, int itr)
+	{
+		int whiteAdv = 0;
+		
+		if (markedBoard[row][col] == 'N') //found a neutral square
+		{
+			markedBoard[row_s][col_s] = 'N'; //start square is neutral
+			return 0;
+		}
+		else if (markedBoard[row][col] == 10+itr-1) //found square marked by white in previous iteration
+		{
+			if (markedBoard[row_s][col_s] == 0) //if starting square is unmarked
+			{
+				markedBoard[row_s][col_s] = (byte)(10+itr); //white can reach start square in i moves
+				whiteAdv = 1;
+			}
+			else if (markedBoard[row_s][col_s] == 20+itr) //black can reach start square in same iteration
+			{
+				markedBoard[row_s][col_s] = 'N'; //both players can reach square in i moves, square is neutral
+				return 0;
+			}
+		}
+		else if (markedBoard[row][col] == 20+itr-1) //found sqaure marked by black in previous iteration
+		{
+			if (markedBoard[row_s][col_s] == 0) //if starting square is unmarked
+			{
+				markedBoard[row_s][col_s] = (byte)(20+itr); //black can reach start square in i moves
+				whiteAdv = -1;
+			}
+			else if (markedBoard[row_s][col_s] == 10+itr) //white can reach start square in same iteration
+			{
+				markedBoard[row_s][col_s] = 'N'; //both players can reach start square in i moves, square is neutral
+				return 0;
+			}
+		}
+		
 		return whiteAdv;
 	}
 	
