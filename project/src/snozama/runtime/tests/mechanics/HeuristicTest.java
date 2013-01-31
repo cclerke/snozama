@@ -55,4 +55,42 @@ public class HeuristicTest {
 		
 		assertTrue(elapsedTime < 400);
 	}
+	
+	@Test
+	public void testBoardEval()
+	{
+		Board board = new Board();
+		SnozamaHeuristic heuristic = new SnozamaHeuristic();
+		
+		assertTrue(heuristic.evaluateBoard(board, Board.WHITE, 0) == 0);
+		System.out.println("Start: "+heuristic.evaluateBoard(board, Board.WHITE, 0));
+		
+		board.moveAmazon(9, 6, 1, 6, Board.WHITE);
+		board.placeArrow(1, 6, 3, 8);
+		
+		System.out.println("Turn 1 (MSP): "+heuristic.MSP(board, Board.WHITE));
+		System.out.println("Turn 1 (min-mobility): "+heuristic.minMobility(board, Board.WHITE));
+		System.out.println("Turn 1: "+heuristic.evaluateBoard(board, Board.WHITE, 1));
+		
+		board.moveAmazon(0, 6, 5, 1, Board.BLACK);
+		board.placeArrow(5, 1, 6, 1);
+		
+		System.out.println("Turn 1 (MSP): "+heuristic.MSP(board, Board.WHITE));
+		System.out.println("Turn 1 (min-mobility): "+heuristic.minMobility(board, Board.WHITE));
+		System.out.println("Turn 1: "+heuristic.evaluateBoard(board, Board.WHITE, 1));
+		
+		board.moveAmazon(9, 3, 5, 3, Board.WHITE);
+		board.placeArrow(5, 3, 3, 1);
+		
+		System.out.println("Turn 2 (MSP): "+heuristic.MSP(board, Board.WHITE));
+		System.out.println("Turn 2 (min-mobility): "+heuristic.minMobility(board, Board.WHITE));
+		System.out.println("Turn 2: "+heuristic.evaluateBoard(board, Board.WHITE, 2));
+		
+		board.moveAmazon(5, 1, 6, 2, Board.BLACK);
+		board.placeArrow(6, 2, 6, 8);
+		
+		System.out.println("Turn 2 (MSP): "+heuristic.MSP(board, Board.WHITE));
+		System.out.println("Turn 2 (min-mobility): "+heuristic.minMobility(board, Board.WHITE));
+		System.out.println("Turn 2: "+heuristic.evaluateBoard(board, Board.WHITE, 2));
+	}
 }
