@@ -59,7 +59,7 @@ public class NegaScoutSearch implements MoveChoiceAlgorithm
 		{
 			int evalFunc =  SnozamaHeuristic.evaluateBoard(board, colour, depth);
 			
-			if (colour != Settings.teamColour)	// TODO: Setup team colour mechanism.
+			if (colour != Settings.teamColour)
 			{
 				evalFunc = -1*evalFunc;
 			}
