@@ -519,7 +519,33 @@ public class Board
 	 */
 	public boolean isTerminal()
 	{
-		// TODO: Write code.  No clue how we know.
-		return false;
+		int whiteMoves = 0;
+		int blackMoves = 0;
+		for (int i = 0; i < amazons[WHITE].length; i++)
+		{
+			whiteMoves += SnozamaHeuristic.getNumberAvailableMoves(this, amazons[WHITE][i]);
+			if (whiteMoves > 0)
+			{
+				break;
+			}
+		}
+		for (int i = 0; i < amazons[BLACK].length; i++)
+		{
+			whiteMoves += SnozamaHeuristic.getNumberAvailableMoves(this, amazons[BLACK][i]);
+			if (blackMoves > 0)
+			{
+				break;
+			}
+		}
+		
+		//if either colour cannot move the game is over
+		if (whiteMoves == 0 || blackMoves == 0)
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
 	}
 }
