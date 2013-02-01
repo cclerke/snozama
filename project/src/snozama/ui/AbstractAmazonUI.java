@@ -1,5 +1,6 @@
 package snozama.ui;
 
-public class AbstractAmazonUI {
-
+public abstract class AbstractAmazonUI
+{
+	
 }
