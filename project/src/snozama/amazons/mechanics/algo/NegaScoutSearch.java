@@ -5,7 +5,9 @@ import java.util.Iterator;
 import snozama.amazons.mechanics.Board;
 import snozama.amazons.mechanics.SnozamaHeuristic;
 import snozama.amazons.settings.Settings;
+import snozama.amazons.global.*;
 import ubco.ai.games.GameTimer;
+
 
 /**
  * Class containing plain NegaScout Algorithm.
@@ -15,6 +17,13 @@ import ubco.ai.games.GameTimer;
  */
 public class NegaScoutSearch implements MoveChoiceAlgorithm
 {
+	/**
+	 * Choose next move using NegaScout algorithm.
+	 * @param board		The board from which the decision is to be made.
+	 * @param colour	The colour of the player whose turn it is.
+	 * @param timer		TODO	THIS DOESN"T WHAT I EXPECT.  WE NEED TO SORT THIS OUT.
+	 * @return
+	 */
 	public static Board chooseMove(Board board, int colour, GameTimer timer)
 	{
 		Board best = null;
@@ -40,19 +49,20 @@ public class NegaScoutSearch implements MoveChoiceAlgorithm
 	}
 	
 	/**
-	 * NegaScout Search
-	 * @param board
-	 * @param colour
-	 * @param alpha
+	 * A recursive implementation of the NegaScout search algorithm.
+	 * 
+	 * @param board		The board whose payoff value is to be estimated.
+	 * @param colour	The colour of the player whose turn it is.
+	 * @param alpha		
 	 * @param beta
-	 * @param depth
-	 * @param cutoff
+	 * @param depth		The depth of the current node from the initial search node.
+	 * @param cutoff	The depth from the initial search node at which to go no deeper.
 	 * @return
 	 */
 	public static int recursiveNegaScout(Board board, int colour, int alpha, int beta, int depth, int cutoff)
 	{
 		Board next = null;
-		int child = 0;
+		int processed = 0;
 		
 		// TODO: Can we not give an absolute score here if it is terminal? I mean, at terminal, you've either lost or won, no?
 		if (board.isTerminal() || depth == cutoff)
@@ -68,21 +78,22 @@ public class NegaScoutSearch implements MoveChoiceAlgorithm
 		}
 		
 		int b = beta;
+		
 		Iterator<Board> successors = board.getSuccessors(colour).iterator();
 		
 		while (successors.hasNext())
 		{
 			next = successors.next();
 			
-			int score = -1*recursiveNegaScout(next, flip(colour), -1*b, -1*alpha, depth+1, cutoff);
+			int score = -1*recursiveNegaScout(next, GlobalFunctions.flip(colour), -1*b, -1*alpha, depth+1, cutoff);
 			
-			// If we fail high.
-			if (alpha < score && score < beta && child != 0)
+			// If we fail high and this is not the first child node processed
+			if (alpha < score && score < beta && processed != 0)
 			{
-				score = -1*recursiveNegaScout(next, flip(colour), -1*beta, -1*alpha, depth+1, cutoff);
+				score = -1*recursiveNegaScout(next, GlobalFunctions.flip(colour), -1*beta, -1*alpha, depth+1, cutoff);
 			}
 
-			alpha = max(score, alpha);
+			alpha = GlobalFunctions.max(score, alpha);
 			
 			// Hit the beta cut-off, set new null window.
 			if (alpha >= beta)
@@ -91,34 +102,9 @@ public class NegaScoutSearch implements MoveChoiceAlgorithm
 			}
 			
 			beta = alpha + 1;
-			child++;
+			processed++;
 		}
 		
 		return alpha;
-	}
-	
-	// TODO: Move the following to a better location.
-	public static int flip(int input)
-	{
-		if (input == 0)
-		{
-			return 1;
-		}
-		else
-		{
-			return 0;
-		}
-	}
-	
-	public static int max(int a, int b)
-	{
-		if (b > a)
-		{
-			return b;
-		}
-		else
-		{
-			return a;
-		}
 	}
 }
