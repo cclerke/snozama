@@ -1,6 +1,6 @@
 package snozama.amazons.global;
 
-public class GlobalFunctions {
+public final class GlobalFunctions {
 	/**
 	 * Function that flips input from 1 to 0 or 0 to 1.
 	 * 
@@ -29,6 +29,25 @@ public class GlobalFunctions {
 	public static int max(int a, int b)
 	{
 		if (b > a)
+		{
+			return b;
+		}
+		else
+		{
+			return a;
+		}
+	}
+	
+	/**
+	 * Returns min of the input.
+	 * 
+	 * @param a		An integer to be compared.
+	 * @param b		An integer to be compared.
+	 * @return	The minimum of {@value a} and {@value b}.
+	 */
+	public static int min(int a, int b)
+	{
+		if (b < a)
 		{
 			return b;
 		}
