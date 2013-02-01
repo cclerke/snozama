@@ -22,12 +22,12 @@ public class SnozamaHeuristic {
 	
 	/**
 	 * Evaluates the board based on the heuristics MSP and min-mobility.
-	 * @param board		The current board state.
+	 * @param board			The current board state.
 	 * @param activePlayer	The player whose turn it is.
-	 * @param turn		The current turn number.
+	 * @param turn			The current turn number.
 	 * @return	The score for the active player of the given board position.
 	 */
-	public int evaluateBoard(Board board, int activePlayer, int turn)
+	public static int evaluateBoard(Board board, int activePlayer, int turn)
 	{
 		if (turn <= 30)
 		{
@@ -42,11 +42,11 @@ public class SnozamaHeuristic {
 	/**
 	* Calculates closest player to each open square on the board.
 	* The closest player to a square owns that square.
-	* @param board	The current board state.
+	* @param board			The current board state.
 	* @param activePlayer	The player (white or black) whose turn it is.
 	* @return	The difference between the number of squares the active player owns and the number of squares the inactive player owns.
 	*/
-	public int MSP(Board board, int activePlayer)
+	public static int MSP(Board board, int activePlayer)
 	{
 		int whiteAdv = minPliesToSquare(board);
 		if (activePlayer == Board.WHITE)
@@ -63,7 +63,7 @@ public class SnozamaHeuristic {
 	* @return	The difference between the minimum moves across all amazons of the active player and
 	*  the minimum moves across all amazons of the inactive player.
 	*/
-	public int minMobility(Board board, int activePlayer)
+	public static int minMobility(Board board, int activePlayer)
 	{
 		int whiteMoves = Integer.MAX_VALUE;
 		int blackMoves = Integer.MAX_VALUE;
@@ -94,7 +94,7 @@ public class SnozamaHeuristic {
 	* @param board	The current board state.
 	* @return	The white player's MSP advantage.
 	*/
-	public int minPliesToSquare(Board board)
+	public static int minPliesToSquare(Board board)
 	{
 		int whiteAdv = 0;
 		byte[][] markedBoard = board.copy();
@@ -251,7 +251,7 @@ public class SnozamaHeuristic {
 	 * @param colour	The colour of the amazon able to reach this square.
 	 * @return		The owner of the square. Will return 1 for white, -1 for black and 0 for neutral.
 	 */
-	private int markSquare(byte[][] markedBoard, int row, int col, int colour)
+	private static  int markSquare(byte[][] markedBoard, int row, int col, int colour)
 	{
 		int whiteAdv = 0;
 		byte mark = (byte)(colour*10+11); // white->11, black->21
@@ -281,7 +281,7 @@ public class SnozamaHeuristic {
 	 * @param iteration	The minimum number of turns to reach an amazon from this square.
 	 * @return		The owner of the square. Will return 1 for white, -1 for black, 0 for neutral.
 	 */
-	private int findMarkedSquares(Board board, byte[][] markedBoard, int row, int col, int iteration)
+	private static int findMarkedSquares(Board board, byte[][] markedBoard, int row, int col, int iteration)
 	{
 		int whiteAdv = 0;
 		// The following comments assume [0][0] is considered top left
@@ -428,7 +428,7 @@ public class SnozamaHeuristic {
 	 * @param itr		The minimum number of turns to reach an amazon from the square being marked.
 	 * @return		The owner of the square. Will return 1 for white, -1 for black, 0 for neutral.
 	 */
-	private int markSquare(byte[][] markedBoard, int row, int col, int row_s, int col_s, int itr)
+	private static int markSquare(byte[][] markedBoard, int row, int col, int row_s, int col_s, int itr)
 	{
 		int whiteAdv = 0;
 		
@@ -473,7 +473,7 @@ public class SnozamaHeuristic {
 	* @param amazon	An individual amazon to find possible moves for.
 	* @return	The number of moves available to the amazon.
 	*/
-	private int getNumberAvailableMoves(Board board, byte amazon)
+	private static int getNumberAvailableMoves(Board board, byte amazon)
 	{
 		int moves = 0;
 		/*
@@ -595,7 +595,7 @@ public class SnozamaHeuristic {
 	 * @param col_s		The column the amazon began the move in.
 	 * @return		The number of places an arrow can be placed from specified square.
 	 */
-	private int findAvailableArrowPlacements(Board board, int arow, int acol, int row_s, int col_s)
+	private static int findAvailableArrowPlacements(Board board, int arow, int acol, int row_s, int col_s)
 	{
 		int arrows = 0;
 		// The following comments assume [0][0] is considered top left

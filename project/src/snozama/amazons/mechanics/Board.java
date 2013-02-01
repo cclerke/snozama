@@ -1,6 +1,8 @@
 package snozama.amazons.mechanics;
 
+import java.util.ArrayDeque;
 import java.util.Arrays;
+import java.util.Collection;
 
 /**
  * Game of the Amazons Board class.
@@ -24,13 +26,13 @@ public class Board
 	 *  -BLACK at [3][0], [0][3], [0][6], [3][9]
 	 *  -the rest will be empty
 	 */
-	byte board[][] = new byte[SIZE][SIZE];
+	byte board[][];
 	
 	/**
 	 * The position of the amazons.  WHITE positions is first element, BLACK
 	 * second.
 	 */
-	byte amazons[][] = new byte[2][4];
+	byte amazons[][];
 	
 	/**
 	 * Constant byte value representing an empty position on the board.
@@ -57,6 +59,9 @@ public class Board
 	 */
 	public Board()
 	{
+		board = new byte[SIZE][SIZE];
+		amazons = new byte[2][4];
+		
 		// Initially setup the board.
 		for (int i = 0; i < SIZE; i++)
 		{
@@ -82,6 +87,25 @@ public class Board
 		amazons[BLACK][1] = encodeAmazonPosition(0, 3);
 		amazons[BLACK][2] = encodeAmazonPosition(0, 6);
 		amazons[BLACK][3] = encodeAmazonPosition(3, 9);
+	}
+	
+	/**
+	 * Constructor which clones an already existing board.
+	 * 
+	 * @param toClone	The board which is to be cloned.
+	 */
+	public Board(Board toClone)
+	{
+		this.board = toClone.copy();
+		amazons = new byte[2][4];
+		
+		for (int i = 0; i < amazons.length; i++)
+		{
+			for (int j = 0; j < amazons[i].length; j++)
+			{
+				this.amazons[i][j] = toClone.amazons[i][j];
+			}
+		}
 	}
 	
 	/**
@@ -358,8 +382,118 @@ public class Board
 	}
 	
 	/**
+	 * Generate all possible successors of the current board.
+	 * 
+	 * @return The list of successors.
+	 */
+	public Collection<Board> getSuccessors(int colour)
+	{
+		ArrayDeque<Board> successors = new ArrayDeque<Board>();
+		
+		for (int j = 0; j < this.amazons[colour].length; j++) //for each amazon of a colour (4)
+		{
+			int arow = Board.decodeAmazonRow(this.amazons[colour][j]);		//amazon's starting row position
+			int acol = Board.decodeAmazonColumn(this.amazons[colour][j]);	//amazon's starting column position
+			
+			// TODO: Need to figure out how to get arrow placed.
+			// The following comments assume [0][0] is considered top left
+			// Find moves to the right
+			for (int c = acol+1; c < Board.SIZE; c++)
+			{
+				if (this.isOccupied(arow, c))
+				{
+					break;
+				}
+				else // this is a legal move
+				{
+					Board newBoard = new Board(this);
+					newBoard.moveAmazon(arow, acol, arow, c, colour);
+				}
+			}
+			// Find moves to the left
+			for (int c = acol-1; c > -1; c--)
+			{
+				if (this.isOccupied(arow, c))
+				{
+					break;
+				}
+				else // this is a legal move
+				{
+				}
+			}
+			// Find moves below
+			for (int r = arow+1; r < Board.SIZE; r++)
+			{
+				if (this.isOccupied(r, acol))
+				{
+					break;
+				}
+				else // this is a legal move
+				{
+				}
+			}
+			// Find moves above
+			for (int r = arow-1; r > -1; r--)
+			{
+				if (this.isOccupied(r, acol))
+				{
+					break;
+				}
+				else // this is a legal move
+				{
+				}
+			}
+			// Find moves diagonally (\) to the right
+			for (int r = arow+1, c = acol+1; r < Board.SIZE && c < Board.SIZE; r++, c++)
+			{
+				if (this.isOccupied(r, c))
+				{
+					break;
+				}
+				else // this is a legal move
+				{
+				}
+			}
+			// Find moves diagonally (\) to the left
+			for (int r = arow-1, c = acol-1; r > -1 && c > -1; r--, c--)
+			{
+				if (this.isOccupied(r, c))
+				{
+					break;
+				}
+				else // this is a legal move
+				{
+				}
+			}
+			// Find moves anti-diagonally (/) to the right
+			for (int r = arow-1, c = acol+1; r > -1 && c < Board.SIZE; r--, c++)
+			{
+				if (this.isOccupied(r, c))
+				{
+					break;
+				}
+				else // this is a legal move
+				{
+				}
+			}
+			// Find moves anti-diagonally (/) to the left
+			for (int r = arow+1, c = acol-1; r < Board.SIZE && c > -1; r++, c--)
+			{
+				if (this.isOccupied(r, c))
+				{
+					break;
+				}
+				else // this is a legal move
+				{
+				}
+			}
+		}
+		return successors;
+	}
+	
+	// TODO: This needs to be renamed.  Copy is deceiving.
+	/**
 	 * Makes a copy of the game board.
-	 * @param original	The original game board.
 	 * @return	The copy of the game board.
 	 */
 	public byte[][] copy()
@@ -374,5 +508,18 @@ public class Board
 			}
 		}
 		return copy;
+	}
+	
+	
+	/**
+	 * Determines if the board is a terminal state or not.
+	 * 
+	 * @return	{@value true} if the board is a terminal state board,
+	 * 			{@value false} otherwise.
+	 */
+	public boolean isTerminal()
+	{
+		// TODO: Write code.  No clue how we know.
+		return false;
 	}
 }
