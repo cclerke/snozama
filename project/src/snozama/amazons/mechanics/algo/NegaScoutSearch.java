@@ -8,6 +8,7 @@ import snozama.amazons.settings.Settings;
 import snozama.amazons.global.*;
 import ubco.ai.games.GameTimer;
 
+// TODO: Change successor stuff to moves, not boards.  SUPER IMPORTANT!!!
 
 /**
  * Class containing plain NegaScout Algorithm.
@@ -21,10 +22,11 @@ public class NegaScoutSearch implements MoveChoiceAlgorithm
 	 * Choose next move using NegaScout algorithm.
 	 * @param board		The board from which the decision is to be made.
 	 * @param colour	The colour of the player whose turn it is.
-	 * @param timer		TODO	THIS DOESN"T WHAT I EXPECT.  WE NEED TO SORT THIS OUT.
+	 * @param turn		The number of moves made so far in the game.
+	 * @param timer		TODO	THIS DOESN'T DO WHAT I EXPECT.  WE NEED TO SORT THIS OUT.
 	 * @return
 	 */
-	public static Board chooseMove(Board board, int colour, GameTimer timer)
+	public static Board chooseMove(Board board, int colour, int turn, GameTimer timer)
 	{
 		Board best = null;
 		Board next = null;
@@ -36,8 +38,7 @@ public class NegaScoutSearch implements MoveChoiceAlgorithm
 		{
 			next = successors.next();
 			
-			// TODO: What are starting values for alpha and beta?
-			currentScore = recursiveNegaScout(board, colour, Integer.MIN_VALUE, Integer.MAX_VALUE, 0, 7);
+			currentScore = recursiveNegaScout(board, colour, turn, Integer.MIN_VALUE, Integer.MAX_VALUE, 1, 3);
 			
 			if (currentScore > bestScore)
 			{
@@ -53,26 +54,21 @@ public class NegaScoutSearch implements MoveChoiceAlgorithm
 	 * 
 	 * @param board		The board whose payoff value is to be estimated.
 	 * @param colour	The colour of the player whose turn it is.
-	 * @param alpha		
-	 * @param beta
+	 * @param turn		The number of moves made so far in the game.
+	 * @param alpha		The lower bound of the expected value of the subtree.
+	 * @param beta		The upper bound of the expected value of the subtree.x
 	 * @param depth		The depth of the current node from the initial search node.
 	 * @param cutoff	The depth from the initial search node at which to go no deeper.
 	 * @return
 	 */
-	public static int recursiveNegaScout(Board board, int colour, int alpha, int beta, int depth, int cutoff)
+	public static int recursiveNegaScout(Board board, int colour, int turn, int alpha, int beta, int depth, int cutoff)
 	{
 		Board next = null;
 		int processed = 0;
 		
-		// TODO: Can we not give an absolute score here if it is terminal? I mean, at terminal, you've either lost or won, no?
 		if (board.isTerminal() || depth == cutoff)
 		{
-			int evalFunc =  SnozamaHeuristic.evaluateBoard(board, colour, depth);
-			
-			if (colour != Settings.teamColour)
-			{
-				evalFunc = -1*evalFunc;
-			}
+			int evalFunc =  SnozamaHeuristic.evaluateBoard(board, colour, turn+depth);
 			
 			return evalFunc;
 		}
@@ -85,12 +81,13 @@ public class NegaScoutSearch implements MoveChoiceAlgorithm
 		{
 			next = successors.next();
 			
-			int score = -1*recursiveNegaScout(next, GlobalFunctions.flip(colour), -1*b, -1*alpha, depth+1, cutoff);
+			int score = -1*recursiveNegaScout(next, GlobalFunctions.flip(colour), turn+1, -1*b, -1*alpha, depth+1, cutoff);
 			
 			// If we fail high and this is not the first child node processed
 			if (alpha < score && score < beta && processed != 0)
 			{
-				score = -1*recursiveNegaScout(next, GlobalFunctions.flip(colour), -1*beta, -1*alpha, depth+1, cutoff);
+				// Full research.
+				score = -1*recursiveNegaScout(next, GlobalFunctions.flip(colour), turn+1, -1*beta, -1*alpha, depth+1, cutoff);
 			}
 
 			alpha = GlobalFunctions.max(score, alpha);

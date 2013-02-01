@@ -1,4 +1,4 @@
-package snozama.runtime.demos;
+package ubco.ai.games;
 
 import java.awt.BorderLayout;
 import java.awt.Container;
@@ -53,16 +53,24 @@ public class Amazon extends JFrame implements GamePlayer{
      * Constructor 
      * @param args
      */
-	public static void main(String[] args) { 
+	public static void main(String[] args) {
+		String arg0 = "SnozamaHumanTest", arg1 = "wearethebest";
 		boolean bot = false;
-		if(args[2].equals("true")){
+		
+		if (args.length > 0) {
+			arg0 = args[0];
+		}
+		if (args.length > 1) {
+			arg1 = args[1];
+		}
+		if(args.length > 2 && args[2].equals("true")){
 	       bot = true;
 		}
 	    else{
 	    	bot = false;
 	    }
 	    
-		Amazon game = new Amazon(args[0], args[1], bot);
+		Amazon game = new Amazon(arg0, arg1, bot);
     }
     
     

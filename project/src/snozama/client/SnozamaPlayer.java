@@ -7,6 +7,7 @@ import java.util.Iterator;
 import net.n3.nanoxml.IXMLElement;
 
 import snozama.amazons.mechanics.Board;
+import snozama.amazons.settings.Settings;
 import ubco.ai.GameRoom;
 import ubco.ai.connection.ServerMessage;
 import ubco.ai.games.GameClient;
@@ -130,13 +131,14 @@ public class SnozamaPlayer implements GamePlayer
 			if (!name.equalsIgnoreCase("snozama")) //FIXME global name variable?
 				continue;
 			
+			// TODO: What if we are spectators? should default be different?
 			String role = user.getAttribute("role", "W"); //default to first player
 			if (role.equalsIgnoreCase("W"))
-				isWhite = true;
+				Settings.teamColour = Board.WHITE;
 			else
-				isWhite = false;
+				Settings.teamColour = Board.BLACK;
 			
-			board.initialize(isWhite);
+			board = new Board();
 		}
 		
 		System.out.println("The game has started!");
