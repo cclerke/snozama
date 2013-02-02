@@ -1,6 +1,14 @@
 package snozama.ui;
 
-public abstract class AbstractAmazonUI
+import javax.swing.JFrame;
+
+
+/**
+ * 
+ * @author Alex Yakovlev
+ *
+ */
+public abstract class AbstractAmazonUI extends JFrame
 {
 	
 }
