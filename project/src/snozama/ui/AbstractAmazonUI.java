@@ -10,5 +10,10 @@ import javax.swing.JFrame;
  */
 public abstract class AbstractAmazonUI extends JFrame
 {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	
 }
