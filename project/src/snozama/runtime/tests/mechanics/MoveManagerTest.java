@@ -130,6 +130,8 @@ public class MoveManagerTest {
 			int arrow_row = successors.getArrowRow(index);
 			int arrow_col = successors.getArrowColumn(index);
 			
+			System.out.println(row_s +","+col_s+" - "+row_f+","+col_f+" ("+arrow_row+","+arrow_col+")");
+			
 			assertTrue(board.isWhite(row_f, col_f));
 			assertTrue(board.isArrow(arrow_row, arrow_col));
 			
