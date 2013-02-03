@@ -273,4 +273,26 @@ public class MoveManager
 	{
 		return iteratorPosition++;
 	}
+	
+	/**
+	 * Create a new array to hold moves that is exactly the number of elements
+	 * in the current move array.
+	 * 
+	 * @return	{@value true} if procedure completed, {@value false} otherwise.
+	 */
+	public boolean condense()
+	{
+		// TODO: Make it use statistics instead.
+		if (nextPos == moves.length)
+			return true;
+		
+		int[] temp = new int[nextPos];
+		for (int i = 0; i < nextPos; i++)
+		{
+			temp[i] = moves[i];
+		}
+		moves = temp;
+		
+		return true;
+	}
 }
