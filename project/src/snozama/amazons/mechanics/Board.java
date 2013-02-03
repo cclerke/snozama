@@ -688,7 +688,7 @@ public class Board
 	 * @return	{@value} TRUE if amazon has at least one available move,
 	 * 			{@value} FALSE if amazon cannot move.
 	 */
-	public boolean hasMove(byte amazon)
+	private boolean hasMove(byte amazon)
 	{
 		int arow = decodeAmazonRow(amazon);
 		int acol = decodeAmazonColumn(amazon);
