@@ -24,10 +24,8 @@ public class SnozamaPlayer implements GamePlayer
 {
 	private GameClient gameClient;
 	private GameRoom room;
-	private int roomID;
 	
 	private Board board;
-	private boolean isWhite = false;
 	
 	/**
 	 * Constructor where player name and password may be arbitrarily set.
@@ -63,7 +61,7 @@ public class SnozamaPlayer implements GamePlayer
 	@Override
 	public boolean handleMessage(String msg) throws Exception
 	{
-		// TODO Auto-generated method stub
+		System.out.println("Time out: " + msg);
 		return false;
 	}
 
@@ -89,11 +87,10 @@ public class SnozamaPlayer implements GamePlayer
 		}
 		else if (type.equals(GameMessage.ACTION_MOVE))
 		{
-			//TODO Handle MoveAction message
 			handleOpponentMove(xml);
 		}
 		
-		return false;
+		return true;
 	}
 	
 	//onJoinRoom function written by Yong
@@ -107,8 +104,8 @@ public class SnozamaPlayer implements GamePlayer
 		while (children.hasMoreElements())
 		{
 			IXMLElement user = (IXMLElement)children.nextElement();
-			roomID = user.getAttribute("id", -1);
-			String name = user.getAttribute("name", "snozama"); //second value is default, maybe an error message instead
+			int id = user.getAttribute("id", -1);
+			String name = user.getAttribute("name", "snozama");
 		}
 	}
 	
@@ -129,28 +126,32 @@ public class SnozamaPlayer implements GamePlayer
 			String name = user.getAttribute("name", "snozama");
 			
 			// Loop continues until finds team name "snozama"
-			if (!name.equalsIgnoreCase("snozama")) //FIXME global name variable?
+			if (!name.equalsIgnoreCase("snozama"))
 				continue;
 			
 			// TODO: What if we are spectators? should default be different?
 			String role = user.getAttribute("role", "W"); //default to first player
 			if (role.equalsIgnoreCase("W"))
 				Settings.teamColour = Board.WHITE;
-			else
+			else if (role.equalsIgnoreCase("B"))
 				Settings.teamColour = Board.BLACK;
 			
 			board = new Board();
 		}
 		
 		System.out.println("The game has started!");
-		if (isWhite)
+		if (Settings.teamColour == Board.WHITE)
+		{
 			System.out.println("Snozama moves first");
+			//TODO Notify us that it's our turn
+		}
 		else
 			System.out.println("The opponent moves first");
 	}
 	
 	/**
-	 * 
+	 * Receives and makes opponent's move.
+	 * Notifies us that our turn has begun.
 	 * @param xml	XML message received from the server
 	 */
 	private void handleOpponentMove(IXMLElement xml)
@@ -222,7 +223,7 @@ public class SnozamaPlayer implements GamePlayer
 		
 		// Print message and send to server
 		System.out.println("Snozama move: " + message);
-		String toSend = ServerMessage.compileGameMessage(GameMessage.MSG_GAME, roomID, message);
+		String toSend = ServerMessage.compileGameMessage(GameMessage.MSG_GAME, room.roomID, message);
 		gameClient.sendToServer(toSend, true);
 	}
 	
@@ -251,5 +252,4 @@ public class SnozamaPlayer implements GamePlayer
 		gameClient.joinGameRoom(room.roomName);
 		System.out.println("Joining "+room.roomName+"...");
 	}
-	
 }
