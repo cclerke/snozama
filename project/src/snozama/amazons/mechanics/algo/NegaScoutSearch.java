@@ -3,6 +3,7 @@ package snozama.amazons.mechanics.algo;
 import java.util.Iterator;
 
 import snozama.amazons.mechanics.Board;
+import snozama.amazons.mechanics.MoveManager;
 import snozama.amazons.mechanics.SnozamaHeuristic;
 import snozama.amazons.settings.Settings;
 import snozama.amazons.global.*;
@@ -26,17 +27,17 @@ public class NegaScoutSearch implements MoveChoiceAlgorithm
 	 * @param timer		TODO	THIS DOESN'T DO WHAT I EXPECT.  WE NEED TO SORT THIS OUT.
 	 * @return
 	 */
-	public static Board chooseMove(Board board, int colour, int turn, GameTimer timer)
+	public static int chooseMove(Board board, int colour, int turn, GameTimer timer)
 	{
-		Board best = null;
-		Board next = null;
+		int best = 0;
+		int next = 0;
 		int bestScore = 0;
 		int currentScore = 0;
-		Iterator<Board> successors = board.getSuccessors(colour).iterator();
+		MoveManager successors = board.getSuccessors(colour, turn);
 		
-		while (successors.hasNext()) // TODO: Still have time left, other constraints;
+		while (successors.hasIterations()) // TODO: Still have time left, other constraints;
 		{
-			next = successors.next();
+			next = successors.nextIterableIndex();
 			
 			currentScore = recursiveNegaScout(board, colour, turn, Integer.MIN_VALUE, Integer.MAX_VALUE, 1, 3);
 			
@@ -63,7 +64,7 @@ public class NegaScoutSearch implements MoveChoiceAlgorithm
 	 */
 	public static int recursiveNegaScout(Board board, int colour, int turn, int alpha, int beta, int depth, int cutoff)
 	{
-		Board next = null;
+		int next = 0;
 		int processed = 0;
 		
 		if (board.isTerminal() || depth == cutoff)
@@ -75,22 +76,29 @@ public class NegaScoutSearch implements MoveChoiceAlgorithm
 		
 		int b = beta;
 		
-		Iterator<Board> successors = board.getSuccessors(colour).iterator();
+		MoveManager successors = board.getSuccessors(colour, turn);
 		
-		while (successors.hasNext())
+		while (successors.hasIterations())
 		{
-			next = successors.next();
+			next = successors.nextIterableIndex();
 			
-			int score = -1*recursiveNegaScout(next, GlobalFunctions.flip(colour), turn+1, -1*b, -1*alpha, depth+1, cutoff);
+			int arr_s = Board.decodeAmazonRow(board.amazons[colour][successors.getAmazonIndex(next)]);
+			int col_s = Board.decodeAmazonColumn(board.amazons[colour][successors.getAmazonIndex(next)]);
+			
+			successors.applyMove(board, next);
+			
+			int score = -1*recursiveNegaScout(board, GlobalFunctions.flip(colour), turn+1, -1*b, -1*alpha, depth+1, cutoff);
 			
 			// If we fail high and this is not the first child node processed
 			if (alpha < score && score < beta && processed != 0)
 			{
 				// Full research.
-				score = -1*recursiveNegaScout(next, GlobalFunctions.flip(colour), turn+1, -1*beta, -1*alpha, depth+1, cutoff);
+				score = -1*recursiveNegaScout(board, GlobalFunctions.flip(colour), turn+1, -1*beta, -1*alpha, depth+1, cutoff);
 			}
-
+			
 			alpha = GlobalFunctions.max(score, alpha);
+			
+			successors.undoMove(board, next, arr_s, col_s);
 			
 			// Hit the beta cut-off, set new null window.
 			if (alpha >= beta)

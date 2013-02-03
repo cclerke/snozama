@@ -107,6 +107,45 @@ public class MoveManager
 	}
 	
 	/**
+	 * Apply a move to a board.
+	 * 
+	 * @param board		The board to apply the move to.
+	 * @param index		The index of the move to apply.
+	 * @return	{@value true} if the move was applied successfully, 
+	 * 			{@value false} otherwise.
+	 */
+	public boolean applyMove(Board board, int index)
+	{
+		return board.move(getAmazonIndex(index), getFinishRow(index),
+				getFinishColumn(index), getArrowRow(index),
+				getArrowColumn(index), (byte)getColour(index));
+	}
+	
+	/**
+	 * Undo a move from a board.
+	 * 
+	 * @param board		The board to undo the move for.
+	 * @param index		The index of the move to undo.
+	 * @param row_s		Row where amazon previously was.
+	 * @param col_s		Column where amazon previously was.
+	 * @return	{@value true} if the move was undone successfully,
+	 * 			{@value false} otherwise.
+	 */
+	public boolean undoMove(Board board, int index, int row_s, int col_s)
+	{
+		board.amazons[getColour(index)][getAmazonIndex(index)]=
+				Board.encodeAmazonPosition(row_s, col_s);
+		
+		board.board[row_s][col_s] = Board.OCCUPIED;
+		
+		board.board[getFinishRow(index)][getFinishColumn(index)] = Board.EMPTY;
+		
+		board.board[getArrowRow(index)][getArrowColumn(index)] = Board.EMPTY;
+		
+		return true;
+	}
+	
+	/**
 	 * Decode a portion of a move.
 	 * @param index		The index of the move to be decoded.
 	 * @param portion	Which set of 4 bits to be decoded.		
@@ -282,7 +321,7 @@ public class MoveManager
 	 */
 	public boolean condense()
 	{
-		// TODO: Make it use statistics instead.
+		// TODO: Make it use statistics instead.?
 		if (nextPos == moves.length)
 			return true;
 		

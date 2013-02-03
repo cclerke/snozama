@@ -5,6 +5,7 @@ import static org.junit.Assert.*;
 import org.junit.Test;
 
 import snozama.amazons.mechanics.Board;
+import snozama.amazons.mechanics.MoveManager;
 
 /**
  * Unit tests for snozama.amazons.mechanics.Board.java
@@ -92,5 +93,18 @@ public class BoardTest {
 		assertTrue(board.moveAmazon(9, 3, 1, 3, Board.WHITE));
 		
 		assertFalse(board.moveAmazon(1, 3, 0, 3, Board.WHITE));
+	}
+	
+	/**
+	 * Make sure we get the right number of boards for first move.
+	 */
+	@Test
+	public void testSuccessorsFirstBoard()
+	{
+		Board board = new Board();
+		
+		MoveManager successors = board.getSuccessors(Board.BLACK, 0);
+		
+		assertEquals(successors.size(), 2176);
 	}
 }

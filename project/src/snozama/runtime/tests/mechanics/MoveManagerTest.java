@@ -8,7 +8,9 @@ import snozama.amazons.mechanics.Board;
 import snozama.amazons.mechanics.MoveManager;
 
 public class MoveManagerTest {
-
+	/**
+	 * Make sure nothing breaks on making a new MoveManager.
+	 */
 	@Test
 	public void testNew()
 	{
@@ -18,6 +20,9 @@ public class MoveManagerTest {
 		assertTrue(moves.maxSize() == 2176);
 	}
 	
+	/**
+	 * Make sure basic functionality works.
+	 */
 	@Test
 	public void testAddBasics()
 	{

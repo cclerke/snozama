@@ -32,7 +32,7 @@ public class Board
 	 * The position of the amazons.  WHITE positions is first element, BLACK
 	 * second.
 	 */
-	byte amazons[][];
+	public byte amazons[][];
 	
 	/**
 	 * Constant byte value representing an empty position on the board.
@@ -349,7 +349,26 @@ public class Board
 	 */
 	public boolean move(int row_s, int col_s, int row_f, int col_f, int arow, int acol, byte colour)
 	{
-		return true;
+		return moveAmazon(row_s, col_s, row_f, col_f, colour) ||
+				placeArrow(arow, acol, row_f, col_f);
+	}
+	
+	/**
+	 * Move an amazon and shoot an arrow.
+	 * 
+	 * @param arr_i		Index of the amazon being moved.
+	 * @param row_f		Row of the finishing position of the amazon
+	 * @param col_f		Column of the finishing position of the amazon
+	 * @param arow		Row of the position where arrow is desired
+	 * @param acol		Column of the position where arrow is desired
+	 * @return	@value true if complete move was successful
+	 * 			@value false otherwise
+	 */
+	public boolean move(int arr_i, int row_f, int col_f, int arow, int acol, byte colour)
+	{
+		return move(decodeAmazonRow(amazons[colour][arr_i]),
+				decodeAmazonColumn(amazons[colour][arr_i]), row_f, col_f, arow,
+				acol, colour);
 	}
 	
 	/**
@@ -390,15 +409,126 @@ public class Board
 	}
 	
 	/**
+	 * For a given amazon position, find valid moves involving arrow positions.
+	 * 
+	 * @param successors	Set of moves to add new moves to.
+	 * @param colour		The colour of the player whose turn it is.
+	 * @param arr_i			The index of the amazon in the amazon's array.
+	 * @param arow			The row the shooting amazon is in.
+	 * @param acol			The column the shooting amazon is in.
+	 * @param row_s			The row the amazon came from.
+	 * @param col_s			The column the amazon came from.
+	 */
+	private void addAmazonArrowMoves(MoveManager successors, int colour, int arr_i, int arow, int acol, int row_s, int col_s)
+	{
+		for (int c = acol+1; c < Board.SIZE; c++)
+		{
+			if (this.isOccupied(arow, c) && !(arow == row_s && c == col_s))
+			{
+				break;
+			}
+			else // this is a legal move
+			{
+				successors.add(colour, arr_i, arow, acol, arow, c);
+			}
+		}
+		// Find moves to the left
+		for (int c = acol-1; c > -1; c--)
+		{
+			if (this.isOccupied(arow, c) && !(arow == row_s && c == col_s))
+			{
+				break;
+			}
+			else // this is a legal move
+			{
+				successors.add(colour, arr_i, arow, acol, arow, c);
+			}
+		}
+		// Find moves below
+		for (int r = arow+1; r < Board.SIZE; r++)
+		{
+			if (this.isOccupied(r, acol) && !(r == row_s && acol == col_s))
+			{
+				break;
+			}
+			else // this is a legal move
+			{
+				successors.add(colour, arr_i, arow, acol, r, acol);
+			}
+		}
+		// Find moves above
+		for (int r = arow-1; r > -1; r--)
+		{
+			if (this.isOccupied(r, acol) && !(r == row_s && acol == col_s))
+			{
+				break;
+			}
+			else // this is a legal move
+			{
+				successors.add(colour, arr_i, arow, acol, r, acol);
+			}
+		}
+		// Find moves diagonally (\) to the right
+		for (int r = arow+1, c = acol+1; r < Board.SIZE && c < Board.SIZE; r++, c++)
+		{
+			if (this.isOccupied(r, c) && !(r == row_s && c == col_s))
+			{
+				break;
+			}
+			else // this is a legal move
+			{
+				successors.add(colour, arr_i, arow, acol, r, c);
+			}
+		}
+		// Find moves diagonally (\) to the left
+		for (int r = arow-1, c = acol-1; r > -1 && c > -1; r--, c--)
+		{
+			if (this.isOccupied(r, c) && !(r == row_s && c == col_s))
+			{
+				break;
+			}
+			else // this is a legal move
+			{
+				successors.add(colour, arr_i, arow, acol, r, c);
+			}
+		}
+		// Find moves anti-diagonally (/) to the right
+		for (int r = arow-1, c = acol+1; r > -1 && c < Board.SIZE; r--, c++)
+		{
+			if (this.isOccupied(r, c) && !(r == row_s && c == col_s))
+			{
+				break;
+			}
+			else // this is a legal move
+			{
+				successors.add(colour, arr_i, arow, acol, r, c);
+			}
+		}
+		// Find moves anti-diagonally (/) to the left
+		for (int r = arow+1, c = acol-1; r < Board.SIZE && c > -1; r++, c--)
+		{
+			if (this.isOccupied(r, c) && !(r == row_s && c == col_s))
+			{
+				break;
+			}
+			else // this is a legal move
+			{
+				successors.add(colour, arr_i, arow, acol, r, c);
+			}
+		}
+	}
+	
+	/**
 	 * Generate all possible successors of the current board in terms of
 	 * possible moves.
 	 * 
 	 * @param colour	The colour of the player that is currently playing.
-	 * @return The list of successors.
+	 * @param turn		The turn number.
+	 * @return	A set of possible moves from the current board.
 	 */
-	public Collection<Board> getSuccessors(int colour)
+	public MoveManager getSuccessors(int colour, int turn)
 	{
-		ArrayDeque<Board> successors = new ArrayDeque<Board>();
+		MoveManager successors = new MoveManager();
 		
 		for (int j = 0; j < this.amazons[colour].length; j++) //for each amazon of a colour (4)
 		{
@@ -416,7 +546,7 @@ public class Board
 				}
 				else // this is a legal move
 				{
-					
+					this.addAmazonArrowMoves(successors, colour, j, arow, c, arow, acol);
 				}
 			}
 			// Find moves to the left
@@ -428,6 +558,7 @@ public class Board
 				}
 				else // this is a legal move
 				{
+					this.addAmazonArrowMoves(successors, colour, j, arow, c, arow, acol);
 				}
 			}
 			// Find moves below
@@ -439,6 +570,7 @@ public class Board
 				}
 				else // this is a legal move
 				{
+					this.addAmazonArrowMoves(successors, colour, j, r, acol, arow, acol);
 				}
 			}
 			// Find moves above
@@ -450,6 +582,7 @@ public class Board
 				}
 				else // this is a legal move
 				{
+					this.addAmazonArrowMoves(successors, colour, j, r, acol, arow, acol);
 				}
 			}
 			// Find moves diagonally (\) to the right
@@ -461,6 +594,7 @@ public class Board
 				}
 				else // this is a legal move
 				{
+					this.addAmazonArrowMoves(successors, colour, j, r, c, arow, acol);
 				}
 			}
 			// Find moves diagonally (\) to the left
@@ -472,6 +606,7 @@ public class Board
 				}
 				else // this is a legal move
 				{
+					this.addAmazonArrowMoves(successors, colour, j, r, c, arow, acol);
 				}
 			}
 			// Find moves anti-diagonally (/) to the right
@@ -483,6 +618,7 @@ public class Board
 				}
 				else // this is a legal move
 				{
+					this.addAmazonArrowMoves(successors, colour, j, r, c, arow, acol);
 				}
 			}
 			// Find moves anti-diagonally (/) to the left
@@ -494,6 +630,7 @@ public class Board
 				}
 				else // this is a legal move
 				{
+					this.addAmazonArrowMoves(successors, colour, j, r, c, arow, acol);
 				}
 			}
 		}
