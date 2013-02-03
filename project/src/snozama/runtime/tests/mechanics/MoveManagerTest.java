@@ -120,10 +120,10 @@ public class MoveManagerTest {
 			
 			System.out.println(index);
 			
-			successors.applyMove(board, index);
-			
 			int row_s = Board.decodeAmazonRow(board.amazons[Board.WHITE][successors.getAmazonIndex(index)]);
 			int col_s = Board.decodeAmazonColumn(board.amazons[Board.WHITE][successors.getAmazonIndex(index)]);
+			
+			successors.applyMove(board, index);
 			
 			int row_f = successors.getFinishRow(index);
 			int col_f = successors.getFinishColumn(index);
@@ -134,6 +134,9 @@ public class MoveManagerTest {
 			assertTrue(board.isArrow(arrow_row, arrow_col));
 			
 			assertTrue(successors.undoMove(board, index, row_s, col_s));
+			
+			assertFalse(board.isWhite(row_f, col_f));
+			assertFalse(board.isArrow(arrow_row, arrow_col));
 		}
 	}
 }
