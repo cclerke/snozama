@@ -24,6 +24,7 @@ public class SnozamaPlayer implements GamePlayer
 {
 	private GameClient gameClient;
 	private GameRoom room;
+	private int roomID;
 	
 	private Board board;
 	private boolean isWhite = false;
@@ -106,7 +107,7 @@ public class SnozamaPlayer implements GamePlayer
 		while (children.hasMoreElements())
 		{
 			IXMLElement user = (IXMLElement)children.nextElement();
-			int id = user.getAttribute("id", -1);
+			roomID = user.getAttribute("id", -1);
 			String name = user.getAttribute("name", "snozama"); //second value is default, maybe an error message instead
 		}
 	}
@@ -160,12 +161,12 @@ public class SnozamaPlayer implements GamePlayer
 		 */
 		IXMLElement amazon = xml.getFirstChildNamed("queen");
 		String move = amazon.getAttribute("move", "default");
-		char sX = move.charAt(0);
-		int amazonStartX = sX-97;
-		int amazonStartY = move.charAt(1);
-		char fX= move.charAt(3);
-		int amazonFinalX = fX-97;
-		int amazonFinalY= move.charAt(4);
+		char x_s = move.charAt(0);
+		int row_s = x_s-97;
+		int col_s = move.charAt(1);
+		char x_f= move.charAt(3);
+		int row_f = x_f-97;
+		int col_f= move.charAt(4);
 		
 		/*
 		 * Message for arrow shot in format:
@@ -173,15 +174,56 @@ public class SnozamaPlayer implements GamePlayer
 		 */
 		IXMLElement arrow = xml.getFirstChildNamed("arrow");
 		String shot = arrow.getAttribute("move", "default");
-		char aX = shot.charAt(0);
-		int arrowX = aX-97;
-		int arrowY = shot.charAt(1);
+		char a = shot.charAt(0);
+		int arow = a-97;
+		int acol = shot.charAt(1);
 		
-		System.out.println("Opponent move: "+ sX + amazonStartY + "-" + fX + amazonFinalY + 
-				" (" + aX + arrowY + ")");
+		System.out.println("Opponent move: "+ x_s + col_s + "-" + x_f + col_f + 
+				" (" + a + acol + ")");
 		
-		//TODO Create a function that does this
-		board.move(amazonStartX, amazonStartY, amazonFinalX, amazonFinalY, arrowX, arrowY);
+		// Make opponent's move
+		boolean validMove = board.moveAmazon(row_s, col_s, row_f, col_f, Math.abs(Settings.teamColour-1));
+		boolean validArrow = board.placeArrow(row_f, col_f, arow, acol);
+		
+		if (validMove && validArrow)
+			; //TODO Inform us that it is now our turn. Start 30 sec timer.
+		else
+			; //TODO Error if move fails (they're big fat cheaters!)
+	}
+	
+	/**
+	 * Sends Snozama's move to the server.
+	 * @param row_s		The starting row of the moving amazon.
+	 * @param col_s		The starting column of the moving amazon.
+	 * @param row_f		The row where the amazon finishes her move.
+	 * @param col_f		The column where the amazon finishes her move.
+	 * @param arow		The row of the square the arrow is being placed.
+	 * @param acol		The column of the square the arrow is being placed.
+	 */
+	public void sendToServer(int row_s, int col_s, int row_f, int col_f, int arow, int acol)
+	{
+		// Message part for action tag
+		String message = "<action type='" + GameMessage.ACTION_MOVE + "'>";
+		
+		// Message part for amazon's start square
+		char x_s = (char)(row_s + 97);
+		message += "<queen move='" + x_s + String.valueOf(col_s) + "-";
+		
+		// Message part for amazon's finishing square
+		char x_f = (char)(row_f + 97);
+		message += x_f + String.valueOf(col_f) + "'></queen>";
+		
+		// Message part for arrow
+		char a = (char)(arow + 97);
+		message += "<arrow move='" + a + String.valueOf(acol) + "'></arrow>";
+		
+		// Message part for closing action tag
+		message += "</action>";
+		
+		// Print message and send to server
+		System.out.println("Snozama move: " + message);
+		String toSend = ServerMessage.compileGameMessage(GameMessage.MSG_GAME, roomID, message);
+		gameClient.sendToServer(toSend, true);
 	}
 	
 	/**
