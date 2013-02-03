@@ -707,7 +707,7 @@ public class Board
 			return true;
 		
 		// if can move up
-		if (!(acol == 0 || isOccupied(arow-1, acol)))
+		if (!(arow == 0 || isOccupied(arow-1, acol)))
 			return true;
 		
 		// if can move diagonally (\) right
