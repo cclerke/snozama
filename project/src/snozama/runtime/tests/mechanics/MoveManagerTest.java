@@ -105,5 +105,35 @@ public class MoveManagerTest {
 		assertEquals(moves.getArrowRow(index), 2);
 		assertEquals(moves.getArrowColumn(index), 6);
 	}
-
+	
+	@Test
+	public void testMakeUndoMove()
+	{
+		Board board = new Board();
+		
+		MoveManager successors = board.getSuccessors(Board.WHITE, 0);
+		
+		int index = 0;
+		while (successors.hasIterations())
+		{
+			index = successors.nextIterableIndex();
+			
+			System.out.println(index);
+			
+			successors.applyMove(board, index);
+			
+			int row_s = Board.decodeAmazonRow(board.amazons[Board.WHITE][successors.getAmazonIndex(index)]);
+			int col_s = Board.decodeAmazonColumn(board.amazons[Board.WHITE][successors.getAmazonIndex(index)]);
+			
+			int row_f = successors.getFinishRow(index);
+			int col_f = successors.getFinishColumn(index);
+			int arrow_row = successors.getArrowRow(index);
+			int arrow_col = successors.getArrowColumn(index);
+			
+			assertTrue(board.isWhite(row_f, col_f));
+			assertTrue(board.isArrow(arrow_row, arrow_col));
+			
+			assertTrue(successors.undoMove(board, index, row_s, col_s));
+		}
+	}
 }

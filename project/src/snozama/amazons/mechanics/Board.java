@@ -308,7 +308,7 @@ public class Board
 			
 			if (arow == row_s && acol == col_s)
 			{
-				amazons[colour][i] = encodeAmazonPosition(row_f, row_s);
+				amazons[colour][i] = encodeAmazonPosition(row_f, col_f);
 				break;
 			}
 		}
@@ -349,8 +349,8 @@ public class Board
 	 */
 	public boolean move(int row_s, int col_s, int row_f, int col_f, int arow, int acol, byte colour)
 	{
-		return moveAmazon(row_s, col_s, row_f, col_f, colour) ||
-				placeArrow(arow, acol, row_f, col_f);
+		return moveAmazon(row_s, col_s, row_f, col_f, colour) &&
+				placeArrow(row_f, col_f, arow, acol);
 	}
 	
 	/**
