@@ -107,4 +107,63 @@ public class BoardTest {
 		
 		assertEquals(successors.size(), 2176);
 	}
+	
+	/**
+	 * Test isTerminal
+	 */
+	@Test
+	public void testIsTerminal()
+	{
+		Board board = new Board();
+		
+		assertFalse(board.isTerminal());
+		
+		//test bottom left corner
+		assertTrue(board.moveAmazon(6, 0, 9, 0, Board.WHITE));
+		assertTrue(board.placeArrow(9, 0, 8, 0));
+		
+		assertFalse(board.isTerminal());
+		
+		//first white piece will be trapped
+		assertTrue(board.moveAmazon(9, 3, 9, 1, Board.WHITE));
+		assertTrue(board.placeArrow(9, 1, 8, 1));
+		
+		assertFalse(board.isTerminal());
+		
+		//second white piece will be trapped
+		assertTrue(board.moveAmazon(9, 6, 9, 2, Board.WHITE));
+		assertTrue(board.placeArrow(9, 2, 8, 2));
+		
+		assertFalse(board.isTerminal());
+		
+		//third white piece will be trapped
+		assertTrue(board.moveAmazon(0, 3, 8, 3, Board.BLACK));
+		assertTrue(board.placeArrow(8, 3, 9, 3));
+		
+		assertFalse(board.isTerminal());
+		
+		//test bottom right corner
+		assertTrue(board.moveAmazon(6, 9, 9, 9, Board.WHITE));
+		assertTrue(board.placeArrow(9, 9, 8, 8));
+		
+		assertFalse(board.isTerminal());
+		
+		//test top left corner
+		assertTrue(board.moveAmazon(3, 0, 0, 0, Board.BLACK));
+		assertTrue(board.placeArrow(0, 0, 1, 1));
+		
+		assertFalse(board.isTerminal());
+		
+		//test top right corner
+		assertTrue(board.moveAmazon(0, 6, 0, 9, Board.BLACK));
+		assertTrue(board.placeArrow(0, 9, 1, 8));
+		
+		assertFalse(board.isTerminal());
+		
+		//white will have no more moves after this
+		assertTrue(board.moveAmazon(3, 9, 8, 9, Board.BLACK));
+		assertTrue(board.placeArrow(8, 9, 9, 8));
+		
+		assertTrue(board.isTerminal());
+	}
 }

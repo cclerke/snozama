@@ -662,11 +662,16 @@ public class Board
 	 */
 	public boolean isTerminal()
 	{
+		boolean whiteCanMove = false;
 		for (int i = 0; i < amazons[WHITE].length; i++)
 		{
 			if (hasMove(amazons[WHITE][i]))
-				return false;
+				whiteCanMove = true;
 		}
+		
+		if (!whiteCanMove)
+			return true;
+		
 		for (int i = 0; i < amazons[BLACK].length; i++)
 		{
 			if (hasMove(amazons[BLACK][i]))
@@ -683,7 +688,7 @@ public class Board
 	 * @return	{@value} TRUE if amazon has at least one available move,
 	 * 			{@value} FALSE if amazon cannot move.
 	 */
-	private boolean hasMove(byte amazon)
+	public boolean hasMove(byte amazon)
 	{
 		int arow = decodeAmazonRow(amazon);
 		int acol = decodeAmazonColumn(amazon);

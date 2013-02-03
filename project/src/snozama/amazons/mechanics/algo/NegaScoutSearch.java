@@ -10,6 +10,7 @@ import ubco.ai.games.GameTimer;
  * Class containing plain NegaScout Algorithm.
  * 
  * @author Graeme Douglas
+ * @author Cody Clerke
  *
  */
 public class NegaScoutSearch implements MoveChoiceAlgorithm
@@ -25,9 +26,9 @@ public class NegaScoutSearch implements MoveChoiceAlgorithm
 	 */
 	public static int chooseMove(Board board, int colour, int turn, GameTimer timer)
 	{
-		int best = 0;
+		int best = -1;
 		int next = 0;
-		int bestScore = 0;
+		int bestScore = Integer.MIN_VALUE;
 		int currentScore = 0;
 		MoveManager successors = board.getSuccessors(colour, turn);
 		
@@ -35,12 +36,19 @@ public class NegaScoutSearch implements MoveChoiceAlgorithm
 		{
 			next = successors.nextIterableIndex();
 			
-			currentScore = recursiveNegaScout(board, colour, turn, Integer.MIN_VALUE, Integer.MAX_VALUE, 1, 3);
+			int arr_s = Board.decodeAmazonRow(board.amazons[colour][successors.getAmazonIndex(next)]);
+			int col_s = Board.decodeAmazonColumn(board.amazons[colour][successors.getAmazonIndex(next)]);
+			successors.applyMove(board, next);
+			
+			currentScore = 1*recursiveNegaScout(board, colour, turn, Integer.MIN_VALUE, Integer.MAX_VALUE, 1, 1);
 			
 			if (currentScore > bestScore)
 			{
 				best = next;
+				bestScore = currentScore;
 			}
+			
+			successors.undoMove(board, next, arr_s, col_s);
 		}
 		
 		return best;
@@ -102,7 +110,7 @@ public class NegaScoutSearch implements MoveChoiceAlgorithm
 				return alpha;
 			}
 			
-			beta = alpha + 1;
+			b = alpha + 1;
 			processed++;
 		}
 		
