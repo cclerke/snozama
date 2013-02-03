@@ -17,6 +17,7 @@ import ubco.ai.games.GamePlayer;
 /**
  * The player class for the snozama AI system.
  * @author Graeme Douglas
+ * @author Cody Clerke
  * 
  * Note that this code is based off of Yong Gao's COSC322TestA.java
  */

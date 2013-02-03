@@ -1,8 +1,6 @@
 package snozama.amazons.mechanics;
 
-import java.util.ArrayDeque;
 import java.util.Arrays;
-import java.util.Collection;
 
 /**
  * Game of the Amazons Board class.
@@ -13,7 +11,7 @@ import java.util.Collection;
 public class Board
 {
 	/**
-	 * Size of a dimension of the board.xs
+	 * Size of a dimension of the board.
 	 */
 	public static final int SIZE = 10;
 	
@@ -535,7 +533,6 @@ public class Board
 			int arow = Board.decodeAmazonRow(this.amazons[colour][j]);		//amazon's starting row position
 			int acol = Board.decodeAmazonColumn(this.amazons[colour][j]);	//amazon's starting column position
 			
-			// TODO: Need to figure out how to get arrow placed.
 			// The following comments assume [0][0] is considered top left
 			// Find moves to the right
 			for (int c = acol+1; c < Board.SIZE; c++)
@@ -716,11 +713,11 @@ public class Board
 		if (!(arow == 0 || acol == 0 || isOccupied(arow-1, acol-1)))
 			return true;
 		
-		// if can move antidiagonally (/) right
+		// if can move anti-diagonally (/) right
 		if (!(arow == 0 || acol == SIZE-1 || isOccupied(arow-1, acol+1)))
 			return true;
 		
-		// if can move antidiagonally (/) left
+		// if can move anti-diagonally (/) left
 		if (!(arow == SIZE-1 || acol == 0 || isOccupied(arow+1, acol-1)))
 			return true;
 		

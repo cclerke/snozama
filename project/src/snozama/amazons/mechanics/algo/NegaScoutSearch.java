@@ -1,15 +1,10 @@
 package snozama.amazons.mechanics.algo;
 
-import java.util.Iterator;
-
 import snozama.amazons.mechanics.Board;
 import snozama.amazons.mechanics.MoveManager;
 import snozama.amazons.mechanics.SnozamaHeuristic;
-import snozama.amazons.settings.Settings;
 import snozama.amazons.global.*;
 import ubco.ai.games.GameTimer;
-
-// TODO: Change successor stuff to moves, not boards.  SUPER IMPORTANT!!!
 
 /**
  * Class containing plain NegaScout Algorithm.
@@ -25,6 +20,7 @@ public class NegaScoutSearch implements MoveChoiceAlgorithm
 	 * @param colour	The colour of the player whose turn it is.
 	 * @param turn		The number of moves made so far in the game.
 	 * @param timer		TODO	THIS DOESN'T DO WHAT I EXPECT.  WE NEED TO SORT THIS OUT.
+	 * 					//can we use long endTurn = System.currentMiilis() + turnTime*1000 (turnTime = 30)
 	 * @return
 	 */
 	public static int chooseMove(Board board, int colour, int turn, GameTimer timer)
@@ -92,7 +88,7 @@ public class NegaScoutSearch implements MoveChoiceAlgorithm
 			// If we fail high and this is not the first child node processed
 			if (alpha < score && score < beta && processed != 0)
 			{
-				// Full research.
+				// Full re-search.
 				score = -1*recursiveNegaScout(board, GlobalFunctions.flip(colour), turn+1, -1*beta, -1*alpha, depth+1, cutoff);
 			}
 			
