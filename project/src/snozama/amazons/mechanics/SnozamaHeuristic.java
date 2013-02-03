@@ -473,7 +473,7 @@ public class SnozamaHeuristic {
 	* @param amazon	An individual amazon to find possible moves for.
 	* @return	The number of moves available to the amazon.
 	*/
-	public static int getNumberAvailableMoves(Board board, byte amazon)
+	private static int getNumberAvailableMoves(Board board, byte amazon)
 	{
 		int moves = 0;
 		/*

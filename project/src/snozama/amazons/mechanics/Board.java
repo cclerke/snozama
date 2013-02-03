@@ -528,33 +528,65 @@ public class Board
 	 */
 	public boolean isTerminal()
 	{
-		int whiteMoves = 0;
-		int blackMoves = 0;
 		for (int i = 0; i < amazons[WHITE].length; i++)
 		{
-			whiteMoves += SnozamaHeuristic.getNumberAvailableMoves(this, amazons[WHITE][i]);
-			if (whiteMoves > 0)
-			{
-				break;
-			}
+			if (hasMove(amazons[WHITE][i]))
+				return false;
 		}
 		for (int i = 0; i < amazons[BLACK].length; i++)
 		{
-			whiteMoves += SnozamaHeuristic.getNumberAvailableMoves(this, amazons[BLACK][i]);
-			if (blackMoves > 0)
-			{
-				break;
-			}
+			if (hasMove(amazons[BLACK][i]))
+				return false;
 		}
 		
-		//if either colour cannot move the game is over
-		if (whiteMoves == 0 || blackMoves == 0)
-		{
+		return true;
+	}
+	
+	/**
+	 * Determines if an amazon has an available move.
+	 * 
+	 * @param amazon	The amazon for which to check if there is an available move.
+	 * @return	{@value} TRUE if amazon has at least one available move,
+	 * 			{@value} FALSE if amazon cannot move.
+	 */
+	private boolean hasMove(byte amazon)
+	{
+		int arow = decodeAmazonRow(amazon);
+		int acol = decodeAmazonColumn(amazon);
+
+		// The following comments assume [0][0] is considered top left
+		// if can move right
+		if (!(acol == SIZE-1 || isOccupied(arow, acol+1)))
 			return true;
-		}
-		else
-		{
-			return false;
-		}
+		
+		// if can move left
+		if (!(acol == 0 || isOccupied(arow, acol-1)))
+			return true;
+		
+		// if can move down
+		if (!(arow == SIZE-1 || isOccupied(arow+1, acol)))
+			return true;
+		
+		// if can move up
+		if (!(acol == 0 || isOccupied(arow-1, acol)))
+			return true;
+		
+		// if can move diagonally (\) right
+		if (!(arow == SIZE-1 || acol == SIZE-1 || isOccupied(arow+1, acol+1)))
+			return true;
+		
+		// if can move diagonally (\) left
+		if (!(arow == 0 || acol == 0 || isOccupied(arow-1, acol-1)))
+			return true;
+		
+		// if can move antidiagonally (/) right
+		if (!(arow == 0 || acol == SIZE-1 || isOccupied(arow-1, acol+1)))
+			return true;
+		
+		// if can move antidiagonally (/) left
+		if (!(arow == SIZE-1 || acol == 0 || isOccupied(arow+1, acol-1)))
+			return true;
+		
+		return false;
 	}
 }
