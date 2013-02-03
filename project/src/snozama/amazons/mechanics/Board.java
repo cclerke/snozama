@@ -181,6 +181,7 @@ public class Board
 	
 	/**
 	 * Makes sure a proposed move is allowed
+	 * 
 	 * @param row_s		Row of starting position.
 	 * @param col_s		Column of starting position.
 	 * @param row_f		Row of finishing position.
@@ -335,7 +336,8 @@ public class Board
 	}
 	
 	/**
-	 * Move an amazon and shoot an arrow
+	 * Move an amazon and shoot an arrow.
+	 * 
 	 * @param row_s		Row of the starting position of the amazon
 	 * @param col_s		Column of the starting position of the amazon
 	 * @param row_f		Row of the finishing position of the amazon
@@ -352,38 +354,46 @@ public class Board
 	
 	/**
 	 * Get the row of an amazon from its encoded position.
+	 * 
 	 * @param encodedPosition	The encoded position of the amazon.
 	 * @return	The row of the position of the amazon.
 	 */
 	public static int decodeAmazonRow(byte encodedPosition)
 	{
+		//return (int)((encodedPosition) & 0xf);
 		return (int)(encodedPosition % SIZE);
 	}
 	
 	/**
 	 * Get the column of an amazon from its encoded position.
+	 * 
 	 * @param encodedPosition	The encoded position of the amazon.
 	 * @return	The column of the position of the amazon.
 	 */
 	public static int decodeAmazonColumn(byte encodedPosition)
 	{
+		//return (int)((encodedPosition) >> 4);
 		return (int)(encodedPosition / SIZE);
 	}
 	
 	/**
 	 * Generate an encoded position for an amazon from its (row, col) position.
+	 * 
 	 * @param row		The row of the position of the amazon.
 	 * @param col		The column of the position of the amazon.
 	 * @return	The encoded position of the amazon.
 	 */
 	public static byte encodeAmazonPosition(int row, int col)
 	{
+		//return (byte)((col << 4) + row);
 		return (byte)(col*(SIZE) + row);
 	}
 	
 	/**
-	 * Generate all possible successors of the current board.
+	 * Generate all possible successors of the current board in terms of
+	 * possible moves.
 	 * 
+	 * @param colour	The colour of the player that is currently playing.
 	 * @return The list of successors.
 	 */
 	public Collection<Board> getSuccessors(int colour)
@@ -406,8 +416,7 @@ public class Board
 				}
 				else // this is a legal move
 				{
-					Board newBoard = new Board(this);
-					newBoard.moveAmazon(arow, acol, arow, c, colour);
+					
 				}
 			}
 			// Find moves to the left
