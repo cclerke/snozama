@@ -37,7 +37,6 @@ public class NegaScoutSearch implements MoveChoiceAlgorithm
 		
 		while (successors.hasIterations() && next < debug_limit) // TODO: Still have time left, other constraints;
 		{
-			System.out.println(next);
 			next = successors.nextIterableIndex();
 			
 			int arr_s = Board.decodeAmazonRow(board.amazons[colour][successors.getAmazonIndex(next)]);
@@ -55,6 +54,8 @@ public class NegaScoutSearch implements MoveChoiceAlgorithm
 			}
 			
 			successors.undoMove(board, next, arr_s, col_s);
+			System.out.println(next);
+			System.out.println("+"+bestScore);
 		}
 		
 		return best;
@@ -75,7 +76,6 @@ public class NegaScoutSearch implements MoveChoiceAlgorithm
 	public static int recursiveNegaScout(Board board, int colour, int turn, int alpha, int beta, int depth, int cutoff)
 	{
 		int next = 0;
-		int processed = 0;
 		
 		if (board.isTerminal() || depth == cutoff)
 		{
@@ -102,7 +102,7 @@ public class NegaScoutSearch implements MoveChoiceAlgorithm
 			int score = -1*recursiveNegaScout(board, colour, turn+1, -1*b, -1*alpha, depth+1, cutoff);
 			
 			// If we fail high and this is not the first child node processed
-			if (alpha < score && score < beta && processed != 0)
+			if (alpha < score && score < beta && next != 0)
 			{
 				// Full re-search.
 				score = -1*recursiveNegaScout(board, colour, turn+1, -1*beta, -1*alpha, depth+1, cutoff);
@@ -119,7 +119,6 @@ public class NegaScoutSearch implements MoveChoiceAlgorithm
 			}
 			
 			b = alpha + 1;
-			processed++;
 		}
 		
 		return alpha;
