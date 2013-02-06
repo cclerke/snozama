@@ -163,11 +163,9 @@ public class SnozamaPlayer implements GamePlayer
 		 */
 		IXMLElement amazon = xml.getFirstChildNamed("queen");
 		String move = amazon.getAttribute("move", "default");
-		char x_s = move.charAt(0);
-		int row_s = x_s-97;
+		int row_s = decodeMove(move.charAt(0));
 		int col_s = move.charAt(1);
-		char x_f= move.charAt(3);
-		int row_f = x_f-97;
+		int row_f = decodeMove(move.charAt(3));
 		int col_f= move.charAt(4);
 		
 		/*
@@ -176,12 +174,11 @@ public class SnozamaPlayer implements GamePlayer
 		 */
 		IXMLElement arrow = xml.getFirstChildNamed("arrow");
 		String shot = arrow.getAttribute("move", "default");
-		char a = shot.charAt(0);
-		int arow = a-97;
+		int arow = decodeMove(shot.charAt(0));
 		int acol = shot.charAt(1);
 		
-		System.out.println("Opponent move: "+ x_s + col_s + "-" + x_f + col_f + 
-				" (" + a + acol + ")");
+		System.out.println("Opponent move: "+ move.charAt(0) + col_s + "-" + move.charAt(3) + col_f + 
+				" (" + shot.charAt(0) + acol + ")");
 		
 		// Make opponent's move
 		boolean validMove = board.moveAmazon(row_s, col_s, row_f, col_f, Math.abs(Settings.teamColour-1));
@@ -208,16 +205,13 @@ public class SnozamaPlayer implements GamePlayer
 		String message = "<action type='" + GameMessage.ACTION_MOVE + "'>";
 		
 		// Message part for amazon's start square
-		char x_s = (char)(row_s + 97);
-		message += "<queen move='" + x_s + String.valueOf(col_s) + "-";
+		message += "<queen move='" + encodeMove(row_s) + String.valueOf(col_s) + "-";
 		
 		// Message part for amazon's finishing square
-		char x_f = (char)(row_f + 97);
-		message += x_f + String.valueOf(col_f) + "'></queen>";
+		message += encodeMove(row_f) + String.valueOf(col_f) + "'></queen>";
 		
 		// Message part for arrow
-		char a = (char)(arow + 97);
-		message += "<arrow move='" + a + String.valueOf(acol) + "'></arrow>";
+		message += "<arrow move='" + encodeMove(arow) + String.valueOf(acol) + "'></arrow>";
 		
 		// Message part for closing action tag
 		message += "</action>";
@@ -226,6 +220,26 @@ public class SnozamaPlayer implements GamePlayer
 		System.out.println("Snozama move: " + message);
 		String toSend = ServerMessage.compileGameMessage(GameMessage.MSG_GAME, room.roomID, message);
 		gameClient.sendToServer(toSend, true);
+	}
+	
+	/**
+	 * Converts opponent move's row value to the indexing used by Snozama board.
+	 * @param row	Row index as a char from the XML message.
+	 * @return		Row index as an int.
+	 */
+	public int decodeMove(char row)
+	{
+		return Math.abs(row - 106); //j-a -> 0-9
+	}
+	
+	/**
+	 * Encodes Snozama move's row value to the indexing required for server messages.
+	 * @param row	Row index as an int from Snozama's move selection.
+	 * @return		Row index a char to be sent to server.
+	 */
+	public char encodeMove(int row)
+	{
+		return (char)(106 - row); //0-9 -> j-a
 	}
 	
 	/**
