@@ -56,4 +56,55 @@ public final class GlobalFunctions {
 			return a;
 		}
 	}
+	
+	// QuickSort Sorting code.  From CLRS / 
+	public static void dualQuickSort(int[] toSort, int[] sortBy, int a, int b)
+    {
+        if(a < b)
+        {
+            int c = partition(toSort, sortBy, a, b);
+            dualQuickSort(toSort, sortBy, a, c);
+            dualQuickSort(toSort, sortBy, c+1,b);
+        }
+    }
+	
+	private static int partition(int[] toSort, int[] sortBy, int a, int b) {
+
+        int x = sortBy[a];
+        int i = a-1 ;
+        int j = b+1 ;
+
+        while (true) {
+            i++;
+            
+            while ( i< b && sortBy[i] < x)
+            {
+                i++;
+            }
+            
+            j--;
+            
+            while (j>a && sortBy[j] > x)
+            {
+                j--;
+            }
+            
+            if (i < j)
+            {
+                swap(sortBy, i, j);
+                swap(toSort, i, j);
+            }
+            else
+            {
+                return j;
+            }
+        }
+    }
+	
+	private static void swap(int[] a, int i, int j)
+	{
+		int temp = a[i];
+		a[i] = a[j];
+		a[j] = temp;
+	}
 }

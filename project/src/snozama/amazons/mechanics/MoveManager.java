@@ -3,6 +3,8 @@ package snozama.amazons.mechanics;
 import java.util.Arrays;
 import java.util.Comparator;
 
+import snozama.amazons.global.GlobalFunctions;
+
 /**
  * A high performance management library for board moves.
  * @author Graeme Douglas
@@ -340,21 +342,8 @@ public class MoveManager
 	
 	public void sort(int[] sortBy)
 	{
-		/*
-		Arrays.sort(this.moves, new Comparator<int[]>(sortBy){
-			int[] sortBy;
-			
-			public Comparator(int[] sortBy)
-			{
-				this.sortBy = sortBy;
-			}
-			
-			@Override
-			public int compare(int[] arg0, int[] arg1) {
-				// TODO Auto-generated method stub
-				return 0;
-			}
-		});
-		*/
+		GlobalFunctions.dualQuickSort(this.moves, sortBy, 0, GlobalFunctions.min(size(), sortBy.length - 1));
 	}
+	
+	
 }
