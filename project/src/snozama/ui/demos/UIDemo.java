@@ -1,9 +1,11 @@
 package snozama.ui.demos;
 
-import javax.swing.SwingUtilities;
+import java.util.Scanner;
 
-import snozama.amazons.mechanics.Board;
-import snozama.ui.AmazonUI;
+import snozama.ui.api.AUI;
+import snozama.ui.eventListeners.UIReadyListener;
+import snozama.ui.exception.AUIException;
+
 
 public class UIDemo {
 
@@ -15,12 +17,25 @@ public class UIDemo {
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		
-		SwingUtilities.invokeLater(new Runnable() {
-		    public void run() {
-		        AmazonUI ui = new AmazonUI( new Board() );
-		        ui.setVisible(true);
-		    }
+		AUI.getUI();
+		
+		AUI.ready( new UIReadyListener(){
+			@Override
+			public void ready()
+			{
+				try
+				{
+					AUI.moveAmazon(6, 0, 4, 2, 1, 2);
+					AUI.moveAmazon(0, 3, 8, 3, 0, 3);
+					AUI.moveAmazon(4, 2, 4, 9, 4, 8);
+					
+				}
+				catch( AUIException e ) {}
+			}
+			
 		});
+			
+		
 	}
 
 }
