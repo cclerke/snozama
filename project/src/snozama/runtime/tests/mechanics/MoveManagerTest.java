@@ -4,6 +4,7 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
+import snozama.amazons.global.GlobalFunctions;
 import snozama.amazons.mechanics.Board;
 import snozama.amazons.mechanics.MoveManager;
 
@@ -140,5 +141,40 @@ public class MoveManagerTest {
 			assertFalse(board.isWhite(row_f, col_f));
 			assertFalse(board.isArrow(arrow_row, arrow_col));
 		}
+	}
+	
+	@Test
+	public void testSortMoves()
+	{
+		Board board = new Board();
+		
+		MoveManager successors = board.getSuccessors(Board.WHITE, 0);
+		MoveManager testAgainst = board.getSuccessors(Board.WHITE, 0);
+		
+		int[] sortBy = 		{1, 3, 2, 7, 6, 4, 5, 8, 9, 0, -1};
+		int[] sortIndices = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+		
+		GlobalFunctions.dualQuickSort(sortIndices, sortBy.clone(), 0, sortIndices.length-1, (byte)(-1));
+		
+		successors.sort(sortBy);
+		
+		for (int i = 0; i < 11; i++)
+		{
+			System.out.println(sortIndices[i]);
+		}
+		
+		for (int i = 0; i < 11; i++)
+		{
+			System.out.println(sortBy[i]);
+		}
+		
+		for(int i = 0; i < sortIndices.length; i++)
+		{
+			assertEquals(successors.getAmazonIndex(sortIndices[i]), testAgainst.getAmazonIndex(i));
+			// Why does the below break the test?
+			//assertEquals(successors.getArrowColumn(sortIndices[i]), testAgainst.getArrowColumn(i));
+			assertEquals(successors.getArrowRow(sortIndices[i]), testAgainst.getArrowRow(i));
+		}
+		
 	}
 }

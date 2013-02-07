@@ -57,34 +57,36 @@ public final class GlobalFunctions {
 		}
 	}
 	
-	// QuickSort Sorting code.  From CLRS / 
-	public static void dualQuickSort(int[] toSort, int[] sortBy, int a, int b)
+	// QuickSort sorting code.  See CLRS or http://codereview.stackexchange.com/questions/4022/java-implementation-of-quick-sort
+	public static void dualQuickSort(int[] toSort, int[] sortBy, int a, int b, byte order)
     {
         if(a < b)
         {
-            int c = partition(toSort, sortBy, a, b);
-            dualQuickSort(toSort, sortBy, a, c);
-            dualQuickSort(toSort, sortBy, c+1,b);
+        	int c = partition(toSort, sortBy, a, b, order);
+        	
+            dualQuickSort(toSort, sortBy, a, c, order);
+            dualQuickSort(toSort, sortBy, c+1, b, order);
         }
     }
 	
-	private static int partition(int[] toSort, int[] sortBy, int a, int b) {
+	private static int partition(int[] toSort, int[] sortBy, int a, int b, byte order) {
 
         int x = sortBy[a];
         int i = a-1 ;
         int j = b+1 ;
 
-        while (true) {
+        while (true)
+        {
             i++;
             
-            while ( i< b && sortBy[i] < x)
+            while (i < b && ((order == 1 && sortBy[i] < x) || (order != 1  && sortBy[i] > x)))
             {
                 i++;
             }
             
             j--;
             
-            while (j>a && sortBy[j] > x)
+            while (j > a && ((order == 1 && sortBy[j] > x) || (order != 1 && sortBy[j] < x)))
             {
                 j--;
             }
@@ -101,7 +103,7 @@ public final class GlobalFunctions {
         }
     }
 	
-	private static void swap(int[] a, int i, int j)
+	public static void swap(int[] a, int i, int j)
 	{
 		int temp = a[i];
 		a[i] = a[j];

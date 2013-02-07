@@ -17,7 +17,8 @@ import ubco.ai.games.GameTimer;
  */
 public class IDNegaScoutSearch implements MoveChoiceAlgorithm
 {
-	static final int debug_limit = Integer.MAX_VALUE;
+	
+	static final int firstN = Integer.MAX_VALUE;
 	//static final int debug_limit = 5;
 	/**
 	 * Choose next move using NegaScout algorithm.
@@ -32,15 +33,16 @@ public class IDNegaScoutSearch implements MoveChoiceAlgorithm
 	{
 		int best = -1;
 		int next = 0;
-		int bestScore = Integer.MIN_VALUE;
-		int beta = Integer.MAX_VALUE;
 		//int currentScore = Integer.MIN_VALUE;
 		MoveManager successors = board.getSuccessors(colour, turn);
 		int scores[] = new int[successors.size()];	// TODO: can we make scores smaller, like say shorts?
 		int iteration = 1;
+		ScoreFetcher foundScore = new ScoreFetcher();
 		
 		while (iteration <= 3) {
-			while (successors.hasIterations() && next < debug_limit) // TODO: Still have time left, other constraints;
+			int bestScore = Integer.MIN_VALUE;
+			int beta = Integer.MAX_VALUE;
+			while (successors.hasIterations() && next < firstN) // TODO: Still have time left, other constraints;
 			{
 				next = successors.nextIterableIndex();
 
@@ -49,7 +51,7 @@ public class IDNegaScoutSearch implements MoveChoiceAlgorithm
 
 				successors.applyMove(board, next);
 
-				scores[next] = 1*recursiveNegaScout(board, colour, turn, bestScore, beta, 1, iteration);
+				scores[next] = 1*recursiveNegaScout(board, colour, turn, bestScore, beta, 1, iteration, foundScore);
 
 				if (scores[next] > bestScore)
 				{
@@ -57,10 +59,13 @@ public class IDNegaScoutSearch implements MoveChoiceAlgorithm
 					bestScore = scores[next];
 					beta = bestScore+1;
 				}
+				
+				scores[next] = foundScore.score;
 
 				successors.undoMove(board, next, arr_s, col_s);
 				System.out.println(next);
 				System.out.println("+"+bestScore);
+				System.out.println("="+scores[next]);
 			}
 			
 			successors.sort(scores);
@@ -83,13 +88,14 @@ public class IDNegaScoutSearch implements MoveChoiceAlgorithm
 	 * @param cutoff	The depth from the initial search node at which to go no deeper.
 	 * @return	Return estimated score for a given board.
 	 */
-	public static int recursiveNegaScout(Board board, int colour, int turn, int alpha, int beta, int depth, int cutoff)
+	public static int recursiveNegaScout(Board board, int colour, int turn, int alpha, int beta, int depth, int cutoff, ScoreFetcher realScore)
 	{
 		int next = 0;
 		
 		if (board.isTerminal() || depth == cutoff)
 		{
 			int evalFunc =  SnozamaHeuristic.evaluateBoard(board, colour, turn+depth);
+			realScore.score = evalFunc;
 			
 			return evalFunc;
 		}
@@ -100,7 +106,7 @@ public class IDNegaScoutSearch implements MoveChoiceAlgorithm
 		
 		MoveManager successors = board.getSuccessors(colour, turn);
 		
-		while (successors.hasIterations() && next < debug_limit)
+		while (successors.hasIterations() && next < firstN)
 		{
 			next = successors.nextIterableIndex();
 			
@@ -109,13 +115,15 @@ public class IDNegaScoutSearch implements MoveChoiceAlgorithm
 			
 			successors.applyMove(board, next);
 			
-			int score = -1*recursiveNegaScout(board, colour, turn+1, -1*b, -1*alpha, depth+1, cutoff);
+			int score = -1*recursiveNegaScout(board, colour, turn+1, -1*b, -1*alpha, depth+1, cutoff, realScore);
+			realScore.score = score;
 			
 			// If we fail high and this is not the first child node processed
 			if (alpha < score && score < beta && next != 0)
 			{
 				// Full re-search.
-				score = -1*recursiveNegaScout(board, colour, turn+1, -1*beta, -1*alpha, depth+1, cutoff);
+				score = -1*recursiveNegaScout(board, colour, turn+1, -1*beta, -1*alpha, depth+1, cutoff, realScore);
+				realScore.score = score;
 			}
 			
 			alpha = GlobalFunctions.max(score, alpha);

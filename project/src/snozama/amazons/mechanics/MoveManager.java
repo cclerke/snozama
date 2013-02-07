@@ -342,7 +342,7 @@ public class MoveManager
 	
 	public void sort(int[] sortBy)
 	{
-		GlobalFunctions.dualQuickSort(this.moves, sortBy, 0, GlobalFunctions.min(size(), sortBy.length - 1));
+		GlobalFunctions.dualQuickSort(this.moves, sortBy, 0, GlobalFunctions.min(size(), sortBy.length - 1), (byte)(-1));
 	}
 	
 	
