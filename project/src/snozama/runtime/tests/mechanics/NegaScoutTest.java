@@ -18,7 +18,7 @@ public class NegaScoutTest {
 	public void testChooseMoveWithNegaScout()
 	{
 		Board board = new Board();
-		MoveManager manager = board.getSuccessors(Board.WHITE, 1);
+		MoveManager manager = board.getSuccessors(Board.WHITE, 0);
 
 		int index = NegaScoutSearch.chooseMove(board, Board.WHITE, 0, null);
 		
