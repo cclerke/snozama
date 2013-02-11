@@ -44,6 +44,7 @@ public class IDNegaScoutSearch implements MoveChoiceAlgorithm
 			int beta = Integer.MAX_VALUE;
 			while (successors.hasIterations() && next < firstN) // TODO: Still have time left, other constraints;
 			{
+				foundScore.reset();
 				next = successors.nextIterableIndex();
 
 				int arr_s = Board.decodeAmazonRow(board.amazons[colour][successors.getAmazonIndex(next)]);
@@ -51,7 +52,7 @@ public class IDNegaScoutSearch implements MoveChoiceAlgorithm
 
 				successors.applyMove(board, next);
 
-				scores[next] = 1*recursiveNegaScout(board, colour, turn, bestScore, beta, 1, iteration, foundScore);
+				scores[next] = recursiveNegaScout(board, colour, turn, bestScore, beta, 1, iteration, foundScore);
 
 				if (scores[next] > bestScore)
 				{
@@ -95,7 +96,10 @@ public class IDNegaScoutSearch implements MoveChoiceAlgorithm
 		if (board.isTerminal() || depth == cutoff)
 		{
 			int evalFunc =  SnozamaHeuristic.evaluateBoard(board, colour, turn+depth);
-			realScore.score = evalFunc;
+			if (realScore.score > evalFunc && realScore.setable)	//TODO: might not need the check here at all.
+			{
+				realScore.score = evalFunc;
+			}
 			
 			return evalFunc;
 		}
@@ -116,14 +120,20 @@ public class IDNegaScoutSearch implements MoveChoiceAlgorithm
 			successors.applyMove(board, next);
 			
 			int score = -1*recursiveNegaScout(board, colour, turn+1, -1*b, -1*alpha, depth+1, cutoff, realScore);
-			realScore.score = score;
+			if (realScore.score > score && realScore.setable)
+			{
+				realScore.score = score;
+			}
 			
 			// If we fail high and this is not the first child node processed
 			if (alpha < score && score < beta && next != 0)
 			{
 				// Full re-search.
 				score = -1*recursiveNegaScout(board, colour, turn+1, -1*beta, -1*alpha, depth+1, cutoff, realScore);
-				realScore.score = score;
+				if (realScore.score > score && realScore.setable)
+				{
+					realScore.score = score;
+				}
 			}
 			
 			alpha = GlobalFunctions.max(score, alpha);
@@ -133,6 +143,7 @@ public class IDNegaScoutSearch implements MoveChoiceAlgorithm
 			// Hit the beta cut-off, set new null window.
 			if (alpha >= beta)
 			{
+				realScore.setable = false;
 				return alpha;
 			}
 			

@@ -13,7 +13,7 @@ public class IDNegaScoutTest {
 	@Test
 	public void test() {
 		Board board = new Board();
-		MoveManager manager = board.getSuccessors(Board.WHITE, 1);
+		MoveManager manager = board.getSuccessors(Board.WHITE, 0);
 
 		int index = IDNegaScoutSearch.chooseMove(board, Board.WHITE, 0, null);
 		
