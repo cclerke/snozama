@@ -107,6 +107,53 @@ public class Board
 	}
 	
 	/**
+	 * Constructor for creating a smaller board for debugging purposes
+	 * @param size
+	 */
+	public Board(int size)
+	{
+		board = new byte[SIZE][SIZE];
+		amazons = new byte[2][4];
+		
+		// Initially setup the board.
+		for (int i = 0; i < SIZE; i++)
+		{
+			Arrays.fill(board[i], EMPTY);
+		}
+		
+		// WHITE initial setup.
+		board[2][0] = OCCUPIED;
+		board[3][1] = OCCUPIED;
+		board[3][2] = OCCUPIED;
+		board[2][3] = OCCUPIED;
+		amazons[WHITE][0] = encodeAmazonPosition(2, 0);
+		amazons[WHITE][1] = encodeAmazonPosition(3, 1);
+		amazons[WHITE][2] = encodeAmazonPosition(3, 2);
+		amazons[WHITE][3] = encodeAmazonPosition(2, 3);
+		
+		// BLACK initial setup.
+		board[1][0] = OCCUPIED;
+		board[0][1] = OCCUPIED;
+		board[0][2] = OCCUPIED;
+		board[1][3] = OCCUPIED;
+		amazons[BLACK][0] = encodeAmazonPosition(1, 0);
+		amazons[BLACK][1] = encodeAmazonPosition(0, 1);
+		amazons[BLACK][2] = encodeAmazonPosition(0, 2);
+		amazons[BLACK][3] = encodeAmazonPosition(1, 3);
+		
+		// ARROWS to block off rest of board.
+		board[4][0] = OCCUPIED;
+		board[4][1] = OCCUPIED;
+		board[4][2] = OCCUPIED;
+		board[4][3] = OCCUPIED;
+		board[4][4] = OCCUPIED;
+		board[3][4] = OCCUPIED;
+		board[2][4] = OCCUPIED;
+		board[1][4] = OCCUPIED;
+		board[0][4] = OCCUPIED;
+	}
+	
+	/**
 	 * Determine if a board position is currently occupied.
 	 * @param row		The row of the position to check.
 	 * @param col		The column of the position to check.
