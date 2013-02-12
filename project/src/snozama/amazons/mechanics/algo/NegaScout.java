@@ -33,7 +33,7 @@ public class NegaScout {
 		int beta = Integer.MAX_VALUE;
 		int currentScore = Integer.MIN_VALUE;
 		MoveManager successors = board.getSuccessors(colour);
-		successors.shuffle();	// TODO: Why does this cause the value of negascout search to change?
+		//successors.shuffle();	// TODO: Why does this cause the value of negascout search to change?
 		
 		while (successors.hasIterations() && next < debug_limit) // TODO: Still have time left, other constraints;
 		{
@@ -72,7 +72,27 @@ public class NegaScout {
 		int score = Integer.MIN_VALUE;
 		int b = beta;
 		MoveManager successors = board.getSuccessors(colour);
+
 		//successors.shuffle();	// TODO: Why does this cause the value of negascout search to change?
+		
+		//move ordering test
+		if (depth == 2)
+		{
+			int[] scores = new int[successors.size()];
+			while (successors.hasIterations())
+			{
+				int index = successors.nextIterableIndex();
+				int row_s = Board.decodeAmazonRow(board.amazons[colour][successors.getAmazonIndex(index)]);
+				int col_s = Board.decodeAmazonColumn(board.amazons[colour][successors.getAmazonIndex(index)]);
+				successors.applyMove(board, index);
+				scores[index] = SnozamaHeuristic.evaluateBoard(board, colour, turn);
+				successors.undoMove(board, index, row_s, col_s);
+			}
+			successors.sort(scores);
+			successors.clearIteratorState();
+		}
+		//end move ordering test
+		
 		while (successors.hasIterations())// && System.currentTimeMillis() < endTime)
 		{
 			next = successors.nextIterableIndex();
@@ -95,6 +115,18 @@ public class NegaScout {
 			{
 				alpha = score; //adjust the search window
 			}
+			/* This is me not understanding, but why don't we ...
+			
+			else
+			{
+				return alpha;
+			}
+			*/
+			/* I ask because this seems logical.  If you find a path below you
+			 *  where the score is lower than current highest score (alpha),
+			 *  Get out.
+			 */
+			
 			
 			successors.undoMove(board, next, row_s, col_s); //retract current move
 			
