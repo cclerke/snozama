@@ -19,10 +19,12 @@ public class NegaScout {
 	
 	public int nodes = 0;
 	public int[] bestMoves = new int[5]; //FIXME hard-coded as 5 for testing
+	int maxDepth = 1;
 	long endTime;
 	
-	public NegaScout(long end)
+	public NegaScout(int maxDepth, long end)
 	{
+		this.maxDepth = maxDepth;
 		endTime = end;
 	}
 	
@@ -65,7 +67,7 @@ public class NegaScout {
 	public int NegaScoutSearch(Board board, int depth, int alpha, int beta, int colour, int turn)
 	{
 		int next;
-		if (depth == 0 || board.isTerminal())
+		if (depth == maxDepth || board.isTerminal())
 		{
 			return SnozamaHeuristic.evaluateBoard(board, colour, turn);
 		}
@@ -76,7 +78,7 @@ public class NegaScout {
 		
 		//move ordering
 		//evaluate all moves available at initial depth and sort descending
-		if (depth == 2)
+		if (depth == 0)
 		{
 			int[] scores = new int[successors.size()];
 			while (successors.hasIterations())
@@ -101,14 +103,14 @@ public class NegaScout {
 			successors.applyMove(board, next); //execute current move
 			nodes++;
 			
-			int current = -NegaScoutSearch(board, depth-1, -b, -alpha, GlobalFunctions.flip(colour), turn+1);
+			int current = -NegaScoutSearch(board, depth+1, -b, -alpha, GlobalFunctions.flip(colour), turn+1);
 			
 			if (current > score)
 			{
-				if (b == beta || depth <= 2)
+				if (b == beta || maxDepth - depth <= 2)
 					score = current;
 				else
-					score = -NegaScoutSearch(board, depth-1, -beta, -current, GlobalFunctions.flip(colour), turn+1); //re-search
+					score = -NegaScoutSearch(board, depth+1, -beta, -current, GlobalFunctions.flip(colour), turn+1); //re-search
 			}
 			
 			if (score > alpha)
