@@ -50,7 +50,7 @@ public class NegaScoutSearch implements MoveChoiceAlgorithm
 			{
 				best = next;
 				bestScore = currentScore;
-				beta = currentScore+1;
+				//beta = currentScore+1;
 			}
 			
 			successors.undoMove(board, next, arr_s, col_s);

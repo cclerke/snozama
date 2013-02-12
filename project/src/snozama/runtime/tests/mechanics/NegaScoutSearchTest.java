@@ -7,6 +7,7 @@ package snozama.runtime.tests.mechanics;
 import org.junit.Test;
 
 import snozama.amazons.mechanics.Board;
+import snozama.amazons.mechanics.MoveChoice;
 import snozama.amazons.mechanics.algo.NegaScout;
 import snozama.amazons.settings.Settings;
 
@@ -17,7 +18,7 @@ public class NegaScoutSearchTest {
 	{
 		NegaScout search = new NegaScout(System.currentTimeMillis() + 30*1000 - 200);
 		Board board = new Board();
-		int maxDepth = 3;
+		int maxDepth = 1;
 		int alpha = Integer.MIN_VALUE;
 		int beta = Integer.MAX_VALUE;
 		int colour = Settings.teamColour;
@@ -27,5 +28,16 @@ public class NegaScoutSearchTest {
 		
 		System.out.println("Score: "+score);
 		System.out.println("Nodes: "+search.nodes);
+	}
+	
+	@Test
+	public void testChooseMove()
+	{
+		NegaScout search = new NegaScout(System.currentTimeMillis() + 30*1000 - 200);
+		
+		Board board = new Board();
+		
+		MoveChoice move = search.chooseMove(board, Board.WHITE, 1, 1);
+		System.out.println(move);
 	}
 }
