@@ -5,7 +5,6 @@ import snozama.amazons.mechanics.Board;
 import snozama.amazons.mechanics.MoveChoice;
 import snozama.amazons.mechanics.MoveManager;
 import snozama.amazons.mechanics.SnozamaHeuristic;
-import ubco.ai.games.GameTimer;
 
 /**
  * Class containing NegaScout search as described in Qian Liang's paper.
@@ -17,7 +16,9 @@ import ubco.ai.games.GameTimer;
 public class NegaScout {
 	
 	public static int debug_limit = Integer.MAX_VALUE;
+	
 	public int nodes = 0;
+	public int[] bestMoves = new int[5]; //FIXME hard-coded as 5 for testing
 	long endTime;
 	
 	public NegaScout(long end)
@@ -71,11 +72,10 @@ public class NegaScout {
 		
 		int score = Integer.MIN_VALUE;
 		int b = beta;
-		MoveManager successors = board.getSuccessors(colour);
-
-		//successors.shuffle();	// TODO: Why does this cause the value of negascout search to change?
+		MoveManager successors = board.getSuccessors(colour); //generate successors
 		
-		//move ordering test
+		//move ordering
+		//evaluate all moves available at initial depth and sort descending
 		if (depth == 2)
 		{
 			int[] scores = new int[successors.size()];
@@ -91,14 +91,14 @@ public class NegaScout {
 			successors.sort(scores);
 			successors.clearIteratorState();
 		}
-		//end move ordering test
+		//end move ordering
 
-		while (successors.hasIterations())// && System.currentTimeMillis() < endTime)
+		while (successors.hasIterations())// && System.currentTimeMillis() < endTime) //for each move or until turn time runs out
 		{
 			next = successors.nextIterableIndex();
 			int row_s = Board.decodeAmazonRow(board.amazons[colour][successors.getAmazonIndex(next)]);
 			int col_s = Board.decodeAmazonColumn(board.amazons[colour][successors.getAmazonIndex(next)]);
-			successors.applyMove(board, next);
+			successors.applyMove(board, next); //execute current move
 			nodes++;
 			
 			int current = -NegaScoutSearch(board, depth-1, -b, -alpha, GlobalFunctions.flip(colour), turn+1);
@@ -114,19 +114,8 @@ public class NegaScout {
 			if (score > alpha)
 			{
 				alpha = score; //adjust the search window
-			}
-			/* This is me not understanding, but why don't we ...
-			
-			else
-			{
-				return alpha;
-			}
-			*/
-			/* I ask because this seems logical.  If you find a path below you
-			 *  where the score is lower than current highest score (alpha),
-			 *  Get out.
-			 */
-			
+				bestMoves[depth] = successors.getMove(next);
+			}			
 			
 			successors.undoMove(board, next, row_s, col_s); //retract current move
 			

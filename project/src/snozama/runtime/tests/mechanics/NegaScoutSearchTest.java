@@ -28,8 +28,15 @@ public class NegaScoutSearchTest {
 		
 		System.out.println("Score: "+score);
 		System.out.println("Nodes: "+search.nodes);
+			int mColour = ((search.bestMoves[maxDepth] & (0xf << (4*0))) >> (4*0));
+			int mAmazon = ((search.bestMoves[maxDepth] & (0xf << (4*1))) >> (4*1));
+			int mRowF = ((search.bestMoves[maxDepth] & (0xf << (4*2))) >> (4*2));
+			int mColF = ((search.bestMoves[maxDepth] & (0xf << (4*3))) >> (4*3));
+			int mRowA = ((search.bestMoves[maxDepth] & (0xf << (4*4))) >> (4*4));
+			int mColA = ((search.bestMoves[maxDepth] & (0xf << (4*5))) >> (4*5));
+			System.out.println("Move: "+search.bestMoves[maxDepth]+" = "+mColour+" "+mAmazon+" "+" "+ mRowF+mColF+" "+mRowA+mColA);
 	}
-	
+	/*
 	@Test
 	public void testChooseMove()
 	{
@@ -39,5 +46,5 @@ public class NegaScoutSearchTest {
 		
 		MoveChoice move = search.chooseMove(board, Board.WHITE, 1, 1);
 		System.out.println(move);
-	}
+	}*/
 }

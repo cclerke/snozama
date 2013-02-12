@@ -363,4 +363,9 @@ public class MoveManager
 			GlobalFunctions.swap(moves, i, j);
 		}
 	}
+	
+	public int getMove(int index)
+	{
+		return moves[index];
+	}
 }
