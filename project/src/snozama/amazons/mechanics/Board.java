@@ -521,10 +521,9 @@ public class Board
 	 * possible moves.
 	 * 
 	 * @param colour	The colour of the player that is currently playing.
-	 * @param turn		The turn number.
 	 * @return	A set of possible moves from the current board.
 	 */
-	public MoveManager getSuccessors(int colour, int turn)
+	public MoveManager getSuccessors(int colour)
 	{
 		MoveManager successors = new MoveManager();
 		
