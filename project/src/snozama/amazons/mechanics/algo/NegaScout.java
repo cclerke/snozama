@@ -92,7 +92,7 @@ public class NegaScout {
 			successors.clearIteratorState();
 		}
 		//end move ordering test
-		
+
 		while (successors.hasIterations())// && System.currentTimeMillis() < endTime)
 		{
 			next = successors.nextIterableIndex();
