@@ -1,5 +1,12 @@
 package snozama.amazons.global;
 
+/**
+ * Class containing functions that are needed throughout code base.
+ * 
+ * @author Graeme Douglas
+ * @author Alex Yakovlev
+ *
+ */
 public final class GlobalFunctions {
 	/**
 	 * Function that flips input from 1 to 0 or 0 to 1.
@@ -58,6 +65,18 @@ public final class GlobalFunctions {
 	}
 	
 	// QuickSort sorting code.  See CLRS or http://codereview.stackexchange.com/questions/4022/java-implementation-of-quick-sort
+	/**
+	 * A quick sort algorithm that sorts input arrays toSort and sortBy based on
+	 * values in sortBy.  Can be sorted in any order.
+	 * 
+	 * @param toSort	Primary array to be sorted.
+	 * @param sortBy	Secondary array to be sorted, determines the sort order.
+	 * @param a			Index of first item to sort from.
+	 * @param b			Index of last item to sort to.
+	 * @param order		<code> 1 </code> to be sorted in ascending order,
+	 * 					<code> -1 </code> (or otherwise) to sort in descending
+	 * 					order.
+	 */
 	public static void dualQuickSort(int[] toSort, int[] sortBy, int a, int b, byte order)
     {
         if(a < b)
@@ -69,6 +88,17 @@ public final class GlobalFunctions {
         }
     }
 	
+	/**
+	 * @param toSort	Primary array to be sorted.
+	 * @param sortBy	Secondary array to be sorted, determines the sort order.
+	 * @param a			Index of first item to sort from.
+	 * @param b			Index of last item to sort to.
+	 * @param order		<code> 1 </code> to be sorted in ascending order,
+	 * 					<code> -1 </code> (or otherwise) to sort in descending
+	 * 					order.	
+	 * @return			The index of the item between <code> a </code> and
+	 * 					<code> b </code> that divides the arrays into partitions.
+	 */
 	private static int partition(int[] toSort, int[] sortBy, int a, int b, byte order) {
 
         int x = sortBy[a];
@@ -103,6 +133,14 @@ public final class GlobalFunctions {
         }
     }
 	
+	/**
+	 * Swap values at indices <code> i </code> and <code> j </code> in array
+	 * <code> a </code>.
+	 * 
+	 * @param a		The array whose items need to be swapped.
+	 * @param i		The index of the first item to swap.
+	 * @param j		The index of the second item to swap.
+	 */
 	public static void swap(int[] a, int i, int j)
 	{
 		int temp = a[i];

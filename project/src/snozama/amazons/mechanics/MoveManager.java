@@ -1,7 +1,6 @@
 package snozama.amazons.mechanics;
 
-import java.util.Arrays;
-import java.util.Comparator;
+import java.util.Random;
 
 import snozama.amazons.global.GlobalFunctions;
 
@@ -340,10 +339,28 @@ public class MoveManager
 		return true;
 	}
 	
+	/**
+	 * Sort the moves according to some other array, in descending order.
+	 * 
+	 * @param sortBy	The array to the moves according to.  Likely going to be
+	 * 					heuristic scores.
+	 */
 	public void sort(int[] sortBy)
 	{
 		GlobalFunctions.dualQuickSort(this.moves, sortBy, 0, GlobalFunctions.min(size(), sortBy.length - 1), (byte)(-1));
 	}
 	
-	
+	/**
+	 * Shuffle the set of moves randomly.
+	 */
+	public void shuffle()
+	{
+		Random random = new Random();
+		random.nextInt();
+		for (int i = 0; i < nextPos; i++)
+		{
+			int j = i + random.nextInt(nextPos - i);
+			GlobalFunctions.swap(moves, i, j);
+		}
+	}
 }

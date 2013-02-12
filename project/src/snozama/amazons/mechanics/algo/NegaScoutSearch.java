@@ -44,7 +44,7 @@ public class NegaScoutSearch implements MoveChoiceAlgorithm
 			
 			successors.applyMove(board, next);
 			
-			currentScore = 1*recursiveNegaScout(board, colour, turn, currentScore, beta, 1, 3);
+			currentScore = recursiveNegaScout(board, colour, turn, currentScore, beta, 1, 2);
 			
 			if (currentScore > bestScore)
 			{
@@ -89,6 +89,7 @@ public class NegaScoutSearch implements MoveChoiceAlgorithm
 		colour = GlobalFunctions.flip(colour);
 		
 		MoveManager successors = board.getSuccessors(colour, turn);
+		successors.shuffle();	// TODO: Why does this cause the value of negascout search to change?
 		
 		while (successors.hasIterations() && next < debug_limit)
 		{
