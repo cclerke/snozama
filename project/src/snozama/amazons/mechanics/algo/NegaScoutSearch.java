@@ -33,7 +33,7 @@ public class NegaScoutSearch implements MoveChoiceAlgorithm
 		int bestScore = Integer.MIN_VALUE;
 		int beta = Integer.MAX_VALUE;
 		int currentScore = Integer.MIN_VALUE;
-		MoveManager successors = board.getSuccessors(colour, turn);
+		MoveManager successors = board.getSuccessors(colour);
 		
 		while (successors.hasIterations() && next < debug_limit) // TODO: Still have time left, other constraints;
 		{
@@ -88,7 +88,7 @@ public class NegaScoutSearch implements MoveChoiceAlgorithm
 		
 		colour = GlobalFunctions.flip(colour);
 		
-		MoveManager successors = board.getSuccessors(colour, turn);
+		MoveManager successors = board.getSuccessors(colour);
 		successors.shuffle();	// TODO: Why does this cause the value of negascout search to change?
 		
 		while (successors.hasIterations() && next < debug_limit)

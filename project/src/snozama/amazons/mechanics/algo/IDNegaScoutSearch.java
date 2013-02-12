@@ -34,7 +34,7 @@ public class IDNegaScoutSearch implements MoveChoiceAlgorithm
 		int best = -1;
 		int next = 0;
 		//int currentScore = Integer.MIN_VALUE;
-		MoveManager successors = board.getSuccessors(colour, turn);
+		MoveManager successors = board.getSuccessors(colour);
 		int scores[] = new int[successors.size()];	// TODO: can we make scores smaller, like say shorts?
 		int iteration = 1;
 		ScoreFetcher foundScore = new ScoreFetcher();
@@ -108,7 +108,7 @@ public class IDNegaScoutSearch implements MoveChoiceAlgorithm
 		
 		colour = GlobalFunctions.flip(colour);
 		
-		MoveManager successors = board.getSuccessors(colour, turn);
+		MoveManager successors = board.getSuccessors(colour);
 		
 		while (successors.hasIterations() && next < firstN)
 		{

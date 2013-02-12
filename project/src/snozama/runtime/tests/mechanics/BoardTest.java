@@ -103,7 +103,7 @@ public class BoardTest {
 	{
 		Board board = new Board();
 		
-		MoveManager successors = board.getSuccessors(Board.BLACK, 0);
+		MoveManager successors = board.getSuccessors(Board.BLACK);
 		
 		assertEquals(successors.size(), 2176);
 	}
