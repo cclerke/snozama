@@ -37,7 +37,7 @@ public class NegaScoutSearchTest {
 		
 		Board board = new Board();
 		
-		MoveChoice move = search.chooseMove(board, Board.WHITE, 1, 2);
+		MoveChoice move = search.chooseMove(board, Board.WHITE, 1, 1);
 		System.out.println(move);
 	}
 }

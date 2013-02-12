@@ -19,6 +19,7 @@ public class MoveManagerTest {
 		
 		assertTrue(moves.size() == 0);
 		assertTrue(moves.maxSize() == 2176);
+		
 	}
 	
 	/**

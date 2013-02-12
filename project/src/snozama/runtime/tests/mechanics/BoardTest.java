@@ -166,4 +166,34 @@ public class BoardTest {
 		
 		assertTrue(board.isTerminal());
 	}
+	
+	@Test
+	public void testGenerateSuccessors()
+	{
+		Board board = new Board();
+		MoveManager moves = board.getSuccessors(Board.WHITE);
+		
+		int i = 0;
+		while (i < moves.size())
+		{
+			int colour = Board.WHITE;
+			int amazon = moves.getAmazonIndex(i);
+			byte position = board.amazons[colour][amazon];
+			int row_s = Board.decodeAmazonRow(position);
+			int col_s = Board.decodeAmazonColumn(position);
+			int row_f = moves.getFinishRow(i);
+			int col_f = moves.getFinishColumn(i);
+			int arow = moves.getArrowRow(i);
+			int acol = moves.getArrowColumn(i);
+			
+			System.out.println("-- Iteration: " + i);
+			System.out.println("Starting position: (" + row_s + ", " + col_s + ")");
+			System.out.println("Finish position:   (" + row_f + ", " + col_f + ")");
+			System.out.println("Arrow position:    (" + arow + ", " + acol + ")");
+			
+			assertTrue(board.isValidMove(row_s, col_s, row_f, col_f));
+			assertTrue(board.isValidMove(row_f, col_f, arow, acol));
+			i++;
+		}
+	}
 }
