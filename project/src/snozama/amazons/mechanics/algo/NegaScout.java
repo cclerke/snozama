@@ -34,6 +34,24 @@ public class NegaScout {
 		int b = beta;
 		MoveManager successors = board.getSuccessors(colour);
 		
+		//move ordering test
+		if (depth == 2)
+		{
+			int[] scores = new int[successors.size()];
+			while (successors.hasIterations())
+			{
+				int index = successors.nextIterableIndex();
+				int row_s = Board.decodeAmazonRow(board.amazons[colour][successors.getAmazonIndex(index)]);
+				int col_s = Board.decodeAmazonColumn(board.amazons[colour][successors.getAmazonIndex(index)]);
+				successors.applyMove(board, index);
+				scores[index] = SnozamaHeuristic.evaluateBoard(board, colour, turn);
+				successors.undoMove(board, index, row_s, col_s);
+			}
+			successors.sort(scores);
+			successors.clearIteratorState();
+		}
+		//end move ordering test
+		
 		while (successors.hasIterations())// && System.currentTimeMillis() < endTime)
 		{
 			next = successors.nextIterableIndex();

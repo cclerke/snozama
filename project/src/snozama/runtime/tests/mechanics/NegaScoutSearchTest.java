@@ -17,7 +17,7 @@ public class NegaScoutSearchTest {
 	{
 		NegaScout search = new NegaScout(System.currentTimeMillis() + 30*1000 - 200);
 		Board board = new Board();
-		int maxDepth = 3;
+		int maxDepth = 2;
 		int alpha = Integer.MIN_VALUE;
 		int beta = Integer.MAX_VALUE;
 		int colour = Settings.teamColour;
