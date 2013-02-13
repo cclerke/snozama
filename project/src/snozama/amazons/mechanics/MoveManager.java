@@ -137,14 +137,14 @@ public class MoveManager
 	 */
 	public boolean undoMove(Board board, int index, int row_s, int col_s)
 	{
-		board.board[row_s][col_s] = Board.OCCUPIED;
+		board.board[getArrowRow(index)][getArrowColumn(index)] = Board.EMPTY;
 		
 		board.board[getFinishRow(index)][getFinishColumn(index)] = Board.EMPTY;
 		
+		board.board[row_s][col_s] = Board.OCCUPIED;
+		
 		board.amazons[getColour(index)][getAmazonIndex(index)]=
 				Board.encodeAmazonPosition(row_s, col_s);
-		
-		board.board[getArrowRow(index)][getArrowColumn(index)] = Board.EMPTY;
 		
 		return true;
 	}
