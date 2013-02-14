@@ -30,6 +30,13 @@ public class NegaScout {
 		endTime = end;
 	}
 	
+	/**
+	 * Chooses the best move for Snozama based on search algorithm.
+	 * @param board		The current board position.
+	 * @param colour	The player for whom to find a move for.
+	 * @param turn		The current ply of the game.
+	 * @return			Returns the best move found by the search algortihm.
+	 */
 	public int chooseMove(Board board, int colour, int turn)
 	{
 		//maxDepth here refers to this.maxDepth
@@ -38,6 +45,17 @@ public class NegaScout {
 		return bestMoves[0];
 	}
 	
+	/**
+	 * NegaScout search algorithm.
+	 * @param board			The current board position.
+	 * @param depth			The starting depth of the search. Should always start at <code>depth = 0</code>.
+	 * @param maxDepth		The maximum depth to be searched.
+	 * @param alpha			The lower bound of the search window.
+	 * @param beta			The upper bound of the search window.
+	 * @param colour		The active player's colour.
+	 * @param turn			The current ply of the game.
+	 * @return				Returns the score of the best move.
+	 */
 	public int NegaScoutSearch(Board board, int depth, int maxDepth, int alpha, int beta, int colour, int turn)
 	{
 		int next = 0;
