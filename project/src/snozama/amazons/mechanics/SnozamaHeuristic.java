@@ -68,12 +68,16 @@ public class SnozamaHeuristic {
 		int whiteMoves = Integer.MAX_VALUE;
 		int blackMoves = Integer.MAX_VALUE;
 		
+		int totalWhiteMoves = 0;
+		int totalBlackMoves = 0;
+		
 		//for each white amazon
 		for (int i = 0; i < 4; i++)
 		{
 			int amazonMoves = getNumberAvailableMoves(board, board.amazons[Board.WHITE][i]); //calculates number of moves available to amazon
 			if (amazonMoves < whiteMoves)
 				whiteMoves = amazonMoves;
+			totalWhiteMoves += amazonMoves;
 		}
 		//for each black amazon
 		for (int i = 0; i < 4; i++)
@@ -81,6 +85,7 @@ public class SnozamaHeuristic {
 			int amazonMoves = getNumberAvailableMoves(board, board.amazons[Board.BLACK][i]);
 			if (amazonMoves < blackMoves)
 				blackMoves = amazonMoves;
+			totalBlackMoves += amazonMoves;
 		}
 		
 		if (activePlayer == Board.WHITE)
