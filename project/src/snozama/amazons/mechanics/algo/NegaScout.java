@@ -2,7 +2,6 @@ package snozama.amazons.mechanics.algo;
 
 import snozama.amazons.global.GlobalFunctions;
 import snozama.amazons.mechanics.Board;
-import snozama.amazons.mechanics.MoveChoice;
 import snozama.amazons.mechanics.MoveManager;
 import snozama.amazons.mechanics.SnozamaHeuristic;
 
@@ -15,10 +14,13 @@ import snozama.amazons.mechanics.SnozamaHeuristic;
 
 public class NegaScout {
 	
-	public static int debug_limit = Integer.MAX_VALUE;
+	public static int POS_INFINITY = Integer.MAX_VALUE-2;
+	public static int NEG_INFINITY = Integer.MIN_VALUE+2;
+	
+	public static int firstN = 500; //for possible use with N-best selection search
 	
 	public int nodes = 0;
-	public int[] bestMoves = new int[5]; //FIXME hard-coded as 5 for testing
+	int[] bestMoves = new int[10]; //FIXME hard-coded as 10 for testing
 	int maxDepth = 1;
 	long endTime;
 	
@@ -28,45 +30,17 @@ public class NegaScout {
 		endTime = end;
 	}
 	
-	public MoveChoice chooseMove(Board board, int colour, int turn, int depth)
+	public int chooseMove(Board board, int colour, int turn)
 	{
-		int best = -1;
-		int next = 0;
-		int bestScore = Integer.MIN_VALUE;
-		int beta = Integer.MAX_VALUE;
-		int currentScore = Integer.MIN_VALUE;
-		MoveManager successors = board.getSuccessors(colour);
-		//successors.shuffle();	// TODO: Why does this cause the value of negascout search to change?
-		
-		while (successors.hasIterations() && next < debug_limit) // TODO: Still have time left, other constraints;
-		{
-			next = successors.nextIterableIndex();
-			
-			int arr_s = Board.decodeAmazonRow(board.amazons[colour][successors.getAmazonIndex(next)]);
-			int col_s = Board.decodeAmazonColumn(board.amazons[colour][successors.getAmazonIndex(next)]);
-			
-			successors.applyMove(board, next);
-			
-			currentScore = NegaScoutSearch(board, depth, currentScore, beta, colour, turn);
-			
-			if (currentScore > bestScore)
-			{
-				best = next;
-				bestScore = currentScore;
-				//beta = currentScore+1;
-			}
-			
-			successors.undoMove(board, next, arr_s, col_s);
-			System.out.println(next);
-			System.out.println("+"+bestScore);
-		}
-		
-		return new MoveChoice(successors, best, board);
+		//maxDepth here refers to this.maxDepth
+		//probably don't need to keep the score?
+		NegaScoutSearch(board, 0, maxDepth, NEG_INFINITY, POS_INFINITY, colour, turn);
+		return bestMoves[0];
 	}
 	
-	public int NegaScoutSearch(Board board, int depth, int alpha, int beta, int colour, int turn)
+	public int NegaScoutSearch(Board board, int depth, int maxDepth, int alpha, int beta, int colour, int turn)
 	{
-		int next;
+		int next = 0;
 		if (depth == maxDepth || board.isTerminal())
 		{
 			return SnozamaHeuristic.evaluateBoard(board, colour, turn);
@@ -103,14 +77,14 @@ public class NegaScout {
 			successors.applyMove(board, next); //execute current move
 			nodes++;
 			
-			int current = -NegaScoutSearch(board, depth+1, -b, -alpha, GlobalFunctions.flip(colour), turn+1);
+			int current = -NegaScoutSearch(board, depth+1, maxDepth, -b, -alpha, GlobalFunctions.flip(colour), turn+1);
 			
 			if (current > score)
 			{
 				if (b == beta || maxDepth - depth <= 2)
 					score = current;
 				else
-					score = -NegaScoutSearch(board, depth+1, -beta, -current, GlobalFunctions.flip(colour), turn+1); //re-search
+					score = -NegaScoutSearch(board, depth+1, maxDepth, -beta, -current, GlobalFunctions.flip(colour), turn+1); //re-search
 			}
 			
 			if (score > alpha)
