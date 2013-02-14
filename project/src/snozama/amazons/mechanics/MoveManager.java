@@ -7,6 +7,7 @@ import snozama.amazons.global.GlobalFunctions;
 /**
  * A high performance management library for board moves.
  * @author Graeme Douglas
+ * @author Cody Clerke
  * 
  * Moves are encoded as 32-bit integers (shorts).  We divide the bits as follows:
  * 	Portion 0 - bits 0-3:	row of old amazon position.
@@ -176,6 +177,27 @@ public class MoveManager
 		// Now set them.
 		moves[index] |= (toEncode << (4*portion));
 		return true;
+	}
+	
+	/**
+	 * Decodes an encoded move and returns each part in an array.
+	 * Part 0: Colour of the moving amazon.
+	 * Part 1: Index of the moving amazon.
+	 * Part 2: Finishing row of the moving amazon.
+	 * Part 3: Finishing column of the moving amazon.
+	 * Part 4: Row of the arrow.
+	 * Part 5: Column of the arrow.
+	 * @param move The move to be decoded.
+	 * @return	Returns an array of move parts.
+	 */
+	public static int[] decodeMove(int move)
+	{
+		int[] moveParts = new int[5];
+		for (int i = 0; i <= 5; i++)
+		{
+			moveParts[i] = ((move & (0xf << (4*i))) >> (4*i));
+		}
+		return moveParts;
 	}
 	
 	/**

@@ -15,7 +15,6 @@ public class UIDemo {
 	 * @author Alex Yakovlev
 	 */
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
 		
 		AUI.getUI();
 		

@@ -15,8 +15,7 @@ public class NegaScoutSearchTest {
 	@Test
 	public void testNegaScout()
 	{
-		int maxDepth = 2;
-		NegaScout search = new NegaScout(maxDepth, System.currentTimeMillis() + 30*1000 - 200);
+		NegaScout search = new NegaScout(System.currentTimeMillis() + 25*1000);
 		Board board = new Board();
 		int colour = Settings.teamColour;
 		int turn = 1;
@@ -36,8 +35,7 @@ public class NegaScoutSearchTest {
 	//@Test
 	public void testChooseMove()
 	{
-		int maxDepth = 2;
-		NegaScout search = new NegaScout(maxDepth, System.currentTimeMillis() + 30*1000 - 200);
+		NegaScout search = new NegaScout(System.currentTimeMillis() + 25*1000);
 		
 		Board board = new Board();
 		

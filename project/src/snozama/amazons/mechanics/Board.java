@@ -392,7 +392,7 @@ public class Board
 	 * @return	@value true if complete move was successful
 	 * 			@value false otherwise
 	 */
-	public boolean move(int row_s, int col_s, int row_f, int col_f, int arow, int acol, byte colour)
+	public boolean move(int row_s, int col_s, int row_f, int col_f, int arow, int acol, int colour)
 	{
 		return moveAmazon(row_s, col_s, row_f, col_f, colour) &&
 				placeArrow(row_f, col_f, arow, acol);

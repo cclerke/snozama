@@ -21,12 +21,10 @@ public class NegaScout {
 	
 	public int nodes = 0;
 	int[] bestMoves = new int[10]; //FIXME hard-coded as 10 for testing
-	int maxDepth = 1;
 	long endTime;
 	
-	public NegaScout(int maxDepth, long end)
+	public NegaScout(long end)
 	{
-		this.maxDepth = maxDepth;
 		endTime = end;
 	}
 	
@@ -39,7 +37,7 @@ public class NegaScout {
 	 */
 	public int chooseMove(Board board, int colour, int turn)
 	{
-		//maxDepth here refers to this.maxDepth
+		int maxDepth = 3;
 		//probably don't need to keep the score?
 		NegaScoutSearch(board, 0, maxDepth, NEG_INFINITY, POS_INFINITY, colour, turn);
 		return bestMoves[0];

@@ -7,7 +7,11 @@ import java.util.Iterator;
 import net.n3.nanoxml.IXMLElement;
 
 import snozama.amazons.mechanics.Board;
+import snozama.amazons.mechanics.MoveManager;
+import snozama.amazons.mechanics.algo.NegaScout;
 import snozama.amazons.settings.Settings;
+import snozama.ui.api.AUI;
+import snozama.ui.exception.AUIException;
 import ubco.ai.GameRoom;
 import ubco.ai.connection.ServerMessage;
 import ubco.ai.games.GameClient;
@@ -27,6 +31,7 @@ public class SnozamaPlayer implements GamePlayer
 	private GameRoom room;
 	
 	private Board board;
+	private int turn = 0;
 	
 	/**
 	 * Constructor where player name and password may be arbitrarily set.
@@ -141,10 +146,12 @@ public class SnozamaPlayer implements GamePlayer
 		}
 		
 		System.out.println("The game has started!");
+		turn = 1;
 		if (Settings.teamColour == Board.WHITE)
 		{
 			System.out.println("Snozama moves first");
-			//TODO Notify us that it's our turn
+			//Notify us that it's our turn and make first move
+			makeMove();
 		}
 		else
 			System.out.println("The opponent moves first");
@@ -185,7 +192,11 @@ public class SnozamaPlayer implements GamePlayer
 		boolean validArrow = board.placeArrow(row_f, col_f, arow, acol);
 		
 		if (validMove && validArrow)
-			; //TODO Inform us that it is now our turn. Start 30 sec timer.
+		{
+			turn++;
+			//Inform us that it is now our turn. Start 30 sec timer.
+			makeMove();
+		}
 		else
 			; //TODO Error if move fails (they're big fat cheaters!)
 	}
@@ -240,6 +251,45 @@ public class SnozamaPlayer implements GamePlayer
 	public char encodeMove(int row)
 	{
 		return (char)(106 - row); //0-9 -> j-a
+	}
+	
+	/**
+	 * Completes the process of making Snozma's move. This process includes searching the game tree for a move,
+	 *  decoding the move into its component parts, making the move on the program's internal board, moving the
+	 *  piece on the program's user interface and sending the move to the server.
+	 * @return	<code>True</code>
+	 */
+	public boolean makeMove()
+	{
+		long endTime = System.currentTimeMillis()+25*1000; //starts 25 second timer
+		NegaScout search = new NegaScout(endTime);
+		int encodedMove = search.chooseMove(board, Settings.teamColour, turn);
+		
+		//Decode move using MoveManager
+		int[] decodedMove = MoveManager.decodeMove(encodedMove);
+		byte amazon_start = board.amazons[decodedMove[0]][decodedMove[1]];
+		int row_s = Board.decodeAmazonRow(amazon_start);
+		int col_s = Board.decodeAmazonColumn(amazon_start);
+		int row_f = decodedMove[2];
+		int col_f = decodedMove[3];
+		int arow = decodedMove[4];
+		int acol = decodedMove[5];
+		
+		//Make move on our internal board
+		board.move(row_s, col_s, row_f, col_f, arow, acol, Settings.teamColour);
+		turn++;
+		
+		//Make move on UI
+		try {
+			AUI.moveAmazon(row_s, col_s, row_f, col_f, arow, acol);
+		} catch (AUIException e) {
+			e.printStackTrace();
+		}
+		
+		//Send move to the server
+		sendToServer(row_s, col_s, row_f, col_f, arow, acol);
+		
+		return true;
 	}
 	
 	/**
