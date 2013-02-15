@@ -191,6 +191,13 @@ public class SnozamaPlayer implements GamePlayer
 		boolean validMove = board.moveAmazon(row_s, col_s, row_f, col_f, Math.abs(Settings.teamColour-1));
 		boolean validArrow = board.placeArrow(row_f, col_f, arow, acol);
 		
+		//Make opponent's move on the user interface
+		try {
+			AUI.moveAmazon(row_s, col_s, row_f, col_f, arow, acol);
+		} catch (AUIException e) {
+			e.printStackTrace();
+		}
+		
 		if (validMove && validArrow)
 		{
 			turn++;
