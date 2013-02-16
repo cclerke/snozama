@@ -39,11 +39,11 @@ public class NegaScout {
 	{
 		int maxDepth = 2;
 		//probably don't need to keep the score?
-		NegaScoutSearch(board, 0, maxDepth, NEG_INFINITY, POS_INFINITY, colour, turn);
-		return bestMoves[0];
+		//NegaScoutSearch(board, 0, maxDepth, NEG_INFINITY, POS_INFINITY, colour, turn);
+		//return bestMoves[0];
 		
 		//Iterative deepening NegaScout (plays better than regular fixed depth search)
-		//return IDNegaScoutSearch(board, colour, turn);
+		return IDNegaScoutSearch(board, colour, turn);
 	}
 	
 	/**
@@ -135,7 +135,7 @@ public class NegaScout {
 	{
 		int depth = 1;
 		int[] bestScore = new int[20];
-		while (System.currentTimeMillis() < endTime)
+		while (depth <= 20 && System.currentTimeMillis() < endTime)
 		{
 			NegaScoutSearch(board, 0, depth, NEG_INFINITY, POS_INFINITY, colour, turn);
 			bestScore[depth-1] = bestMoves[0]; //store best move for each depth

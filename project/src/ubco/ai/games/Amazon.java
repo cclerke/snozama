@@ -351,11 +351,11 @@ public class Amazon extends JFrame implements GamePlayer{
 	        if(game.isPlayerA){
 	        	gameModel.gameBoard[0][3] = tagS;
 	        	gameModel.gameBoard[0][6] = tagS;
-	        	gameModel.gameBoard[2][0] = tagS;
-	        	gameModel.gameBoard[2][9] = tagS;
+	        	gameModel.gameBoard[3][0] = tagS;
+	        	gameModel.gameBoard[3][9] = tagS;
 	        	
-	        	gameModel.gameBoard[7][0] = tagO;
-	        	gameModel.gameBoard[7][9] = tagO;
+	        	gameModel.gameBoard[6][0] = tagO;
+	        	gameModel.gameBoard[6][9] = tagO;
 	        	gameModel.gameBoard[9][3] = tagO;
 	        	gameModel.gameBoard[9][6] = tagO;
 	        }
@@ -363,11 +363,11 @@ public class Amazon extends JFrame implements GamePlayer{
  
 	        	gameModel.gameBoard[0][3] = tagO;
 	        	gameModel.gameBoard[0][6] = tagO;
-	        	gameModel.gameBoard[2][0] = tagO;
-	        	gameModel.gameBoard[2][9] = tagO;
+	        	gameModel.gameBoard[3][0] = tagO;
+	        	gameModel.gameBoard[3][9] = tagO;
 	        	
-	        	gameModel.gameBoard[7][0] = tagS;
-	        	gameModel.gameBoard[7][9] = tagS;
+	        	gameModel.gameBoard[6][0] = tagS;
+	        	gameModel.gameBoard[6][9] = tagS;
 	        	gameModel.gameBoard[9][3] = tagS;
 	        	gameModel.gameBoard[9][6] = tagS;
 	        }
