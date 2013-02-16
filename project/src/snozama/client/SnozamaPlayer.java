@@ -8,6 +8,7 @@ import net.n3.nanoxml.IXMLElement;
 
 import snozama.amazons.mechanics.Board;
 import snozama.amazons.mechanics.MoveManager;
+import snozama.amazons.mechanics.SnozamaHeuristic;
 import snozama.amazons.mechanics.algo.NegaScout;
 import snozama.amazons.settings.Settings;
 import snozama.ui.api.AUI;
@@ -274,6 +275,22 @@ public class SnozamaPlayer implements GamePlayer
 		long endTime = System.currentTimeMillis()+25*1000; //starts 25 second timer
 		NegaScout search = new NegaScout(endTime);
 		int encodedMove = search.chooseMove(board, Settings.teamColour, turn);
+		
+		//Handle end of game situations
+		if (encodedMove == -1)
+		{
+			//No more moves available
+			if (SnozamaHeuristic.evaluateBoard(board, Settings.teamColour, turn) > 0)
+			{
+				System.out.println("Snozama wins!");
+			}
+			else // Unreachable code :P
+			{
+				System.out.println("The game is over.");
+			}
+			
+			return false;
+		}
 		
 		//Decode move using MoveManager
 		int[] decodedMove = MoveManager.decodeMove(encodedMove);
