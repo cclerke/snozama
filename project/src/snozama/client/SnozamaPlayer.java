@@ -171,9 +171,9 @@ public class SnozamaPlayer implements GamePlayer
 		IXMLElement amazon = xml.getFirstChildNamed("queen");
 		String move = amazon.getAttribute("move", "default");
 		int row_s = decodeMove(move.charAt(0));
-		int col_s = move.charAt(1);
+		int col_s = Integer.parseInt(""+move.charAt(1)); //FIXME Is there a better way to do this?
 		int row_f = decodeMove(move.charAt(3));
-		int col_f= move.charAt(4);
+		int col_f= Integer.parseInt(""+move.charAt(4));
 		
 		/*
 		 * Message for arrow shot in format:
@@ -182,7 +182,7 @@ public class SnozamaPlayer implements GamePlayer
 		IXMLElement arrow = xml.getFirstChildNamed("arrow");
 		String shot = arrow.getAttribute("move", "default");
 		int arow = decodeMove(shot.charAt(0));
-		int acol = shot.charAt(1);
+		int acol = Integer.parseInt(""+shot.charAt(1));
 		
 		System.out.println("Opponent move: "+ move.charAt(0) + col_s + "-" + move.charAt(3) + col_f + 
 				" (" + shot.charAt(0) + acol + ")");
@@ -205,7 +205,7 @@ public class SnozamaPlayer implements GamePlayer
 			makeMove();
 		}
 		else
-			; //TODO Error if move fails (they're big fat cheaters!)
+			System.out.println("CHEATERS!!!"); //TODO Error if move fails (they're big fat cheaters!)
 	}
 	
 	/**

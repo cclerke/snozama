@@ -192,7 +192,7 @@ public class MoveManager
 	 */
 	public static int[] decodeMove(int move)
 	{
-		int[] moveParts = new int[5];
+		int[] moveParts = new int[6];
 		for (int i = 0; i <= 5; i++)
 		{
 			moveParts[i] = ((move & (0xf << (4*i))) >> (4*i));

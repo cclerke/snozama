@@ -37,7 +37,7 @@ public class NegaScout {
 	 */
 	public int chooseMove(Board board, int colour, int turn)
 	{
-		int maxDepth = 3;
+		int maxDepth = 2;
 		//probably don't need to keep the score?
 		NegaScoutSearch(board, 0, maxDepth, NEG_INFINITY, POS_INFINITY, colour, turn);
 		return bestMoves[0];
@@ -85,7 +85,7 @@ public class NegaScout {
 		}
 		//end move ordering
 
-		while (successors.hasIterations())// && System.currentTimeMillis() < endTime) //for each move or until turn time runs out
+		while (successors.hasIterations() && System.currentTimeMillis() < endTime) //for each move or until turn time runs out
 		{
 			next = successors.nextIterableIndex();
 			int row_s = Board.decodeAmazonRow(board.amazons[colour][successors.getAmazonIndex(next)]);
@@ -119,5 +119,33 @@ public class NegaScout {
 			b = alpha + 1;
 		}
 		return score;
+	}
+	
+	/**
+	 * Iterative deepening NegaScout search.
+	 * @param board		The current board position.
+	 * @param colour	The active player's colour.
+	 * @param turn		The current ply of the game.
+	 * @return		Returns the best move found for the current turn from the deepest fully searched depth.
+	 */
+	public int IDNegaScoutSearch(Board board, int colour, int turn)
+	{
+		int depth = 1;
+		int[] bestScore = new int[10];
+		while (System.currentTimeMillis() < endTime)
+		{
+			NegaScoutSearch(board, 0, depth, NEG_INFINITY, POS_INFINITY, colour, turn);
+			bestScore[depth-1] = bestMoves[0]; //store best move for each depth
+			depth++;
+		}
+		boolean found = false;
+		for (int i = bestScore.length; i > 0; i--)
+		{
+			if (found)
+				return bestScore[i]; //return best move for deepest complete search
+			else if (bestScore[i] != 0) //first non-zero result will be best move for deepest partially complete search
+				found = true;
+		}
+		return -1; //no move found, ERROR!
 	}
 }
