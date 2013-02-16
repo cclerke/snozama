@@ -17,7 +17,7 @@ public class SnozamaPlayerDemo
 			}
 		});
 		
-		SnozamaPlayer player = new SnozamaPlayer("snozama", "alex2cody7!graeme");
+		SnozamaPlayer player = new SnozamaPlayer();
 		player.joinRoom(0);
 	}
 }

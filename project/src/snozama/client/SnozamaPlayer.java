@@ -33,6 +33,9 @@ public class SnozamaPlayer implements GamePlayer
 	private Board board;
 	private int turn = 0;
 	
+	private String teamName = "Snozama";
+	private String password = "alex2cody7!graeme";
+	
 	/**
 	 * Constructor where player name and password may be arbitrarily set.
 	 * @param name		User name to be used on the game server.
@@ -42,11 +45,11 @@ public class SnozamaPlayer implements GamePlayer
 	{
 		if (name == null)
 		{
-			name = "snozama";
+			name = teamName;
 		}
 		if (passwd == null)
 		{
-			passwd = "alex2cody7!graeme";
+			passwd = password;
 		}
 	    gameClient = new GameClient(name, passwd, this);
 	}
@@ -56,7 +59,7 @@ public class SnozamaPlayer implements GamePlayer
 	 */
 	public SnozamaPlayer()
 	{  
-	    gameClient = new GameClient("snozama", "alex2cody7!graeme", this);
+	    gameClient = new GameClient(teamName, password, this);
 	}
 	
 	/**
@@ -111,7 +114,7 @@ public class SnozamaPlayer implements GamePlayer
 		{
 			IXMLElement user = (IXMLElement)children.nextElement();
 			int id = user.getAttribute("id", -1);
-			String name = user.getAttribute("name", "snozama");
+			String name = user.getAttribute("name", teamName);
 		}
 	}
 	
@@ -129,10 +132,10 @@ public class SnozamaPlayer implements GamePlayer
 		{
 			IXMLElement user = (IXMLElement)children.nextElement();
 			int id = user.getAttribute("id", -1);
-			String name = user.getAttribute("name", "snozama");
+			String name = user.getAttribute("name", teamName);
 			
-			// Loop continues until finds team name "snozama"
-			if (!name.equalsIgnoreCase("snozama"))
+			// Loop continues until finds team name "Snozama"
+			if (!name.equalsIgnoreCase(teamName))
 				continue;
 			
 			// TODO: What if we are spectators? should default be different?
