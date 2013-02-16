@@ -20,7 +20,7 @@ public class NegaScout {
 	public static int firstN = 500; //for possible use with N-best selection search
 	
 	public int nodes = 0;
-	int[] bestMoves = new int[10]; //FIXME hard-coded as 10 for testing
+	int[] bestMoves = new int[20]; //FIXME hard-coded as 20 for testing
 	long endTime;
 	
 	public NegaScout(long end)
@@ -41,6 +41,9 @@ public class NegaScout {
 		//probably don't need to keep the score?
 		NegaScoutSearch(board, 0, maxDepth, NEG_INFINITY, POS_INFINITY, colour, turn);
 		return bestMoves[0];
+		
+		//Iterative deepening NegaScout (plays better than regular fixed depth search)
+		//return IDNegaScoutSearch(board, colour, turn);
 	}
 	
 	/**
@@ -131,7 +134,7 @@ public class NegaScout {
 	public int IDNegaScoutSearch(Board board, int colour, int turn)
 	{
 		int depth = 1;
-		int[] bestScore = new int[10];
+		int[] bestScore = new int[20];
 		while (System.currentTimeMillis() < endTime)
 		{
 			NegaScoutSearch(board, 0, depth, NEG_INFINITY, POS_INFINITY, colour, turn);
@@ -139,7 +142,7 @@ public class NegaScout {
 			depth++;
 		}
 		boolean found = false;
-		for (int i = bestScore.length; i > 0; i--)
+		for (int i = bestScore.length-1; i >= 0; i--)
 		{
 			if (found)
 				return bestScore[i]; //return best move for deepest complete search
