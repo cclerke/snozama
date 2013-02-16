@@ -280,16 +280,18 @@ public class SnozamaPlayer implements GamePlayer
 		if (encodedMove == -1)
 		{
 			//No more moves available
-			if (SnozamaHeuristic.evaluateBoard(board, Settings.teamColour, turn) > 0)
+			int score = SnozamaHeuristic.evaluateBoard(board, Settings.teamColour, turn);
+			if (score > 0)
 			{
-				System.out.println("Snozama wins!");
+				MoveManager successors = board.getSuccessors(Settings.teamColour);
+				encodedMove = successors.getMove(0); //make last move
+				System.out.println("Snozama wins by " + (score-1) +" points!");
 			}
 			else // Unreachable code :P
 			{
 				System.out.println("The game is over.");
+				return false;
 			}
-			
-			return false;
 		}
 		
 		//Decode move using MoveManager
