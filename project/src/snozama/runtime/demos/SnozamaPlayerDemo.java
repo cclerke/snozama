@@ -6,6 +6,16 @@ import snozama.ui.eventListeners.UIReadyListener;
 
 public class SnozamaPlayerDemo
 {
+	private static final int OK = 0;
+	private static final int KAL = 1;
+	private static final int YELLOW = 2;
+	private static final int BEAR = 3;
+	private static final int BEAVER = 4;
+	private static final int JACKPINE = 5;
+	private static final int WOOD = 6;
+	
+	private static int room = OK;
+	
 	public static void main(String args[])
 	{
 		AUI.getUI();
@@ -18,6 +28,6 @@ public class SnozamaPlayerDemo
 		});
 		
 		SnozamaPlayer player = new SnozamaPlayer();
-		player.joinRoom(0);
+		player.joinRoom(room);
 	}
 }
