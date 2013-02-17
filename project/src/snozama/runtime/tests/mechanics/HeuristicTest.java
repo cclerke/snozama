@@ -34,6 +34,20 @@ public class HeuristicTest {
 	}
 	
 	@Test
+	public void testQuadrants()
+	{
+		Board board = new Board();		
+		int adj = 3;
+		
+		assertEquals(SnozamaHeuristic.quadrants(board, Board.WHITE), 0);
+		assertEquals(SnozamaHeuristic.quadrants(board, Board.BLACK), 0);
+		
+		board.moveAmazon(6, 0, 1, 5, Board.WHITE);
+		
+		assertEquals(SnozamaHeuristic.quadrants(board, Board.WHITE), 2*adj);
+	}
+	
+	@Test
 	public void timeHeuristics()
 	{
 		Board board = new Board();

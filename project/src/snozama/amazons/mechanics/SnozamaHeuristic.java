@@ -93,6 +93,52 @@ public class SnozamaHeuristic {
 		else //activePLayer is black
 			return blackMoves-whiteMoves;
 	}
+	
+	/**
+	 * Heuristic designed to distribute amazons evenly across the board.
+	 * The heuristic awards points for amazons all being in separate quadrants and evenly distributed in board halves.
+	 * The heuristic deducts points for too many amazons being in the same quadrant or same half of the board.
+	 * @param board			The current state of the board.
+	 * @param activePlayer	The colour of the active player.
+	 * @return		A score based on how evenly distributed the amazons of the given colour are.
+	 */
+	public static int quadrants(Board board, int activePlayer)
+	{
+		int score = 0;
+		int adj = 3;
+		int[] quadrant = new int [4]; // 0 = NW, 1 = NE, 2 = SW, 3 = SE
+		int[] topBounds = {0, 0, Board.SIZE/2, Board.SIZE/2};
+		int[] bottomBounds = {Board.SIZE/2, Board.SIZE/2, Board.SIZE, Board.SIZE};
+		int[] leftBounds = {0, Board.SIZE/2, 0, Board.SIZE/2};
+		int[] rightBounds = {Board.SIZE/2, Board.SIZE, Board.SIZE/2, Board.SIZE};
+		
+		for (int i = 0; i < quadrant.length; i++)
+		{
+			quadrant[i] = findInRegion(board, topBounds[i], bottomBounds[i], 
+					leftBounds[i], rightBounds[i], activePlayer);
+			
+			if (quadrant[i] == 1)
+				score += adj;
+			else if (quadrant[i] > 2)
+				score -= 2*adj;
+		}
+		
+		//Top half of board
+		int north = quadrant[0] + quadrant[1];
+		if (north == 2)
+			score += adj;
+		else if (north == 0 || north == 4)
+			score -= adj;
+		
+		//Left half of board
+		int west = quadrant[0] + quadrant[2];
+		if (west == 2)
+			score += adj;
+		else if (west == 0 || west == 4)
+			score -= adj;
+		
+		return score;
+	}
 
 	/**
 	* Calculates the difference between squares white owns and squares black owns.
@@ -256,7 +302,7 @@ public class SnozamaHeuristic {
 	 * @param colour	The colour of the amazon able to reach this square.
 	 * @return		The owner of the square. Will return 1 for white, -1 for black and 0 for neutral.
 	 */
-	private static  int markSquare(byte[][] markedBoard, int row, int col, int colour)
+	private static int markSquare(byte[][] markedBoard, int row, int col, int colour)
 	{
 		int whiteAdv = 0;
 		byte mark = (byte)(colour*10+11); // white->11, black->21
@@ -701,5 +747,39 @@ public class SnozamaHeuristic {
 			}
 		}
 		return arrows;
+	}
+	
+	/**
+	 * Counts the number of amazons of given colour that are within given region.
+	 * @param board		The current board position.
+	 * @param top		The first row to search in.
+	 * @param bottom	The bottom bounds of the search. This row is not searched.
+	 * @param left		The first column to search in.
+	 * @param right		The right bounds of the search. This column is not searched.
+	 * @param colour	The colour of the amazons to count.
+	 * @return		The number of amazons of the given colour found in the region.
+	 */
+	private static int findInRegion(Board board, int top, int bottom, int left, int right, int colour)
+	{
+		int count = 0;
+
+		for (int row = top; row < bottom; row++)
+		{
+			for (int col = left; col < right; col++)
+			{
+				if (colour == Board.WHITE)
+				{
+					if (board.isWhite(row, col))
+						count++;
+				}
+				else
+				{
+					if (board.isBlack(row, col))
+						count++;
+				}
+			}
+		}
+		
+		return count;
 	}
 }
