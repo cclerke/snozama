@@ -1,6 +1,7 @@
 package snozama.ui;
 
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
@@ -22,7 +23,6 @@ import snozama.ui.eventListeners.*;
  * 
  * Main UI For the Amazons Game
  * 
- * TODO: have to go move by move, instead of board by board.
  *
  */
 
@@ -54,7 +54,7 @@ public class AmazonUI extends AbstractAmazonUI
 	/**
 	 * Main Window Height
 	 */
-	private static final int WINDOW_HEIGHT = 600;
+	private static final int WINDOW_HEIGHT = 620;
 	
 	/**
 	 * Main Images used in the game
@@ -69,17 +69,20 @@ public class AmazonUI extends AbstractAmazonUI
 	 */
 	private Board board;
 	
+	private static String[][] labels = new String[2][10];
+	
 	/**
 	 * Width of a square on the board in pixels;
 	 */
 	private static final int SQUARE_WIDTH = 50;
-	private static final int X_OFFSET = 20;
+	private static final int X_OFFSET = 40;
 	private static final int Y_OFFSET = 20;
 	
 	private static JLayeredPane pane;
 	private static JPanel panel;
 	private static JLabel boardPanel;
 	private static JLayeredPane gameLayer;
+	private static JPanel log;
 	
 	private AmazonUI()
 	{
@@ -97,11 +100,14 @@ public class AmazonUI extends AbstractAmazonUI
 	{
 		currentMove = 0;
 		historicMove = 0;
-		setImages();
+		initWindowSettings();
+		createMenuBar();
 		
-	    initWindowSettings();
+		setImages();
 	    createMainPanel();
-	    createMenuBar();
+	    setUpLabels();
+	    
+	    createLogPanel();
 	    
 	    ready();
 	}
@@ -170,6 +176,15 @@ public class AmazonUI extends AbstractAmazonUI
 		
 	}
 	
+	public void createLogPanel()
+	{
+		log = new JPanel();
+		log.setLayout( new BoxLayout( log, BoxLayout.Y_AXIS) );
+		log.setBounds(X_OFFSET + boardPanel.getWidth() + 20, 120, 400, 400);
+
+		panel.add( log );
+	}
+	
 	/**
 	 * Reads the current board and places the Amazons and arrows appropriately.
 	 */
@@ -207,6 +222,8 @@ public class AmazonUI extends AbstractAmazonUI
 	
 	public Boolean moveAmazon( int row_s, int col_s, int row_f, int col_f, int row_a, int col_a)
 	{
+		int whoseMove = board.isWhite( row_s, col_s ) ? Board.WHITE : Board.BLACK;
+		
 		if( historicMove == currentMove )
 		{
 			/* Move Amazon */
@@ -220,6 +237,14 @@ public class AmazonUI extends AbstractAmazonUI
 		/* Save move in history */
 		String move = row_s + "-" + col_s + "-" + row_f + "-" + col_f + "-" + row_a + "-" + col_a;
 		moveHistory.add(move);
+		
+		String message = whoseMove == Board.WHITE ? "White" : "Black";
+		message += " moved from " + row_s + ", " + col_s + " to ";
+		message += row_f + ", " + col_f + " and shot an arrow to " + row_a + ", " + col_a;
+		log.add( new JLabel( message ) );
+		
+		board.move( row_s, col_s, row_f, col_f, row_a, col_a, whoseMove );
+		
 		currentMove++;
 		
 		// TODO: return based on whether move was successful.
@@ -308,6 +333,102 @@ public class AmazonUI extends AbstractAmazonUI
 		piece.setBounds(col*SQUARE_WIDTH + 5, row*SQUARE_WIDTH + 5, 40, 40 );
 	}
 	
+	
+	
+	/**
+	 * Window settings for Game Window
+	 */
+	private void initWindowSettings()
+	{
+		setTitle("Amazons");
+	    setSize(WINDOW_WIDTH, WINDOW_HEIGHT);
+	    setLocationRelativeTo(null);
+	    setDefaultCloseOperation(EXIT_ON_CLOSE);
+	}
+	
+	/*
+	 * Base Labels
+	 */
+	private void setUpLabels()
+	{
+		labels = Labels.STANDARD;
+		
+		int top = SQUARE_WIDTH * 10 + Y_OFFSET;
+		int left = X_OFFSET + 20;
+		
+		Font font = new Font( "Verdana", 0, 14 );
+		
+		JLabel[] x_s =  new JLabel[10];
+		for( int i = 0; i < x_s.length ; i ++ )
+		{
+			x_s[i] = new JLabel( labels[0][i] );
+			x_s[i].setBounds( left, top, 30, 30 );
+			x_s[i].setFont( font );
+			x_s[i].setForeground( new Color( 240, 240, 240 ) );
+			x_s[i].setHorizontalTextPosition( SwingConstants.CENTER );
+			panel.add( x_s[i] );
+			
+			left+=SQUARE_WIDTH;
+		}
+		
+		top = Y_OFFSET + 10;
+		left = X_OFFSET - 25;
+		
+		JLabel[] y_s =  new JLabel[10];
+		for( int i = 9; i >= 0 ; i -- )
+		{
+			y_s[i] = new JLabel( labels[1][i] );
+			y_s[i].setBounds( left, top, 30, 30 );
+			y_s[i].setFont( font );
+			y_s[i].setForeground( new Color( 240, 240, 240 ) );
+			y_s[i].setHorizontalTextPosition( SwingConstants.RIGHT );
+			panel.add( y_s[i] );
+			
+			top+=SQUARE_WIDTH;
+		}
+		
+	}
+	
+	private void changeLabels( String[][] type )
+	{
+		labels = type;
+		
+		int top = SQUARE_WIDTH * 10 + Y_OFFSET;
+		int left = X_OFFSET + 20;
+		
+		for( int i = 0; i < 10 ; i ++ )
+		{
+			JLabel t = (JLabel) panel.findComponentAt( left, top );
+			if( labels == null )
+			{
+				t.setText( "" );
+			}
+			else
+			{
+				t.setText( labels[0][i] );
+			}
+			left+=SQUARE_WIDTH;
+		}
+		
+		top = Y_OFFSET + 10;
+		left = X_OFFSET - 25;
+		
+		for( int i = 9; i >= 0 ; i -- )
+		{
+			JLabel t = (JLabel) panel.findComponentAt( left, top );
+			if( labels == null )
+			{
+				t.setText( "" );
+			}
+			else
+			{
+				t.setText( labels[1][i] );
+			}
+			top+=SQUARE_WIDTH;
+		}
+		
+	}
+	
 	/**
 	 * Set up the main menu bar with possible options.
 	 */
@@ -326,18 +447,80 @@ public class AmazonUI extends AbstractAmazonUI
 		file.add(quit);
 		menu.add(file);
 		
+		/* Labels */
+		
+		JMenu view = new JMenu("View");
+		JMenu v_labels = new JMenu("Labels");
+		JMenuItem standard = new JMenuItem("Standard");
+		standard.addActionListener( new ActionListener(){
+			public void actionPerformed(ActionEvent event)
+			{
+				changeLabels( Labels.STANDARD );
+			}
+		});
+		JMenuItem inverted = new JMenuItem("Inverted");
+		inverted.addActionListener( new ActionListener(){
+			public void actionPerformed(ActionEvent event)
+			{
+				changeLabels( Labels.INVERTED );
+			}
+		});
+		JMenuItem standard_zero = new JMenuItem("Standard Zero-Based");
+		standard_zero.addActionListener( new ActionListener(){
+			public void actionPerformed(ActionEvent event)
+			{
+				changeLabels( Labels.STANDARD_ZERO );
+			}
+		});
+		JMenuItem inverted_zero = new JMenuItem("Inverted Zero-Based");
+		inverted_zero.addActionListener( new ActionListener(){
+			public void actionPerformed(ActionEvent event)
+			{
+				changeLabels( Labels.INVERTED_ZERO );
+			}
+		});
+		JMenuItem letters = new JMenuItem("Letters");
+		letters.addActionListener( new ActionListener(){
+			public void actionPerformed(ActionEvent event)
+			{
+				changeLabels( Labels.LETTERS );
+			}
+		});
+		JMenuItem numbers = new JMenuItem("Numbers");
+		numbers.addActionListener( new ActionListener(){
+			public void actionPerformed(ActionEvent event)
+			{
+				changeLabels( Labels.NUMBERS );
+			}
+		});
+		JMenuItem numbers_zero = new JMenuItem("Numbers Zero-Based");
+		numbers_zero.addActionListener( new ActionListener(){
+			public void actionPerformed(ActionEvent event)
+			{
+				changeLabels( Labels.NUMBERS_ZERO );
+			}
+		});
+		JMenuItem none = new JMenuItem("None");
+		none.addActionListener( new ActionListener(){
+			public void actionPerformed(ActionEvent event)
+			{
+				changeLabels( null );
+			}
+		});
+		v_labels.add( standard );
+		v_labels.add( inverted );
+		v_labels.add( standard_zero );
+		v_labels.add( inverted_zero );
+		v_labels.add( letters );
+		v_labels.add( numbers );
+		v_labels.add( numbers_zero );
+		v_labels.add( none );
+		
+		view.add( v_labels );
+		
+		menu.add( view );
+		
 		setJMenuBar(menu);
-	}
-	
-	/**
-	 * Window settings for Game Window
-	 */
-	private void initWindowSettings()
-	{
-		setTitle("Amazons");
-	    setSize(WINDOW_WIDTH, WINDOW_HEIGHT);
-	    setLocationRelativeTo(null);
-	    setDefaultCloseOperation(EXIT_ON_CLOSE);
 	}
 	
 	/**
