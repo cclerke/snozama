@@ -19,13 +19,6 @@ public class SnozamaPlayerDemo
 	public static void main(String args[])
 	{
 		AUI.getUI();
-		AUI.ready(new UIReadyListener(){
-			@Override
-			public void ready()
-			{
-				//Does anything need to go in here?
-			}
-		});
 		
 		SnozamaPlayer player = new SnozamaPlayer();
 		player.joinRoom(room);
