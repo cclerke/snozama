@@ -14,6 +14,10 @@ public class SnozamaPlayerDemo
 			public void ready()
 			{
 				//Does anything need to go in here?
+				/* - alex: anything that requires the UI to be ready to interact with
+				 * the application should go in here. It's probably a good idea to put
+				 * everything in inside the ready.
+				 */
 			}
 		});
 		
