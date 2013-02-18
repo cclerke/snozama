@@ -295,12 +295,9 @@ public class SnozamaHeuristic {
 		{
 			for (int i = 0; i < index; i++) //for each unmarked square
 			{
-				if (unmarked[i] != 0)
-				{
-					int row = unmarked[i]/10;
-					int col = unmarked[i]%10;
-					whiteAdv += findMarkedSquares(board, markedBoard, row, col, itr);
-				}
+				int row = unmarked[i]/10;
+				int col = unmarked[i]%10;
+				whiteAdv += findMarkedSquares(board, markedBoard, row, col, itr);
 			}
 		}
 		return whiteAdv;
