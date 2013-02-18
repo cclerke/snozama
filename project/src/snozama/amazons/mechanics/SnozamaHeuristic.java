@@ -105,7 +105,7 @@ public class SnozamaHeuristic {
 	public static int quadrants(Board board, int activePlayer)
 	{
 		int score = 0;
-		int adj = 3;
+		int adj = 2;
 		int[] quadrant = new int [4]; // 0 = NW, 1 = NE, 2 = SW, 3 = SE
 		int[] topBounds = {0, 0, Board.SIZE/2, Board.SIZE/2};
 		int[] bottomBounds = {Board.SIZE/2, Board.SIZE/2, Board.SIZE, Board.SIZE};
@@ -270,24 +270,39 @@ public class SnozamaHeuristic {
 			}
 		}// end of Step 1
 
-			/*
-			 * Step 2: For each unmarked square find a path to a marked square
-			 * 			Repeat until all squares are marked or we run a set number of iterations
-			 */
-			int maxIterations = 8;
-			for (int itr = 2; itr <= maxIterations; itr++)
+		/*
+		 * Step 2: For each unmarked square find a path to a marked square
+		 * 	Repeat until all squares are marked or we run a set number of iterations
+		 */
+		int[] unmarked = new int[92];
+		int index = 0;
+		for (int row = 0; row < Board.SIZE; row++)
+		{
+			for (int col = 0; col < Board.SIZE; col++)
 			{
-				for (int row = 0; row < Board.SIZE; row++)
+				if (markedBoard[row][col] == 0)
 				{
-					for (int col = 0; col < Board.SIZE; col++)
+					whiteAdv += findMarkedSquares(board, markedBoard, row, col, 2);
+					if (markedBoard[row][col] == 0) //square still cannot be reached in this iteration
 					{
-						if (markedBoard[row][col] == 0)
-						{
-							whiteAdv += findMarkedSquares(board, markedBoard, row, col, itr);
-						}
+						unmarked[index++] = row*10 + col; //put unmarked square in list to check later
 					}
 				}
 			}
+		}
+		int maxIterations = 8;
+		for (int itr = 3; itr < maxIterations; itr++)
+		{
+			for (int i = 0; i < index; i++) //for each unmarked square
+			{
+				if (unmarked[i] != 0)
+				{
+					int row = unmarked[i]/10;
+					int col = unmarked[i]%10;
+					whiteAdv += findMarkedSquares(board, markedBoard, row, col, itr);
+				}
+			}
+		}
 		return whiteAdv;
 	} //end of Step 2
 	
