@@ -1,5 +1,7 @@
 package snozama.amazons.mechanics.algo;
 
+import java.util.Arrays;
+
 import snozama.amazons.global.GlobalFunctions;
 import snozama.amazons.mechanics.Board;
 import snozama.amazons.mechanics.MoveManager;
@@ -19,13 +21,23 @@ public class NegaScout {
 	
 	public static int firstN = 500; //for possible use with N-best selection search
 	
+	// Statistical fields.
 	public int nodes = 0;
+	public int depthCompleted;
+	
 	int[] bestMoves = new int[20]; //FIXME hard-coded as 20 for testing
+	int[] scores = new int[2176];
+	
 	long endTime;
+	
+	int currentRoot;
 	
 	public NegaScout(long end)
 	{
 		endTime = end;
+
+		Arrays.fill(scores, NEG_INFINITY);
+		depthCompleted = 0;
 	}
 	
 	/**
@@ -33,7 +45,7 @@ public class NegaScout {
 	 * @param board		The current board position.
 	 * @param colour	The player for whom to find a move for.
 	 * @param turn		The current ply of the game.
-	 * @return			Returns the best move found by the search algortihm.
+	 * @return			Returns the best move found by the search algorihm.
 	 */
 	public int chooseMove(Board board, int colour, int turn)
 	{
@@ -60,37 +72,38 @@ public class NegaScout {
 	public int NegaScoutSearch(Board board, int depth, int maxDepth, int alpha, int beta, int colour, int turn)
 	{
 		int next = 0;
+		
 		if (depth == maxDepth || board.isTerminal())
 		{
-			return SnozamaHeuristic.evaluateBoard(board, colour, turn);
+			int value = SnozamaHeuristic.evaluateBoard(board, colour, turn);
+			
+			if (value > scores[currentRoot])
+			{
+				scores[currentRoot] = value;
+			}
+			return value;
 		}
 		
 		int score = Integer.MIN_VALUE;
 		int b = beta;
 		MoveManager successors = board.getSuccessors(colour); //generate successors
 		
-		//move ordering
-		//evaluate all moves available at initial depth and sort descending
-		if (depth == 0)
+		// Move ordering for iterative deepening.
+		if (next == 0 && depth == 0 && maxDepth > 1)
 		{
-			int[] scores = new int[successors.size()];
-			while (successors.hasIterations())
-			{
-				int index = successors.nextIterableIndex();
-				int row_s = Board.decodeAmazonRow(board.amazons[colour][successors.getAmazonIndex(index)]);
-				int col_s = Board.decodeAmazonColumn(board.amazons[colour][successors.getAmazonIndex(index)]);
-				successors.applyMove(board, index);
-				scores[index] = SnozamaHeuristic.evaluateBoard(board, colour, turn);
-				successors.undoMove(board, index, row_s, col_s);
-			}
 			successors.sort(scores);
-			successors.clearIteratorState();
 		}
-		//end move ordering
 
 		while (successors.hasIterations() && System.currentTimeMillis() < endTime) //for each move or until turn time runs out
 		{
 			next = successors.nextIterableIndex();
+			
+			if (depth == 0)
+			{
+				currentRoot = next;
+				scores[currentRoot] = alpha;
+			}
+			
 			int row_s = Board.decodeAmazonRow(board.amazons[colour][successors.getAmazonIndex(next)]);
 			int col_s = Board.decodeAmazonColumn(board.amazons[colour][successors.getAmazonIndex(next)]);
 			successors.applyMove(board, next); //execute current move
@@ -109,6 +122,7 @@ public class NegaScout {
 			if (score > alpha)
 			{
 				alpha = score; //adjust the search window
+				
 				bestMoves[depth] = successors.getMove(next);
 			}			
 			
@@ -118,6 +132,9 @@ public class NegaScout {
 			{
 				return alpha; //cut off
 			}
+			
+			// Update scores array.
+			scores[currentRoot] = score;
 			
 			b = alpha + 1;
 		}
@@ -134,11 +151,12 @@ public class NegaScout {
 	public int IDNegaScoutSearch(Board board, int colour, int turn)
 	{
 		int depth = 1;
-		int[] bestScore = new int[20];
+		int[] bestScore = new int[20];	// Really an array of best moves at a given depth.  TODO: Rename.
 		while (depth <= 20 && System.currentTimeMillis() < endTime)
 		{
 			NegaScoutSearch(board, 0, depth, NEG_INFINITY, POS_INFINITY, colour, turn);
 			bestScore[depth-1] = bestMoves[0]; //store best move for each depth
+			depthCompleted = depth;
 			depth++;
 		}
 		boolean found = false;

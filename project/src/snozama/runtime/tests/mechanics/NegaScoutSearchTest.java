@@ -22,6 +22,7 @@ public class NegaScoutSearchTest {
 		
 		int move = search.chooseMove(board, colour, turn);
 		
+		System.out.println("Reached depth: "+search.depthCompleted);
 		System.out.println("Nodes: "+search.nodes);
 			int mColour = ((move & (0xf << (4*0))) >> (4*0));
 			int mAmazon = ((move & (0xf << (4*1))) >> (4*1));
