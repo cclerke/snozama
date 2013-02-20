@@ -3,7 +3,6 @@ package snozama.client;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Iterator;
-import java.util.Random;
 
 import net.n3.nanoxml.IXMLElement;
 
@@ -35,7 +34,7 @@ public class SnozamaPlayer implements GamePlayer
 	private Board board;
 	private int turn = 0;
 	
-	private String teamName = "Snozoma";
+	private String teamName = "Snozama";
 	private String password = "alexcodygraeme";
 	
 	/**
@@ -44,9 +43,7 @@ public class SnozamaPlayer implements GamePlayer
 	 * @param passwd	Password to be used on the game server.
 	 */
 	public SnozamaPlayer(String name, String passwd)
-	{
-		Random rand = new Random();
-		
+	{	
 		if (name == null)
 		{
 			name = teamName;
@@ -272,7 +269,7 @@ public class SnozamaPlayer implements GamePlayer
 	}
 	
 	/**
-	 * Completes the process of making Snozma's move. This process includes searching the game tree for a move,
+	 * Completes the process of making Snozama's move. This process includes searching the game tree for a move,
 	 *  decoding the move into its component parts, making the move on the program's internal board, moving the
 	 *  piece on the program's user interface and sending the move to the server.
 	 * @return	<code>True</code>
