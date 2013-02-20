@@ -8,7 +8,7 @@ package snozama.amazons.mechanics;
 
 public class SnozamaHeuristic {
 
-	
+	private static byte[][] markedBoard;
 	/*
 	 * Heuristic strategy:
 	 * 	Use linear combination of minimum stone ply (MSP) and min-mobility (and regions, if implemented)
@@ -148,7 +148,7 @@ public class SnozamaHeuristic {
 	public static int minPliesToSquare(Board board)
 	{
 		int whiteAdv = 0;
-		byte[][] markedBoard = board.copy();
+		markedBoard = board.copy();
 		/*
 		 * Given a square on the board, find the closest player of the given player
 		 * Strategy:
@@ -796,5 +796,117 @@ public class SnozamaHeuristic {
 		}
 		
 		return count;
+	}
+	
+	
+	/*
+	 * FIXME
+	 * areaMSP currently requires:
+	 * 	1. markedBoard be accessible to search through it
+	 * 	2. MSP be run before it to colour all the squares
+	 * 
+	 * Ideas:
+	 * 	1. Keep markedBoard accessible and have a colour board function that runs every time we evaluate the board.
+	 * 		Then we could have:
+	 * 			i) MSP (difference between total number of squares owned)
+	 * 			ii) areaMSP (difference between total area owned, larger regions more valuable)
+	 * 			iii) distanceMSP (difference between total number of squares owned weighted towards 
+	 * 				squares that can be reached in fewer moves, which might help the end-game play (to be implemented))
+	 */
+	
+	/**
+	 * Variation of minimum stone play (MSP) that values larger contiguous areas over smaller areas.
+	 * The heuristic finds each region on the board owned by each colour.
+	 * A region is scored as the number of squares in the region squared.
+	 * The score for each region is added to the score for the colour owning that region.
+	 * @param activePlayer	The player whose turn it is.
+	 * @return	The value of the regions owned by the active player in this board position.
+	 */
+	public static int areaMSP(int activePlayer)
+	{
+		int whiteArea = 0;
+		int blackArea = 0;
+		for (int i = 0; i < Board.SIZE; i++)
+		{
+			for (int j = 0; j < Board.SIZE; j++)
+			{
+				// Checks if square is not empty/occupied, not marked neutral, not already visited
+				if (markedBoard[i][j] > 10 && markedBoard[i][j] != 'N' && markedBoard[i][j] < 100)
+				{
+					int colour = markedBoard[i][j]/10; //Result in 1 for white, 2 for black
+					int area = visit(i, j, colour);
+					if (colour-1 == Board.WHITE)
+					{
+						whiteArea += Math.pow(area, 2);
+					}
+					else if (colour-1 == Board.BLACK)
+					{
+						blackArea += Math.pow(area, 2);
+					}
+				}
+			}
+		}
+		if (activePlayer == Board.WHITE)
+			return whiteArea - blackArea;
+		else //active player is black
+			return blackArea - whiteArea;
+	}
+	
+	/**
+	 * Counts the number of contiguous squares in a region.
+	 * The function works recursively checking if the neighbours of the current square are the same colour.
+	 * It is modelled after the flood fill algorithm using a depth-first approach.
+	 * @param row		The row of the current square being visited.
+	 * @param col		The column of the current square being visited.
+	 * @param colour	The colour the current region belongs to.
+	 * @return		The number of unvisited squares connected to the starting square.
+	 */
+	public static int visit(int row, int col, int colour)
+	{
+		markedBoard[row][col] += 100; // Indicates this square has been visited.
+		int area = 1;
+
+		// Check square to the right
+		if (col != Board.SIZE-1 && markedBoard[row][col+1]/10 == colour)
+		{
+			area += visit(row, col+1, colour);
+		}
+		// Check square to the left
+		if (col != 0 && markedBoard[row][col-1]/10 == colour)
+		{
+			area += visit(row, col-1, colour);
+		}
+		// Check square below
+		if (row != Board.SIZE-1 && markedBoard[row+1][col]/10 == colour)
+		{
+			area += visit(row+1, col, colour);
+		}
+		// Check square above
+		if (row != 0 && markedBoard[row-1][col]/10 == colour)
+		{
+			area += visit(row-1, col, colour);
+		}
+		// Check square diagonally (\) to the right
+		if (row != Board.SIZE-1 && col != Board.SIZE-1 && markedBoard[row+1][col+1]/10 == colour)
+		{
+			area += visit(row+1, col+1, colour);
+		}
+		// Check square diagonally (\) to the left
+		if (row != 0 && col != 0 && markedBoard[row-1][col-1]/10 == colour)
+		{
+			area += visit(row-1, col-1, colour);
+		}
+		// Check square anti-diagonally (/) to the right
+		if (row != 0 && col != Board.SIZE-1 && markedBoard[row-1][col+1]/10 == colour)
+		{
+			area += visit(row-1, col+1, colour);
+		}
+		// Check square anti-diagonally (/) to the left
+		if (row != Board.SIZE-1 && col != 0 && markedBoard[row+1][col-1]/10 == colour)
+		{
+			area += visit(row+1, col-1, colour);
+		}
+		
+		return area;
 	}
 }
