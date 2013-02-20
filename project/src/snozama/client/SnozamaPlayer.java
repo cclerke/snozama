@@ -3,6 +3,7 @@ package snozama.client;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Iterator;
+import java.util.Random;
 
 import net.n3.nanoxml.IXMLElement;
 
@@ -34,8 +35,8 @@ public class SnozamaPlayer implements GamePlayer
 	private Board board;
 	private int turn = 0;
 	
-	private String teamName = "Snozama";
-	private String password = "alex2cody7!graeme";
+	private String teamName = "Snozoma";
+	private String password = "alexcodygraeme";
 	
 	/**
 	 * Constructor where player name and password may be arbitrarily set.
@@ -44,9 +45,12 @@ public class SnozamaPlayer implements GamePlayer
 	 */
 	public SnozamaPlayer(String name, String passwd)
 	{
+		Random rand = new Random();
+		
 		if (name == null)
 		{
 			name = teamName;
+			name += rand.nextInt();
 		}
 		if (passwd == null)
 		{
@@ -145,6 +149,10 @@ public class SnozamaPlayer implements GamePlayer
 				Settings.teamColour = Board.WHITE;
 			else if (role.equalsIgnoreCase("B"))
 				Settings.teamColour = Board.BLACK;
+			else if (role.equalsIgnoreCase("S"))
+			{
+				// TODO: Spectate and stuff.
+			}
 			
 			board = new Board();
 		}
