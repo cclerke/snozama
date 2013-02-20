@@ -33,7 +33,7 @@ public class ZobristTTableTest {
 		int[] record = table.get(board);
 		
 		// Test data.
-		assertEquals(record[ZobristTTable.SCORE], 10);
+		assertEquals(record[ZobristTTable.POS_INFO], 10);
 		assertEquals(record[ZobristTTable.DEPTH], 0);
 		assertEquals(record[ZobristTTable.LOWER], -100);
 		assertEquals(record[ZobristTTable.UPPER], -10);
@@ -42,7 +42,7 @@ public class ZobristTTableTest {
 		record = null;
 		
 		record = table.get(table.computeBoardHash(board));
-		assertEquals(record[ZobristTTable.SCORE], 10);
+		assertEquals(record[ZobristTTable.POS_INFO], 10);
 		assertEquals(record[ZobristTTable.DEPTH], 0);
 		assertEquals(record[ZobristTTable.LOWER], -100);
 		assertEquals(record[ZobristTTable.UPPER], -10);

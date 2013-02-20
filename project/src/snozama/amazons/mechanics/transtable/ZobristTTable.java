@@ -35,7 +35,7 @@ public class ZobristTTable implements TranspositionTable
 	/**
 	 * The position of the score within the stored record.
 	 */
-	public static final int SCORE = 0;
+	public static final int POS_INFO = 0;
 	
 	/**
 	 * The position of the depth within the stored record.
@@ -211,17 +211,18 @@ public class ZobristTTable implements TranspositionTable
 	 * Add entry to transposition table.
 	 * 
 	 * @param board		The board (position) that is to be hashed.
-	 * @param score		The score of the board to be hashed.
+	 * @param prev_move	The move that produced this board.
 	 * @param depth		The depth of the board to be hashed.
 	 * @param lower		The lower bound used to find the score of the hashed
 	 * 					board.
 	 * @param upper		The upper bound used to find the value of the hashed
 	 * 					board.
-	 * @param move		The {@code MoveManager} encoded move data.
+	 * @param move		The {@code MoveManager} encoded move data that represents
+	 * 					the best move for this position.
 	 * @return			{@code true} if the value was added properly,
 	 * 					{@code false} otherwise.
 	 */
-	public boolean put(Board board, int score, int depth, int lower, int upper, int move)
+	public boolean put(Board board, int prev_move, int depth, int lower, int upper, int move)
 	{
 		int key = computeBoardHash(board) % size;
 		
@@ -231,7 +232,7 @@ public class ZobristTTable implements TranspositionTable
 			collisions++;
 		}
 		
-		hashTable[key][SCORE] = score;
+		hashTable[key][POS_INFO] = prev_move;
 		hashTable[key][DEPTH] = depth;
 		hashTable[key][LOWER] = lower;
 		hashTable[key][UPPER] = upper;
@@ -244,17 +245,18 @@ public class ZobristTTable implements TranspositionTable
 	 * Add entry to transposition table.
 	 * 
 	 * @param key		The key of the location to place the value in.
-	 * @param score		The score of the board to be hashed.
+	 * @param prev_move	The score of the board to be hashed.
 	 * @param depth		The depth of the board to be hashed.
 	 * @param lower		The lower bound used to find the score of the hashed
 	 * 					board.
 	 * @param upper		The upper bound used to find the value of the hashed
 	 * 					board.
-	 * @param move		The {@code MoveManager} encoded move data.
+	 * @param move		The {@code MoveManager} encoded move data that
+	 * 					represents the best move for this board.
 	 * @return			{@code true} if the value was added properly,
 	 * 					{@code false} otherwise.
 	 */
-	public boolean put(int key, int score, int depth, int lower, int upper, int move)
+	public boolean put(int key, int prev_move, int depth, int lower, int upper, int move)
 	{
 		key %= size;
 		// For now, we will use the "newest" replacement strategy.
@@ -263,11 +265,33 @@ public class ZobristTTable implements TranspositionTable
 			collisions++;
 		}
 		
-		hashTable[key][SCORE] = score;
+		hashTable[key][POS_INFO] = prev_move;
 		hashTable[key][DEPTH] = depth;
 		hashTable[key][LOWER] = lower;
 		hashTable[key][UPPER] = upper;
 		hashTable[key][MOVE]  = move;
+		
+		return true;
+	}
+	
+	/**
+	 * Add entry to transposition table.
+	 * 
+	 * @param key		The key of the location to place the value in.
+	 * @param record	The record that is to be stored.
+	 * @return			{@code true} if the value was added properly,
+	 * 					{@code false} otherwise.
+	 */
+	public boolean put(int key, int[] record)
+	{
+		key %= size;
+		// For now, we will use the "newest" replacement strategy.
+		if (get(key)[DEPTH] != -1)
+		{
+			collisions++;
+		}
+		
+		hashTable[key] = record;
 		
 		return true;
 	}
@@ -281,7 +305,7 @@ public class ZobristTTable implements TranspositionTable
 	public int[] get(int key)
 	{
 		key %= size;
-		return hashTable[key];
+		return hashTable[key].clone();
 	}
 	
 	/**
@@ -294,7 +318,7 @@ public class ZobristTTable implements TranspositionTable
 	{
 		int key = computeBoardHash(board) % size;
 		
-		return hashTable[key];
+		return hashTable[key].clone();
 	}
 	
 	/**

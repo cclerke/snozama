@@ -116,8 +116,8 @@ public class MoveManager
 	 * 
 	 * @param board		The board to apply the move to.
 	 * @param index		The index of the move to apply.
-	 * @return	{@value true} if the move was applied successfully, 
-	 * 			{@value false} otherwise.
+	 * @return	{@code true} if the move was applied successfully, 
+	 * 			{@code false} otherwise.
 	 */
 	public boolean applyMove(Board board, int index)
 	{
@@ -127,14 +127,35 @@ public class MoveManager
 	}
 	
 	/**
+	 * Apply a move to a board.
+	 * 
+	 * @param board		The board to apply the move to.
+	 * @param move		The move to apply.
+	 * @return	{@code true} if the move was applied successfully, 
+	 * 			{@code false} otherwise.
+	 */
+	public static boolean applyUnmanagedMove(Board board, int move)
+	{
+		int index = staticDecodePortion(move, AMAZON_ARRAY_INDEX);
+		int colour = staticDecodePortion(move, PLAYER_COLOUR);
+		int row_s = Board.decodeAmazonRow(board.amazons[colour][index]);
+		int col_s = Board.decodeAmazonColumn(board.amazons[colour][index]);
+		return board.move(row_s, col_s,
+				staticDecodePortion(move, AMAZON_ROW_FINISH),
+				staticDecodePortion(move, AMAZON_COLUMN_FINISH),
+				staticDecodePortion(move, ARROW_ROW),
+				staticDecodePortion(move, ARROW_COLUMN), colour);
+	}
+	
+	/**
 	 * Undo a move from a board.
 	 * 
 	 * @param board		The board to undo the move for.
 	 * @param index		The index of the move to undo.
 	 * @param row_s		Row where amazon previously was.
 	 * @param col_s		Column where amazon previously was.
-	 * @return	{@value true} if the move was undone successfully,
-	 * 			{@value false} otherwise.
+	 * @return	{@code true} if the move was undone successfully,
+	 * 			{@code false} otherwise.
 	 */
 	public boolean undoMove(Board board, int index, int row_s, int col_s)
 	{
@@ -151,6 +172,33 @@ public class MoveManager
 	}
 	
 	/**
+	 * Undo an unmanaged move from a board.
+	 * 
+	 * @param board		The board to undo the move for.
+	 * @param move		The move to undo.
+	 * @param row_s		Row where amazon previously was.
+	 * @param col_s		Column where amazon previously was.
+	 * @return			{@code true} if the move was undone successfully,
+	 *					{@code false} otherwise.
+	 */
+	public static boolean undoUnmanagedMove(Board board, int move, int row_s, int col_s)
+	{
+		int index = staticDecodePortion(move, AMAZON_ARRAY_INDEX);
+		int colour = staticDecodePortion(move, PLAYER_COLOUR);
+		
+		board.board[staticDecodePortion(move, ARROW_ROW)][staticDecodePortion(move, ARROW_COLUMN)] = Board.EMPTY;
+		
+		board.board[staticDecodePortion(move, AMAZON_ROW_FINISH)][staticDecodePortion(move, AMAZON_COLUMN_FINISH)] = Board.EMPTY;
+		
+		board.board[row_s][col_s] = Board.OCCUPIED;
+		
+		board.amazons[colour][index]=
+				Board.encodeAmazonPosition(row_s, col_s);
+		
+		return true;
+	}
+	
+	/**
 	 * Decode a portion of a move.
 	 * @param index		The index of the move to be decoded.
 	 * @param portion	Which set of 4 bits to be decoded.		
@@ -159,6 +207,41 @@ public class MoveManager
 	private int decodePortion(int index, int portion)
 	{
 		return ((moves[index] & (0xf << (4*portion))) >> (4*portion));
+	}
+	
+	/**
+	 * Decode a portion of an arbitrary move.
+	 * @param move		The move to decode from.
+	 * @param portion	Which set of 4 bits to be decoded.		
+	 * @return	The decoded portion of the move at index.
+	 */
+	private static int staticDecodePortion(int move, int portion)
+	{
+		return ((move & (0xf << (4*portion))) >> (4*portion));
+	}
+	
+	/**
+	 * Get the moving amazon's index from an unmanaged move.
+	 * 
+	 * @param move		The move that is to be decoded.
+	 * @param board		The board that is referenced.
+	 * @return			The index of the moving amazon.
+	 */
+	public static int getAmazonIndexFromUnmanagedMove(int move, Board board)
+	{
+		return staticDecodePortion(move, AMAZON_ARRAY_INDEX);
+	}
+	
+	/**
+	 * Get the moving amazon's colour from an unmanaged move.
+	 * 
+	 * @param move		The move that is to be decoded.
+	 * @param board		The board that is referenced.
+	 * @return			The colour of the player.
+	 */
+	public static int getPlayerColourFromUnmanagedMove(int move, Board board)
+	{
+		return staticDecodePortion(move, PLAYER_COLOUR);
 	}
 	
 	/**
