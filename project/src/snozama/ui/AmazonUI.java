@@ -351,7 +351,7 @@ public class AmazonUI extends AbstractAmazonUI
 	 */
 	private void setUpLabels()
 	{
-		labels = Labels.STANDARD;
+		labels = Labels.INVERTED_ZERO;
 		
 		int top = SQUARE_WIDTH * 10 + Y_OFFSET;
 		int left = X_OFFSET + 20;
