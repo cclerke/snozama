@@ -123,12 +123,12 @@ public class TranspositionNegaScout {
 			return value;
 		}
 		
-		int score;
+		int score = NEG_INFINITY;
 		int row_s;
 		int col_s;
 		
 		/// Transposition table code - attempt found value FIRST ///////////////
-		if (true)	// TODO: Only check if the position is actually this position.
+		if (zrecord[ZobristTTable.DEPTH] > -1)	// TODO: Only check if the position is actually this position.
 		{
 			 score = Integer.MIN_VALUE;
 			int aindex = MoveManager.getAmazonIndexFromUnmanagedMove(zrecord[ZobristTTable.MOVE], board);
@@ -145,8 +145,6 @@ public class TranspositionNegaScout {
 			if (score > alpha)
 			{
 				alpha = score;
-System.out.println("!!!!!!!!!!!");
-System.out.println(score);
 				bestMoves[depth] = zrecord[ZobristTTable.MOVE];
 			}
 			
