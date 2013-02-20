@@ -25,32 +25,32 @@ public class MoveManager
 	/**
 	 * Portion of move that is for the player's colour.
 	 */
-	private static final int PLAYER_COLOUR = 0;
+	public static final int PLAYER_COLOUR = 0;
 	
 	/**
 	 * Portion of move that is for the index within the board's amazon array.
 	 */
-	private static final int AMAZON_ARRAY_INDEX = 1;
+	public static final int AMAZON_ARRAY_INDEX = 1;
 	
 	/**
 	 * Portion of move that is for row of the final position of amazon.
 	 */
-	private static final int AMAZON_ROW_FINISH = 2;
+	public static final int AMAZON_ROW_FINISH = 2;
 	
 	/**
 	 * Portion of move that is for column of final position of amazon.
 	 */
-	private static final int AMAZON_COLUMN_FINISH = 3;
+	public static final int AMAZON_COLUMN_FINISH = 3;
 	
 	/**
 	 * Portion of move that is for row of the arrow that will be placed.
 	 */
-	private static final int ARROW_ROW = 4;
+	public static final int ARROW_ROW = 4;
 	
 	/**
 	 * Portion of move that is for column of the arrow that will be placed.
 	 */
-	private static final int ARROW_COLUMN = 5;
+	public static final int ARROW_COLUMN = 5;
 	/**************************************************************************/
 	
 	/**

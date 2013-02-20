@@ -134,7 +134,7 @@ public class NegaScout {
 			}
 			
 			// Update scores array.
-			scores[currentRoot] = score;
+			scores[currentRoot] = current;
 			
 			b = alpha + 1;
 		}

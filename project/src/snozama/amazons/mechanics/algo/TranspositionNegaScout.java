@@ -212,7 +212,7 @@ public class TranspositionNegaScout {
 			// Update scores array.
 			if (!gotoEnd)
 			{
-				scores[currentRoot] = score;
+				scores[currentRoot] = current;
 			}
 			
 			b = alpha + 1;

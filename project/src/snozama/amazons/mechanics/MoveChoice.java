@@ -67,7 +67,30 @@ public class MoveChoice {
 		byte position = board.amazons[colour][amazonIndex];
 		
 		row_s = Board.decodeAmazonRow(position);
-		col_f = Board.decodeAmazonColumn(position);
+		col_s = Board.decodeAmazonColumn(position);
+	}
+	
+	/**
+	 * Constructor from an arbitrary move and the relevant board. 
+	 * 
+	 * @param move		An arbitrary move to be decoded.
+	 * @param board		The board the move is applied to.
+	 */
+	public MoveChoice(int move, Board board)
+	{
+		int[] decoded = MoveManager.decodeMove(move);
+		
+		colour = decoded[MoveManager.PLAYER_COLOUR];
+		amazonIndex = decoded[MoveManager.AMAZON_ARRAY_INDEX];
+		row_f = decoded[MoveManager.AMAZON_ROW_FINISH];
+		col_f = decoded[MoveManager.AMAZON_COLUMN_FINISH];
+		arrowRow = decoded[MoveManager.ARROW_ROW];
+		arrowCol = decoded[MoveManager.ARROW_COLUMN];
+		
+		byte position = board.amazons[colour][amazonIndex];
+		
+		row_s = Board.decodeAmazonRow(position);
+		col_s = Board.decodeAmazonColumn(position);
 	}
 	
 	/**
