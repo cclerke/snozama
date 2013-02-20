@@ -43,14 +43,14 @@ public class ZobristTTable implements TranspositionTable
 	public static final int DEPTH = 1;
 	
 	/**
-	 * The position of the lower bound within the stored record.
+	 * Determines whether entry is upper exact, or lower bound.
 	 */
-	public static final int LOWER = 2;
+	public static final int FLAG  = 2;
 	
 	/**
 	 * The position of the upper bound within the stored record.
 	 */
-	public static final int UPPER = 3;
+	public static final int SCORE = 3;
 	
 	/**
 	 * The position of the move within the stored record.
@@ -61,6 +61,10 @@ public class ZobristTTable implements TranspositionTable
 	 * The number of collisions that have occurred so far.
 	 */
 	public int collisions;
+	
+	public static final int LOWER_BOUND = -1;
+	public static final int EXACT_SCORE = 0;
+	public static final int UPPER_BOUND = 1;
 	
 	// TODO: Can we make this general to all ZobristTTables?  Does it matter? (should it be static)
 	/**
@@ -234,8 +238,8 @@ public class ZobristTTable implements TranspositionTable
 		
 		hashTable[key][POS_INFO] = prev_move;
 		hashTable[key][DEPTH] = depth;
-		hashTable[key][LOWER] = lower;
-		hashTable[key][UPPER] = upper;
+		hashTable[key][FLAG] = lower;
+		hashTable[key][SCORE] = upper;
 		hashTable[key][MOVE]  = move;
 		
 		return true;
@@ -267,8 +271,8 @@ public class ZobristTTable implements TranspositionTable
 		
 		hashTable[key][POS_INFO] = prev_move;
 		hashTable[key][DEPTH] = depth;
-		hashTable[key][LOWER] = lower;
-		hashTable[key][UPPER] = upper;
+		hashTable[key][FLAG] = lower;
+		hashTable[key][SCORE] = upper;
 		hashTable[key][MOVE]  = move;
 		
 		return true;

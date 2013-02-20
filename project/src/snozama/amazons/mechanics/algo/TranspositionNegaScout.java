@@ -84,30 +84,28 @@ public class TranspositionNegaScout {
 		int origAlpha = alpha;
 		int zrecord[];
 		
-		// TODO: Make sure the correct key is used.
-			// I think this is right.
+		
 		// Check transposition table for previous board position.
+		// Ensure data is correct.
 		/// Transposition table code ///////////////////////////////////////////
-		if ((zrecord = table.get(zkey))[ZobristTTable.DEPTH] != -1)
+		// TODO: Is depth calculation right here?
+		// TODO: Only check if the position is actually this position.
+		if ((zrecord = table.get(zkey))[ZobristTTable.DEPTH] >= maxDepth - depth)
 		{
-			if(zrecord[ZobristTTable.DEPTH] >= maxDepth - depth)	// TODO: Do we need to check that the hashed board is this one somehow?
+			switch (zrecord[ZobristTTable.FLAG])
 			{
-				if (zrecord[ZobristTTable.UPPER] <= alpha || zrecord[ZobristTTable.UPPER] == zrecord[ZobristTTable.LOWER])
-				{
-					return zrecord[ZobristTTable.UPPER];
-				}
-				if (zrecord[ZobristTTable.LOWER] >= beta)
-				{
-					return zrecord[ZobristTTable.LOWER];
-				}
-				if (zrecord[ZobristTTable.LOWER] > alpha)
-				{
-					origAlpha = alpha = zrecord[ZobristTTable.LOWER];
-				}
-				if (zrecord[ZobristTTable.UPPER] < beta)
-				{
-					beta = zrecord[ZobristTTable.UPPER];
-				}
+				case ZobristTTable.UPPER_BOUND:
+					alpha = GlobalFunctions.max(alpha, zrecord[ZobristTTable.SCORE]);
+					break;
+				case ZobristTTable.LOWER_BOUND:
+					beta  = GlobalFunctions.min(beta, zrecord[ZobristTTable.SCORE]);
+					break;
+				case ZobristTTable.EXACT_SCORE:
+					return zrecord[ZobristTTable.SCORE];
+			}
+			if (alpha >= beta)
+			{
+				return alpha;
 			}
 		}
 		////////////////////////////////////////////////////////////////////////
@@ -125,35 +123,44 @@ public class TranspositionNegaScout {
 			return value;
 		}
 		
-		/// Transposition table code ///////////////////////////////////////////
-		int score = Integer.MIN_VALUE;
-		int aindex = MoveManager.getAmazonIndexFromUnmanagedMove(zrecord[ZobristTTable.MOVE], board);
-		int row_s = Board.decodeAmazonRow(board.amazons[colour][aindex]);
-		int col_s = Board.decodeAmazonColumn(board.amazons[colour][aindex]);
+		int score;
+		int row_s;
+		int col_s;
 		
-		MoveManager.applyUnmanagedMove(board, zrecord[ZobristTTable.MOVE]);
-		
-		int current = -NegaScoutSearch(board, depth+1, maxDepth, -beta, -alpha, GlobalFunctions.flip(colour), turn+1);
-		if (current > score)
+		/// Transposition table code - attempt found value FIRST ///////////////
+		if (true)	// TODO: Only check if the position is actually this position.
 		{
-			score = current;
+			 score = Integer.MIN_VALUE;
+			int aindex = MoveManager.getAmazonIndexFromUnmanagedMove(zrecord[ZobristTTable.MOVE], board);
+			row_s = Board.decodeAmazonRow(board.amazons[colour][aindex]);
+			col_s = Board.decodeAmazonColumn(board.amazons[colour][aindex]);
+			
+			MoveManager.applyUnmanagedMove(board, zrecord[ZobristTTable.MOVE]);
+			
+			int current = -NegaScoutSearch(board, depth+1, maxDepth, -beta, -alpha, GlobalFunctions.flip(colour), turn+1);
+			if (current > score)
+			{
+				score = current;
+			}
+			if (score > alpha)
+			{
+				alpha = score;
+System.out.println("!!!!!!!!!!!");
+System.out.println(score);
+				bestMoves[depth] = zrecord[ZobristTTable.MOVE];
+			}
+			
+			if (alpha >= beta)
+			{
+				//gotoEnd = true;
+			}
+			else
+			{
+				scores[currentRoot] = score;
+			}
+			
+			MoveManager.undoUnmanagedMove(board, zrecord[ZobristTTable.MOVE], row_s, col_s);
 		}
-		if (score > alpha)
-		{
-			alpha = score;
-			bestMoves[depth] = zrecord[ZobristTTable.MOVE];
-		}
-		
-		if (alpha >= beta)
-		{
-			gotoEnd = true;
-		}
-		else
-		{
-			scores[currentRoot] = score;
-		}
-		
-		MoveManager.undoUnmanagedMove(board, zrecord[ZobristTTable.MOVE], row_s, col_s);
 		////////////////////////////////////////////////////////////////////////
 		
 		int b = beta;
@@ -180,7 +187,7 @@ public class TranspositionNegaScout {
 			successors.applyMove(board, next); //execute current move
 			nodes++;
 			
-			current = -NegaScoutSearch(board, depth+1, maxDepth, -b, -alpha, GlobalFunctions.flip(colour), turn+1);
+			int current = -NegaScoutSearch(board, depth+1, maxDepth, -b, -alpha, GlobalFunctions.flip(colour), turn+1);
 			
 			if (current > score)
 			{
@@ -205,29 +212,25 @@ public class TranspositionNegaScout {
 			}
 			
 			// Update scores array.
-			scores[currentRoot] = score;
+			if (!gotoEnd)
+			{
+				scores[currentRoot] = score;
+			}
 			
 			b = alpha + 1;
 		}
 		
 		/// Transposition table code ///////////////////////////////////////////
-		if (gotoEnd)
+		if (score <= alpha)
 		{
-			zrecord[ZobristTTable.UPPER] = POS_INFINITY;
-			zrecord[ZobristTTable.LOWER] = NEG_INFINITY;
-			if (score < origAlpha)
-			{
-				zrecord[ZobristTTable.UPPER] = score;
-			}
-			else if (score > origAlpha && score < beta)
-			{
-				zrecord[ZobristTTable.UPPER] = zrecord[ZobristTTable.LOWER] = score;
-			}
-			else if (score >= beta)
-			{
-				zrecord[ZobristTTable.LOWER] = score;
-			}
-			table.put(zkey, zrecord);
+			zrecord[ZobristTTable.FLAG] = ZobristTTable.LOWER_BOUND;
+		} else if (score >= beta)
+		{
+			zrecord[ZobristTTable.FLAG] = ZobristTTable.UPPER_BOUND;
+		}
+		else
+		{
+			zrecord[ZobristTTable.FLAG] = ZobristTTable.EXACT_SCORE;
 		}
 		////////////////////////////////////////////////////////////////////////
 		
