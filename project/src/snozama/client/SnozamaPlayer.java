@@ -50,7 +50,6 @@ public class SnozamaPlayer implements GamePlayer
 		if (name == null)
 		{
 			name = teamName;
-			name += rand.nextInt();
 		}
 		if (passwd == null)
 		{
