@@ -48,7 +48,7 @@ public class ZobristTTable implements TranspositionTable
 	public static final int FLAG  = 2;
 	
 	/**
-	 * The position of the upper bound within the stored record.
+	 * The score found for this board.
 	 */
 	public static final int SCORE = 3;
 	

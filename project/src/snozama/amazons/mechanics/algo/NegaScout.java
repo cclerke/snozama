@@ -77,9 +77,9 @@ public class NegaScout {
 		{
 			int value = SnozamaHeuristic.evaluateBoard(board, colour, turn);
 			
-			if (value > scores[currentRoot])
+			if (-value > scores[currentRoot])
 			{
-				scores[currentRoot] = value;
+				scores[currentRoot] = -value;
 			}
 			return value;
 		}

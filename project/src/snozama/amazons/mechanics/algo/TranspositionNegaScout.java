@@ -116,9 +116,9 @@ public class TranspositionNegaScout {
 		{
 			int value = SnozamaHeuristic.evaluateBoard(board, colour, turn);
 			
-			if (value > scores[currentRoot])
+			if (-value > scores[currentRoot])
 			{
-				scores[currentRoot] = value;
+				scores[currentRoot] = -value;
 			}
 			return value;
 		}
@@ -130,7 +130,7 @@ public class TranspositionNegaScout {
 		/// Transposition table code - attempt found value FIRST ///////////////
 		if (zrecord[ZobristTTable.DEPTH] > -1)	// TODO: Only check if the position is actually this position.
 		{
-			 score = Integer.MIN_VALUE;
+			score = Integer.MIN_VALUE;
 			int aindex = MoveManager.getAmazonIndexFromUnmanagedMove(zrecord[ZobristTTable.MOVE], board);
 			row_s = Board.decodeAmazonRow(board.amazons[colour][aindex]);
 			col_s = Board.decodeAmazonColumn(board.amazons[colour][aindex]);
@@ -230,6 +230,11 @@ public class TranspositionNegaScout {
 		{
 			zrecord[ZobristTTable.FLAG] = ZobristTTable.EXACT_SCORE;
 		}
+		
+		// Update the table record.
+		zrecord[ZobristTTable.DEPTH] = maxDepth - depth;
+		zrecord[ZobristTTable.SCORE] = score;
+		table.put(zkey, zrecord);
 		////////////////////////////////////////////////////////////////////////
 		
 		return score;
