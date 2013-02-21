@@ -178,4 +178,34 @@ public class MoveManagerTest {
 		}
 		
 	}
+	
+	@Test
+	public void testStaticMoveApplication()
+	{
+		Board board = new Board();
+		Board board2 = new Board();
+		Board original = new Board();
+		
+		MoveManager successors = board.getSuccessors(Board.WHITE);
+		
+		int next = 0;
+		while (successors.hasIterations())
+		{
+			assertTrue(original.equals(board));
+			assertTrue(original.equals(board2));
+			int row_s = Board.decodeAmazonRow(board.amazons[Board.WHITE][successors.getAmazonIndex(next)]);
+			int col_s = Board.decodeAmazonColumn(board.amazons[Board.WHITE][successors.getAmazonIndex(next)]);
+			int move = successors.getMove(next);
+			
+			successors.applyMove(board, next);
+			assertFalse(board.equals(board2));
+			MoveManager.applyUnmanagedMove(board2, move);
+			assertTrue(board.equals(board2));
+			
+			successors.undoMove(board, next, row_s, col_s);
+			MoveManager.undoUnmanagedMove(board2, move, row_s, col_s);
+			assertTrue(board.equals(board2));
+			next = successors.nextIterableIndex();
+		}
+	}
 }

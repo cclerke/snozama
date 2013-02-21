@@ -774,4 +774,33 @@ public class Board
 		
 		return false;
 	}
+	
+	@Override
+	public boolean equals(Object obj)
+	{
+		Board compareTo = (Board)obj;
+		
+		for (int i = 0; i < board.length; i++)
+		{
+			for (int j = 0; j < board[i].length; j++)
+			{
+				if (compareTo.board[i][j] != board[i][j])
+				{
+					return false;
+				}
+			}
+		}
+		
+		for (int i = 0; i < amazons.length; i++)
+		{
+			for (int j = 0; j < amazons[i].length; j++)
+			{
+				if (compareTo.amazons[i][j] != amazons[i][j])
+				{
+					return false;
+				}
+			}
+		}
+		return true;
+	}
 }

@@ -22,11 +22,13 @@ public class TranspositionNegaScout {
 	
 	public static int firstN = 500; //for possible use with N-best selection search
 	
+	int absoluteMaxDepth = 100;
+	
 	// Statistical fields.
 	public int nodes = 0;
 	public int depthCompleted;
 	
-	int[] bestMoves = new int[20]; //FIXME hard-coded as 20 for testing
+	int[] bestMoves = new int[absoluteMaxDepth]; //FIXME hard-coded as 20 for testing
 	int[] scores = new int[2176];
 	
 	ZobristTTable table;
@@ -107,6 +109,7 @@ public class TranspositionNegaScout {
 			{
 				return alpha;
 			}
+			
 		}
 		////////////////////////////////////////////////////////////////////////
 		
@@ -136,6 +139,7 @@ public class TranspositionNegaScout {
 			col_s = Board.decodeAmazonColumn(board.amazons[colour][aindex]);
 			
 			MoveManager.applyUnmanagedMove(board, zrecord[ZobristTTable.MOVE]);
+			zkey = table.updateHashKeyByMove(zkey, zrecord[ZobristTTable.MOVE], row_s, col_s);
 			
 			int current = -NegaScoutSearch(board, depth+1, maxDepth, -beta, -alpha, GlobalFunctions.flip(colour), turn+1);
 			if (current > score)
@@ -157,6 +161,7 @@ public class TranspositionNegaScout {
 				scores[currentRoot] = score;
 			}
 			
+			zkey = table.updateHashKeyByMove(zkey, zrecord[ZobristTTable.MOVE], row_s, col_s);
 			MoveManager.undoUnmanagedMove(board, zrecord[ZobristTTable.MOVE], row_s, col_s);
 		}
 		////////////////////////////////////////////////////////////////////////
@@ -169,7 +174,7 @@ public class TranspositionNegaScout {
 		{
 			successors.sort(scores);
 		}
-
+		
 		while (!gotoEnd && successors.hasIterations() && System.currentTimeMillis() < endTime) //for each move or until turn time runs out
 		{
 			next = successors.nextIterableIndex();
@@ -208,14 +213,11 @@ public class TranspositionNegaScout {
 			{
 				gotoEnd = true; //cut off
 			}
-			
-			// Update scores array.
-			if (!gotoEnd)
+			else
 			{
 				scores[currentRoot] = current;
+				b = alpha + 1;
 			}
-			
-			b = alpha + 1;
 		}
 		
 		/// Transposition table code ///////////////////////////////////////////
@@ -234,9 +236,11 @@ public class TranspositionNegaScout {
 		// Update the table record.
 		zrecord[ZobristTTable.DEPTH] = maxDepth - depth;
 		zrecord[ZobristTTable.SCORE] = score;
+		zrecord[ZobristTTable.MOVE] = bestMoves[depth];
 		table.put(zkey, zrecord);
 		////////////////////////////////////////////////////////////////////////
 		
+		gotoEnd = false;
 		return score;
 	}
 	
@@ -250,8 +254,8 @@ public class TranspositionNegaScout {
 	public int IDNegaScoutSearch(Board board, int colour, int turn)
 	{
 		int depth = 1;
-		int[] bestScore = new int[20];	// Really an array of best moves at a given depth.  TODO: Rename.
-		while (depth <= 20 && System.currentTimeMillis() < endTime)
+		int[] bestScore = new int[absoluteMaxDepth];	// Really an array of best moves at a given depth.  TODO: Rename.
+		while (depth <= absoluteMaxDepth && System.currentTimeMillis() < endTime)
 		{
 			NegaScoutSearch(board, 0, depth, NEG_INFINITY, POS_INFINITY, colour, turn);
 			bestScore[depth-1] = bestMoves[0]; //store best move for each depth
@@ -259,6 +263,7 @@ public class TranspositionNegaScout {
 			depth++;
 		}
 		boolean found = false;
+		System.out.println("Total collisions: " + table.collisions);
 		for (int i = bestScore.length-1; i >= 0; i--)
 		{
 			if (found)

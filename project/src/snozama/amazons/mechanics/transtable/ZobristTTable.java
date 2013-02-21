@@ -3,6 +3,7 @@ package snozama.amazons.mechanics.transtable;
 import java.util.Random;
 
 import snozama.amazons.mechanics.Board;
+import snozama.amazons.mechanics.MoveManager;
 
 /**
  * A transposition table using Zobrist hashing.
@@ -209,6 +210,19 @@ public class ZobristTTable implements TranspositionTable
 		key ^= zobristValues[ARROW][arow][acol];
 		
 		return key;
+	}
+	
+	public int updateHashKeyByMove(int key, int move, int row_s, int col_s)
+	{
+		int[] decoded = MoveManager.decodeMove(move);
+		return updateHashKeyByMove(key,
+				decoded[MoveManager.PLAYER_COLOUR],
+				row_s,
+				col_s,
+				decoded[MoveManager.AMAZON_ROW_FINISH],
+				decoded[MoveManager.AMAZON_COLUMN_FINISH],
+				decoded[MoveManager.ARROW_ROW],
+				decoded[MoveManager.ARROW_COLUMN]);
 	}
 	
 	/**
