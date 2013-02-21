@@ -26,14 +26,6 @@ public class HeuristicTest {
 	}
 	
 	@Test
-	public void testMinPlies()
-	{
-		Board board = new Board();
-
-		assertTrue(SnozamaHeuristic.minPliesToSquare(board) == 0);
-	}
-	
-	@Test
 	public void testQuadrants()
 	{
 		Board board = new Board();		
@@ -51,9 +43,10 @@ public class HeuristicTest {
 	public void testAreaMSP()
 	{
 		Board board = new Board();
-		SnozamaHeuristic.MSP(board, Board.WHITE);
+		byte[][] markedBoard = SnozamaHeuristic.colourBoard(board);
+		SnozamaHeuristic.MSP(markedBoard, Board.WHITE);
 		
-		assertEquals(SnozamaHeuristic.areaMSP(Board.WHITE), 0);
+		assertEquals(SnozamaHeuristic.areaMSP(markedBoard, Board.WHITE), 0);
 	}
 	
 	@Test
@@ -65,21 +58,24 @@ public class HeuristicTest {
 
 		for (int i = 0; i < 2000; i++)
 		{
+			byte[][] markedBoard = SnozamaHeuristic.colourBoard(board);
+			SnozamaHeuristic.MSP(markedBoard, Board.WHITE);
 			SnozamaHeuristic.minMobility(board, Board.WHITE);
-			SnozamaHeuristic.minPliesToSquare(board);
+			SnozamaHeuristic.quadrants(board, Board.WHITE);
+			SnozamaHeuristic.areaMSP(markedBoard, Board.WHITE);
+			SnozamaHeuristic.distanceMSP(markedBoard, Board.WHITE);
 		}
 
 		long stopTime = System.currentTimeMillis();
 		long elapsedTime = stopTime - startTime;
 		System.out.println(elapsedTime);
-		
-		assertTrue(elapsedTime < 400);
 	}
 	
 	@Test
 	public void testBoardEval()
 	{
 		Board board = new Board();
+		byte[][] markedBoard = SnozamaHeuristic.colourBoard(board);
 		
 		assertTrue(SnozamaHeuristic.evaluateBoard(board, Board.WHITE, 0) == 0);
 		System.out.println("Start: "+SnozamaHeuristic.evaluateBoard(board, Board.WHITE, 0));
@@ -87,28 +83,28 @@ public class HeuristicTest {
 		assertTrue(board.moveAmazon(9, 6, 1, 6, Board.WHITE));
 		assertTrue(board.placeArrow(1, 6, 3, 8));
 		
-		System.out.println("Turn 1 (MSP): "+SnozamaHeuristic.MSP(board, Board.WHITE));
+		System.out.println("Turn 1 (MSP): "+SnozamaHeuristic.MSP(markedBoard, Board.WHITE));
 		System.out.println("Turn 1 (min-mobility): "+SnozamaHeuristic.minMobility(board, Board.WHITE));
 		System.out.println("Turn 1: "+SnozamaHeuristic.evaluateBoard(board, Board.WHITE, 1));
 		
 		assertTrue(board.moveAmazon(0, 6, 5, 1, Board.BLACK));
 		assertTrue(board.placeArrow(5, 1, 6, 1));
 		
-		System.out.println("Turn 1 (MSP): "+SnozamaHeuristic.MSP(board, Board.WHITE));
+		System.out.println("Turn 1 (MSP): "+SnozamaHeuristic.MSP(markedBoard, Board.WHITE));
 		System.out.println("Turn 1 (min-mobility): "+SnozamaHeuristic.minMobility(board, Board.WHITE));
 		System.out.println("Turn 1: "+SnozamaHeuristic.evaluateBoard(board, Board.WHITE, 1));
 		
 		assertTrue(board.moveAmazon(9, 3, 5, 3, Board.WHITE));
 		assertTrue(board.placeArrow(5, 3, 3, 1));
 		
-		System.out.println("Turn 2 (MSP): "+SnozamaHeuristic.MSP(board, Board.WHITE));
+		System.out.println("Turn 2 (MSP): "+SnozamaHeuristic.MSP(markedBoard, Board.WHITE));
 		System.out.println("Turn 2 (min-mobility): "+SnozamaHeuristic.minMobility(board, Board.WHITE));
 		System.out.println("Turn 2: "+SnozamaHeuristic.evaluateBoard(board, Board.WHITE, 2));
 		
 		assertTrue(board.moveAmazon(5, 1, 6, 2, Board.BLACK));
 		assertTrue(board.placeArrow(6, 2, 6, 8));
 		
-		System.out.println("Turn 2 (MSP): "+SnozamaHeuristic.MSP(board, Board.WHITE));
+		System.out.println("Turn 2 (MSP): "+SnozamaHeuristic.MSP(markedBoard, Board.WHITE));
 		System.out.println("Turn 2 (min-mobility): "+SnozamaHeuristic.minMobility(board, Board.WHITE));
 		System.out.println("Turn 2: "+SnozamaHeuristic.evaluateBoard(board, Board.WHITE, 2));
 	}
