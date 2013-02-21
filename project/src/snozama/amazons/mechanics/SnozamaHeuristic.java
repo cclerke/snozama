@@ -204,13 +204,35 @@ public class SnozamaHeuristic {
 	 */
 	public static int distanceMSP(byte[][] markedBoard, int activePlayer)
 	{
-		int whiteScore = 0;
-		int blackScore = 0;
+		double whiteScore = 0;
+		double blackScore = 0;
+		
+		for (int row = 0; row < markedBoard.length; row++)
+		{
+			for (int col = 0; col < markedBoard[row].length; col ++)
+			{
+				// Will result in 0 if square is empty/occupied,
+				// 1 if can be reached faster by white,
+				// 2 if can be reached faster by black
+				int colour = markedBoard[row][col]/10;
+				
+				int distance = markedBoard[row][col]%10;
+
+				if (colour == 1) //if square belongs to white
+				{
+					whiteScore += 1/distance;
+				}
+				else if (colour == 2) //if square belongs to black
+				{
+					blackScore += 1/distance;
+				}
+			}
+		}
 		
 		if (activePlayer == Board.WHITE)
-			return whiteScore - blackScore;
+			return (int)(whiteScore - blackScore);
 		else //active player is black
-			return blackScore - whiteScore;
+			return (int)(blackScore - whiteScore);
 	}
 
 	
