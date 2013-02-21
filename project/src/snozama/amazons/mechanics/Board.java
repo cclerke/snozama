@@ -335,7 +335,7 @@ public class Board
 		
 		byte position = amazons[decoded[MoveManager.PLAYER_COLOUR]][decoded[MoveManager.AMAZON_ARRAY_INDEX]];
 		int row_s = Board.decodeAmazonRow(position);
-		int col_s = Board.decodeAmazonRow(position);
+		int col_s = Board.decodeAmazonColumn(position);
 		
 		boolean toRet = isValidMove(row_s, col_s, decoded[MoveManager.AMAZON_ROW_FINISH], decoded[MoveManager.AMAZON_COLUMN_FINISH]);
 		

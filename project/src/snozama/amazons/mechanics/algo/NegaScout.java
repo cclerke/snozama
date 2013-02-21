@@ -15,7 +15,6 @@ import snozama.amazons.mechanics.SnozamaHeuristic;
  */
 
 public class NegaScout {
-	
 	public static int POS_INFINITY = Integer.MAX_VALUE-2;
 	public static int NEG_INFINITY = Integer.MIN_VALUE+2;
 	
@@ -93,7 +92,7 @@ public class NegaScout {
 		{
 			successors.sort(scores);
 		}
-
+		
 		while (successors.hasIterations() && System.currentTimeMillis() < endTime) //for each move or until turn time runs out
 		{
 			next = successors.nextIterableIndex();

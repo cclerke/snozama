@@ -278,8 +278,8 @@ public class SnozamaPlayer implements GamePlayer
 	public boolean makeMove()
 	{
 		long endTime = System.currentTimeMillis()+25*1000; //starts 25 second timer
-		NegaScout search = new NegaScout(endTime);
-		//TranspositionNegaScout search = new TranspositionNegaScout(endTime, 2000000, board);
+		//NegaScout search = new NegaScout(endTime);
+		TranspositionNegaScout search = new TranspositionNegaScout(endTime, 2000000, board);
 		int encodedMove = search.chooseMove(board, Settings.teamColour, turn);
 		
 		//Handle end of game situations
