@@ -244,7 +244,7 @@ public class SnozamaHeuristic {
 	 * @return	Returns a copy of the board that is coloured by which players owns each square
 	 * 	and the number of plies it takes to reach that square.
 	 */
-	private static byte[][] colourBoard(Board board)
+	public static byte[][] colourBoard(Board board)
 	{
 		byte[][] markedBoard = board.copy();
 
