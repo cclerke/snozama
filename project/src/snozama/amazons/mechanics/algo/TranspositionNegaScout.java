@@ -138,64 +138,15 @@ public class TranspositionNegaScout {
 		
 		/**/
 		/// Transposition table code - attempt found value FIRST ///////////////
-		if (zrecord[ZobristTTable.DEPTH] > -1)	// TODO: Only check if the position is actually this position.
+		if (zrecord[ZobristTTable.DEPTH] > -1)
 		{
-			Board board3 = new Board(board);
-			///
-			MoveChoice mc = new MoveChoice(zrecord[ZobristTTable.MOVE], board2);
-			System.out.println("IN THE SECON OF DOOM At DEPTH: " + depth);
-			System.out.flush();
-			System.out.println("Move: " + mc);
-			System.out.flush();
-			System.out.println("-- Amazons array before --");
-			System.out.flush();
-			for (int i = 0; i < board.amazons.length; i++)
-			{
-				for (int j = 0; j < board.amazons[i].length; j++)
-				{
-					byte pos = board.amazons[i][j];
-					int row = Board.decodeAmazonRow(pos);
-					int col = Board.decodeAmazonColumn(pos);
-					
-					System.out.println("(" + row + ", " + col + ")");
-					System.out.flush();
-				}
-			}
-			///
-			
-			// FIXME: The problem appears to be here.  With aindex and colour?
-			System.out.println("colour: " + colour);
-			System.out.flush();
-			System.out.println("*colour: " + zrecord[ZobristTTable.POS_INFO]);
-			System.out.flush();
 			score = Integer.MIN_VALUE;
 			int aindex = MoveManager.getAmazonIndexFromUnmanagedMove(zrecord[ZobristTTable.MOVE], board);
 			row_s = Board.decodeAmazonRow(board.amazons[colour][aindex]);
 			col_s = Board.decodeAmazonColumn(board.amazons[colour][aindex]);
 			
-			System.out.println("**row_s: " + row_s + ", col_s: " + col_s);
-			System.out.flush();
-			
 			MoveManager.applyUnmanagedMove(board, zrecord[ZobristTTable.MOVE]);
 			zkey = table.updateHashKeyByMove(zkey, zrecord[ZobristTTable.MOVE], row_s, col_s);
-			
-			///
-			System.out.println("-- Amazons array after --");
-			System.out.flush();
-			for (int i = 0; i < board.amazons.length; i++)
-			{
-				for (int j = 0; j < board.amazons[i].length; j++)
-				{
-					byte pos = board.amazons[i][j];
-					int row = Board.decodeAmazonRow(pos);
-					int col = Board.decodeAmazonColumn(pos);
-					
-					System.out.println("(" + row + ", " + col + ")");
-					System.out.flush();
-				}
-			}
-			///
-			
 			
 			int current = -NegaScoutSearch(board, depth+1, maxDepth, -beta, -alpha, GlobalFunctions.flip(colour), turn+1);
 			if (current > score)
@@ -219,48 +170,6 @@ public class TranspositionNegaScout {
 			
 			MoveManager.undoUnmanagedMove(board, zrecord[ZobristTTable.MOVE], row_s, col_s);
 			zkey = table.updateHashKeyByMove(zkey, zrecord[ZobristTTable.MOVE], row_s, col_s);
-			
-			///
-			if (!board3.equals(board))
-			{
-				System.out.println("!!!!!!!!!!");
-				System.out.flush();
-				System.out.println("board amazons");
-				System.out.flush();
-				for (int i = 0; i < board.amazons.length; i++)
-				{
-					for (int j = 0; j < board.amazons[i].length; j++)
-					{
-						byte pos = board.amazons[i][j];
-						int row = Board.decodeAmazonRow(pos);
-						int col = Board.decodeAmazonColumn(pos);
-						
-						System.out.println("(" + row + ", " + col + ")");
-						System.out.flush();
-					}
-				}
-				System.out.println("board3 amazons");
-				System.out.flush();
-				for (int i = 0; i < board3.amazons.length; i++)
-				{
-					for (int j = 0; j < board3.amazons[i].length; j++)
-					{
-						byte pos = board3.amazons[i][j];
-						int row = Board.decodeAmazonRow(pos);
-						int col = Board.decodeAmazonColumn(pos);
-						
-						System.out.println("(" + row + ", " + col + ")");
-						System.out.flush();
-					}
-				}
-				System.exit(-1);
-			}
-			else
-			{
-				System.out.println("$$$$$$$$$$");
-				System.out.flush();
-			}
-			///
 		}
 		////////////////////////////////////////////////////////////////////////
 		

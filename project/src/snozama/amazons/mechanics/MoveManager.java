@@ -192,13 +192,8 @@ public class MoveManager
 		
 		board.board[row_s][col_s] = Board.OCCUPIED;
 		
-		System.out.println("row_s: " + row_s + ", col_s: " + col_s);
-		System.out.flush();
-		
 		board.amazons[colour][index]=
 				Board.encodeAmazonPosition(row_s, col_s);
-		System.out.println("encoded: " + board.amazons[colour][index]);
-		System.out.flush();
 		
 		return true;
 	}

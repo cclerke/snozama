@@ -19,21 +19,6 @@ public class TranspositionNegaScoutSearchTest {
 		System.out.flush();
 		Board board = new Board();
 		
-		System.out.println("DUNUNUNUNU:");
-		System.out.flush();
-		for (int i = 0; i < board.amazons.length; i++)
-		{
-			for (int j = 0; j < board.amazons[i].length; j++)
-			{
-				byte pos = board.amazons[i][j];
-				int row = Board.decodeAmazonRow(pos);
-				int col = Board.decodeAmazonColumn(pos);
-				
-				System.out.println("(" + row + ", " + col + ")");
-				System.out.flush();
-			}
-		}
-		
 		TranspositionNegaScout search = new TranspositionNegaScout(System.currentTimeMillis() + 25*1000, 2000000, board);
 		
 		int colour = Settings.teamColour;
@@ -52,19 +37,6 @@ public class TranspositionNegaScoutSearchTest {
 			System.out.println("Move: "+move+" = "+mColour+" "+mAmazon+" "+" "+ mRowF+mColF+" "+mRowA+mColA);
 		
 		MoveChoice mc = new MoveChoice(move, board);
-		
-		for (int i = 0; i < board.amazons.length; i++)
-		{
-			for (int j = 0; j < board.amazons[i].length; j++)
-			{
-				byte pos = board.amazons[i][j];
-				int row = Board.decodeAmazonRow(pos);
-				int col = Board.decodeAmazonColumn(pos);
-				
-				System.out.println("(" + row + ", " + col + ")");
-				System.out.flush();
-			}
-		}
 		System.out.println(mc);
 	}
 }
