@@ -323,6 +323,35 @@ public class Board
 	}
 	
 	/**
+	 * Check an that an arbitrary move is valid.
+	 * 
+	 * @param move		The move to check.
+	 * @return			{@code true} if the move is valid, {@code false}
+	 * 					otherwise.
+	 */
+	public boolean isValidMove(int move)
+	{
+		int[] decoded = MoveManager.decodeMove(move);
+		
+		byte position = amazons[decoded[MoveManager.PLAYER_COLOUR]][decoded[MoveManager.AMAZON_ARRAY_INDEX]];
+		int row_s = Board.decodeAmazonRow(position);
+		int col_s = Board.decodeAmazonRow(position);
+		
+		boolean toRet = isValidMove(row_s, col_s, decoded[MoveManager.AMAZON_ROW_FINISH], decoded[MoveManager.AMAZON_COLUMN_FINISH]);
+		
+		board[row_s][col_s] = EMPTY;
+		
+		toRet = toRet && isValidMove(decoded[MoveManager.AMAZON_ROW_FINISH],
+							decoded[MoveManager.AMAZON_COLUMN_FINISH],
+							decoded[MoveManager.ARROW_ROW],
+							decoded[MoveManager.ARROW_COLUMN]
+							);
+		board[row_s][col_s] = OCCUPIED;
+		
+		return toRet;
+	}
+	
+	/**
 	 * Move amazon from the desired location to the desired location.
 	 * @param row_s		Row of the starting position of the amazon.
 	 * @param col_s		Column of the starting position of the amazon.

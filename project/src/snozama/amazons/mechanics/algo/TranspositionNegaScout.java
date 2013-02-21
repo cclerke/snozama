@@ -92,7 +92,7 @@ public class TranspositionNegaScout {
 		/// Transposition table code ///////////////////////////////////////////
 		// TODO: Is depth calculation right here?
 		// TODO: Only check if the position is actually this position.
-		if ((zrecord = table.get(zkey))[ZobristTTable.DEPTH] >= maxDepth - depth)
+		if ((zrecord = table.get(zkey))[ZobristTTable.DEPTH] >= maxDepth - depth && board.isValidMove(zrecord[ZobristTTable.MOVE]))
 		{
 			switch (zrecord[ZobristTTable.FLAG])
 			{
@@ -110,6 +110,10 @@ public class TranspositionNegaScout {
 				return alpha;
 			}
 			
+		}
+		else
+		{
+			zrecord[ZobristTTable.DEPTH] = -1;	// Ensure we don't evaluate this if it is not valid.
 		}
 		////////////////////////////////////////////////////////////////////////
 		
