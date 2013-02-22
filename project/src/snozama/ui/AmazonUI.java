@@ -10,6 +10,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -325,13 +327,6 @@ public class AmazonUI extends AbstractAmazonUI
 		gameLayer.add(arrowImage);
 	}
 	
-	/**
-	 * Get an existing piece on the board and move it.
-	 */
-	private void movePiece( int row_s, int col_s, int row_f, int col_f)
-	{
-		setPieceLocation( getPiece( row_s, col_s), row_f, col_f );
-	}
 	
 	/**
 	 * Return the game to a previous state
@@ -349,7 +344,6 @@ public class AmazonUI extends AbstractAmazonUI
 			int row_f = Integer.parseInt(params[2]);
 			int col_a = Integer.parseInt(params[5]);
 			int row_a = Integer.parseInt(params[4]);
-			
 			
 			/*Remove arrow*/
 			removePiece(row_a, col_a);
@@ -395,6 +389,15 @@ public class AmazonUI extends AbstractAmazonUI
 	}
 	
 	/**
+	 * Get an existing piece on the board and move it.
+	 */
+	private void movePiece( int row_s, int col_s, int row_f, int col_f)
+	{
+		setPieceLocation( getPiece( row_s, col_s), row_f, col_f );
+	}
+	
+	
+	/**
 	 * Removes a pieces at a given location
 	 * @param row_s row index of the piece
 	 * @param col_s col index of the piece
@@ -403,6 +406,7 @@ public class AmazonUI extends AbstractAmazonUI
 	{
 		JLabel piece = getPiece(row_s, col_s);
 		gameLayer.remove(piece);
+		gameLayer.repaint();
 	}
 	
 	/**
@@ -414,10 +418,9 @@ public class AmazonUI extends AbstractAmazonUI
 	 */
 	private void setPieceLocation( JLabel piece, int row, int col )
 	{
-		piece.setBounds(col*SQUARE_WIDTH + 5, row*SQUARE_WIDTH + 5, 40, 40 );
+		piece.setBounds( col*SQUARE_WIDTH + 5, row*SQUARE_WIDTH + 5, 40, 40 );
+		gameLayer.repaint();
 	}
-	
-	
 	
 	/**
 	 * Base Labels for the axises
@@ -686,6 +689,14 @@ public class AmazonUI extends AbstractAmazonUI
 			}
 		}
 		copy.clear();
+	}
+	
+	/**
+	 * export the log to text
+	 */
+	private void exportLog()
+	{
+		
 	}
 
 }
