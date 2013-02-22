@@ -13,6 +13,8 @@ import java.util.List;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.StyledDocument;
 
 import snozama.amazons.mechanics.Board;
 import snozama.ui.eventListeners.*;
@@ -38,7 +40,13 @@ public class AmazonUI extends AbstractAmazonUI
 	 * History of moves for quick visualization
 	 */
 	private static List<String> moveHistory = new ArrayList<String>();
+	/**
+	 * Current Move Number
+	 */
 	private static int currentMove;
+	/**
+	 * Move number if we are browsing history
+	 */
 	private static int historicMove;
 	
 	/**
@@ -69,20 +77,29 @@ public class AmazonUI extends AbstractAmazonUI
 	 */
 	private Board board;
 	
+	/**
+	 * Axis labels
+	 */
 	private static String[][] labels = new String[2][10];
 	
 	/**
 	 * Width of a square on the board in pixels;
 	 */
 	private static final int SQUARE_WIDTH = 50;
+	/**
+	 * Distance from the left/top of the window to the board
+	 */
 	private static final int X_OFFSET = 40;
 	private static final int Y_OFFSET = 20;
 	
+	/** Swing Panels for the game */
 	private static JLayeredPane pane;
 	private static JPanel panel;
 	private static JLabel boardPanel;
 	private static JLayeredPane gameLayer;
-	private static JPanel log;
+	private static JTextPane log;
+	private static StyledDocument doc;
+	private static JScrollPane logScroll;
 	
 	private AmazonUI()
 	{
@@ -112,11 +129,20 @@ public class AmazonUI extends AbstractAmazonUI
 	    ready();
 	}
 	
+	/**
+	 * Get the UI
+	 * @return a new UI Instance
+	 */
 	public static AmazonUI getInstance()
 	{
 		return new AmazonUI();
 	}
 	
+	/**
+	 * Create the main panel for the UI.
+	 * Set all the colors/etc.
+	 * Add the game layer to it.
+	 */
 	private void createMainPanel()
 	{
 		pane = new JLayeredPane();
@@ -141,8 +167,10 @@ public class AmazonUI extends AbstractAmazonUI
 			panel.add(boardPanel,new Integer(5));
 		}
 		
+		// Get the amazon positions
 		readBoard();
 		
+		/* History Buttons */
 		JButton back = new JButton("Back");
 		JButton forward = new JButton("Forward");
 		
@@ -176,13 +204,21 @@ public class AmazonUI extends AbstractAmazonUI
 		
 	}
 	
+	/* Create the game log for seeing moves etc */
 	public void createLogPanel()
 	{
-		log = new JPanel();
-		log.setLayout( new BoxLayout( log, BoxLayout.Y_AXIS) );
-		log.setBounds(X_OFFSET + boardPanel.getWidth() + 20, 120, 400, 400);
+		log = new JTextPane();
+		log.setEditable( Boolean.FALSE );
+		
+		
+		log.setText( "Log started." );
+		
+		logScroll = new JScrollPane( log );
+		logScroll.setBounds(X_OFFSET + boardPanel.getWidth() + 20, 120, 400, 400);
+		
+		doc = log.getStyledDocument();
 
-		panel.add( log );
+		panel.add( logScroll );
 	}
 	
 	/**
@@ -220,6 +256,28 @@ public class AmazonUI extends AbstractAmazonUI
 		}
 	}
 	
+	public void post( String message )
+	{
+		try
+		{
+			doc.insertString( doc.getLength(), "\n" + message, null );
+		}
+		catch(BadLocationException e)
+		{
+			System.out.println( e.getStackTrace());
+		}
+	}
+	
+	/**
+	 * Move Amazon ? lol. This is an internal UI method. Please use AUI.moveAmazon()
+	 * @param row_s 
+	 * @param col_s
+	 * @param row_f
+	 * @param col_f
+	 * @param row_a
+	 * @param col_a
+	 * @return
+	 */
 	public Boolean moveAmazon( int row_s, int col_s, int row_f, int col_f, int row_a, int col_a)
 	{
 		int whoseMove = board.isWhite( row_s, col_s ) ? Board.WHITE : Board.BLACK;
@@ -241,7 +299,7 @@ public class AmazonUI extends AbstractAmazonUI
 		String message = whoseMove == Board.WHITE ? "White" : "Black";
 		message += " moved from " + row_s + ", " + col_s + " to ";
 		message += row_f + ", " + col_f + " and shot an arrow to " + row_a + ", " + col_a;
-		log.add( new JLabel( message ) );
+		post( message );
 		
 		board.move( row_s, col_s, row_f, col_f, row_a, col_a, whoseMove );
 		
@@ -251,6 +309,9 @@ public class AmazonUI extends AbstractAmazonUI
 		return true;
 	}
 	
+	/**
+	 * Add a new arrow piece to the board
+	 */
 	private void placeArrow( int row_a, int col_a )
 	{
 		JLabel arrowImage = new JLabel(new ImageIcon(wallImage));
@@ -258,11 +319,17 @@ public class AmazonUI extends AbstractAmazonUI
 		gameLayer.add(arrowImage);
 	}
 	
+	/**
+	 * Get an existing piece on the board and move it.
+	 */
 	private void movePiece( int row_s, int col_s, int row_f, int col_f)
 	{
 		setPieceLocation( getPiece( row_s, col_s), row_f, col_f );
 	}
 	
+	/**
+	 * Return the game to a previous state
+	 */
 	public void historyBack()
 	{
 		
@@ -288,6 +355,9 @@ public class AmazonUI extends AbstractAmazonUI
 		}
 	}
 	
+	/**
+	 * Advance the game to the next state
+	 */
 	public void historyForward()
 	{
 		if( historicMove < currentMove )
@@ -308,6 +378,9 @@ public class AmazonUI extends AbstractAmazonUI
 		}
 	}
 	
+	/* Returns the JLabel at the given location
+	 * 
+	 */
 	private JLabel getPiece( int row_s, int col_s )
 	{
 		int x = col_s * SQUARE_WIDTH + 5;
@@ -315,6 +388,11 @@ public class AmazonUI extends AbstractAmazonUI
 		return (JLabel) gameLayer.findComponentAt( x, y );
 	}
 	
+	/**
+	 * Removes a pieces at a given location
+	 * @param row_s row index of the piece
+	 * @param col_s col index of the piece
+	 */
 	private void removePiece( int row_s, int col_s )
 	{
 		JLabel piece = getPiece(row_s, col_s);
@@ -336,18 +414,7 @@ public class AmazonUI extends AbstractAmazonUI
 	
 	
 	/**
-	 * Window settings for Game Window
-	 */
-	private void initWindowSettings()
-	{
-		setTitle("Amazons");
-	    setSize(WINDOW_WIDTH, WINDOW_HEIGHT);
-	    setLocationRelativeTo(null);
-	    setDefaultCloseOperation(EXIT_ON_CLOSE);
-	}
-	
-	/*
-	 * Base Labels
+	 * Base Labels for the axises
 	 */
 	private void setUpLabels()
 	{
@@ -389,6 +456,10 @@ public class AmazonUI extends AbstractAmazonUI
 		
 	}
 	
+	/**
+	 * Change the current labels
+	 * @param type - Label._type
+	 */
 	private void changeLabels( String[][] type )
 	{
 		labels = type;
@@ -572,6 +643,17 @@ public class AmazonUI extends AbstractAmazonUI
 	public void addReadyListener( final ReadyListener rl )
 	{
 		readyFunctions.add( rl );
+	}
+	
+	/**
+	 * Window settings for Game Window
+	 */
+	private void initWindowSettings()
+	{
+		setTitle("Amazons");
+	    setSize(WINDOW_WIDTH, WINDOW_HEIGHT);
+	    setLocationRelativeTo(null);
+	    setDefaultCloseOperation(EXIT_ON_CLOSE);
 	}
 	
 	/**

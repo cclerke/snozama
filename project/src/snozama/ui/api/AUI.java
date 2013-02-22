@@ -41,6 +41,19 @@ public final class AUI
 		return ui.moveAmazon(row_s, col_s, row_f, col_f, row_a, col_a);
 	}
 	
+	/**
+	 * Post a message to the onscreen log.
+	 * @param message - message to post
+	 */
+	public static void post(String message)
+	{
+		ui.post(message);
+	}
+	
+	/**
+	 * Code to run when the UI is ready
+	 * @param rl - ReadyListner that contains the code to run
+	 */
 	public static void ready( ReadyListener rl )
 	{
 		ui.addReadyListener( rl );
