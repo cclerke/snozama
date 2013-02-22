@@ -2,7 +2,7 @@ package snozama.ui;
 
 public final class Labels {
 	
-	private static final String[] STANDARD_LETTERS = { "A","B","C","D","E","F","G","H","I","J" };
+	private static final String[] STANDARD_LETTERS = { "J","I","H","G","F","E","D","C","B","A" };
 	private static final String[] STANDARD_NUMBERS = { "1","2","3","4","5","6","7","8","9","10" };
 	
 	private static final String[] ZERO_NUMBERS = { "0","1","2","3","4","5","6","7","8","9" };

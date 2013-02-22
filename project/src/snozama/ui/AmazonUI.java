@@ -101,6 +101,11 @@ public class AmazonUI extends AbstractAmazonUI
 	private static StyledDocument doc;
 	private static JScrollPane logScroll;
 	
+	/**
+	 * Auto-increment logId
+	 */
+	private static int logId = 1;
+	
 	private AmazonUI()
 	{
 		this.board = new Board();
@@ -260,7 +265,7 @@ public class AmazonUI extends AbstractAmazonUI
 	{
 		try
 		{
-			doc.insertString( doc.getLength(), "\n" + message, null );
+			doc.insertString( doc.getLength(), "\n" + logId++ + " | " + message, null );
 		}
 		catch(BadLocationException e)
 		{
@@ -297,8 +302,9 @@ public class AmazonUI extends AbstractAmazonUI
 		moveHistory.add(move);
 		
 		String message = whoseMove == Board.WHITE ? "White" : "Black";
-		message += " moved from " + row_s + ", " + col_s + " to ";
-		message += row_f + ", " + col_f + " and shot an arrow to " + row_a + ", " + col_a;
+		message += " moved from " + labels[1][ row_s ] + "" + labels[0][ col_s ] + " to ";
+		message += labels[1][ row_f ] + "" + labels[0][ col_f ] 
+				+ " and shot an arrow to " + labels[1][ row_a ] + "" + labels[0][ col_a ];
 		post( message );
 		
 		board.move( row_s, col_s, row_f, col_f, row_a, col_a, whoseMove );
@@ -442,7 +448,7 @@ public class AmazonUI extends AbstractAmazonUI
 		left = X_OFFSET - 25;
 		
 		JLabel[] y_s =  new JLabel[10];
-		for( int i = 9; i >= 0 ; i -- )
+		for( int i = 0; i < 10 ; i ++ )
 		{
 			y_s[i] = new JLabel( labels[1][i] );
 			y_s[i].setBounds( left, top, 30, 30 );
@@ -484,7 +490,7 @@ public class AmazonUI extends AbstractAmazonUI
 		top = Y_OFFSET + 10;
 		left = X_OFFSET - 25;
 		
-		for( int i = 9; i >= 0 ; i -- )
+		for( int i = 0; i < 10 ; i++ )
 		{
 			JLabel t = (JLabel) panel.findComponentAt( left, top );
 			if( labels == null )
