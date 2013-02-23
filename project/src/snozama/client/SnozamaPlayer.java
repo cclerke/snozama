@@ -35,7 +35,7 @@ public class SnozamaPlayer implements GamePlayer
 	private Board board;
 	private int turn = 0;
 	
-	private String teamName = "SnozamaCody";
+	private String teamName = "Snozama";
 	private String password = "alexcodygraeme";
 	
 	private String role = "";
@@ -123,6 +123,12 @@ public class SnozamaPlayer implements GamePlayer
 			IXMLElement user = (IXMLElement)children.nextElement();
 			int id = user.getAttribute("id", -1);
 			String name = user.getAttribute("name", teamName);
+		}
+		
+		if (userCount > 2)
+		{
+			board = new Board();
+			this.role = "S";
 		}
 	}
 	
@@ -265,6 +271,8 @@ public class SnozamaPlayer implements GamePlayer
 		} catch (AUIException e) {
 			e.printStackTrace();
 		}
+		
+		sendRandomChat();
 	}
 	
 	/**
@@ -295,6 +303,23 @@ public class SnozamaPlayer implements GamePlayer
 		
 		// Print message and send to server
 		System.out.println("Snozama move: " + message);
+		String toSend = ServerMessage.compileGameMessage(GameMessage.MSG_GAME, room.roomID, message);
+		gameClient.sendToServer(toSend, true);
+	}
+	
+	public void sendRandomChat()
+	{
+		// Message part for action tag
+		String message = "<action type='" + GameMessage.MSG_CHAT + "'>";
+
+		// Message part for amazon's start square
+		message += "<chat='The spectating life is the life for me.'></chat>";
+
+		// Message part for closing action tag
+		message += "</action>";
+
+		// Print message and send to server
+		System.out.println("Chat message: " + message);
 		String toSend = ServerMessage.compileGameMessage(GameMessage.MSG_GAME, room.roomID, message);
 		gameClient.sendToServer(toSend, true);
 	}
