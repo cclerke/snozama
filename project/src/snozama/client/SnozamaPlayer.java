@@ -9,6 +9,7 @@ import net.n3.nanoxml.IXMLElement;
 import snozama.amazons.mechanics.Board;
 import snozama.amazons.mechanics.MoveManager;
 import snozama.amazons.mechanics.SnozamaHeuristic;
+import snozama.amazons.mechanics.algo.DummySearch;
 import snozama.amazons.mechanics.algo.NegaScout;
 import snozama.amazons.mechanics.algo.TranspositionNegaScout;
 import snozama.amazons.settings.Settings;
@@ -355,6 +356,7 @@ public class SnozamaPlayer implements GamePlayer
 		long endTime = System.currentTimeMillis()+25*1000; //starts 25 second timer
 		//NegaScout search = new NegaScout(endTime);
 		TranspositionNegaScout search = new TranspositionNegaScout(endTime, 2000000, board);
+		//DummySearch search = new DummySearch(endTime);
 		int encodedMove = search.chooseMove(board, Settings.teamColour, turn);
 		
 		//Handle end of game situations

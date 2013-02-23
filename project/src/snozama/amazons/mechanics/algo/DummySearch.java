@@ -11,9 +11,9 @@ import snozama.amazons.mechanics.MoveManager;
  */
 public class DummySearch {
 	
-	int endTime;
+	long endTime;
 	
-	public DummySearch(int end)
+	public DummySearch(long end)
 	{
 		endTime = end;
 	}
