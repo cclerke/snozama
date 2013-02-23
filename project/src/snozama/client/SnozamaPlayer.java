@@ -35,7 +35,7 @@ public class SnozamaPlayer implements GamePlayer
 	private Board board;
 	private int turn = 0;
 	
-	private String teamName = "Snozama";
+	private String teamName = "SnozamaC";
 	private String password = "alexcodygraeme";
 	
 	/**
@@ -214,7 +214,17 @@ public class SnozamaPlayer implements GamePlayer
 			makeMove();
 		}
 		else
+		{
 			System.out.println("CHEATERS!!!"); //TODO Error if move fails (they're big fat cheaters!)
+			AUI.post(move+ " is an illegal move.");
+			String opponent;
+			if (Settings.teamColour == Board.WHITE)
+				opponent = "Black";
+			else opponent = "White";
+			AUI.post(opponent+" are big fat cheaters!");
+			AUI.post("Snozama wins by default.");
+			
+		}
 	}
 	
 	/**
@@ -292,10 +302,12 @@ public class SnozamaPlayer implements GamePlayer
 				MoveManager successors = board.getSuccessors(Settings.teamColour);
 				encodedMove = successors.getMove(0); //make last move
 				System.out.println("Snozama wins by " + (score-1) +" points!");
+				AUI.post("Snozama wins by " + (score-1) + " points!");
 			}
 			else // Unreachable code :P
 			{
 				System.out.println("The game is over.");
+				AUI.post("The game is over.");
 				return false;
 			}
 		}
