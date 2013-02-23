@@ -35,8 +35,10 @@ public class SnozamaPlayer implements GamePlayer
 	private Board board;
 	private int turn = 0;
 	
-	private String teamName = "SnozamaC";
+	private String teamName = "SnozamaCody";
 	private String password = "alexcodygraeme";
+	
+	private String role = "";
 	
 	/**
 	 * Constructor where player name and password may be arbitrarily set.
@@ -96,9 +98,13 @@ public class SnozamaPlayer implements GamePlayer
 		{
 			onGameStart(xml);
 		}
-		else if (type.equals(GameMessage.ACTION_MOVE))
+		else if (type.equals(GameMessage.ACTION_MOVE) && !role.equalsIgnoreCase("S"))
 		{
 			handleOpponentMove(xml);
+		}
+		else if (type.equals(GameMessage.ACTION_MOVE)) //for spectating
+		{
+			handleMove(xml);
 		}
 		
 		return true;
@@ -149,6 +155,7 @@ public class SnozamaPlayer implements GamePlayer
 			else if (role.equalsIgnoreCase("S"))
 			{
 				// TODO: Spectate and stuff.
+				this.role = "S";
 			}
 			
 			board = new Board();
@@ -224,6 +231,39 @@ public class SnozamaPlayer implements GamePlayer
 			AUI.post(opponent+" are big fat cheaters!");
 			AUI.post("Snozama wins by default.");
 			
+		}
+	}
+	
+	private void handleMove(IXMLElement xml)
+	{
+		/*
+		 * Message for amazon move in format:
+		 * 	<queen move='a7-b7'></queen>
+		 */
+		IXMLElement amazon = xml.getFirstChildNamed("queen");
+		String move = amazon.getAttribute("move", "default");
+		int row_s = decodeMove(move.charAt(0));
+		int col_s = Integer.parseInt(""+move.charAt(1)); //FIXME Is there a better way to do this?
+		int row_f = decodeMove(move.charAt(3));
+		int col_f= Integer.parseInt(""+move.charAt(4));
+
+		/*
+		 * Message for arrow shot in format:
+		 * 	<arrow move='c6'></arrow>
+		 */
+		IXMLElement arrow = xml.getFirstChildNamed("arrow");
+		String shot = arrow.getAttribute("move", "default");
+		int arow = decodeMove(shot.charAt(0));
+		int acol = Integer.parseInt(""+shot.charAt(1));
+
+		System.out.println("Move: "+ move.charAt(0) + col_s + "-" + move.charAt(3) + col_f + 
+				" (" + shot.charAt(0) + acol + ")");
+
+		//Make opponent's move on the user interface
+		try {
+			AUI.moveAmazon(row_s, col_s, row_f, col_f, arow, acol);
+		} catch (AUIException e) {
+			e.printStackTrace();
 		}
 	}
 	
