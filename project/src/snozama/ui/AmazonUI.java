@@ -4,14 +4,13 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.geom.Line2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -19,6 +18,8 @@ import javax.swing.text.BadLocationException;
 import javax.swing.text.StyledDocument;
 
 import snozama.amazons.mechanics.Board;
+import snozama.ui.components.Line;
+import snozama.ui.components.MovementLayer;
 import snozama.ui.eventListeners.*;
 
 /**
@@ -37,6 +38,11 @@ public class AmazonUI extends AbstractAmazonUI
 	 * Ready Functions to run when the UI is ready for them
 	 */
 	private static List<ReadyListener> readyFunctions = new ArrayList<ReadyListener>();
+	
+	/**
+	 * List of Amazon and Arrow move visuals.
+	 */
+	private static List<Line> movements = new ArrayList<Line>();
 	
 	/**
 	 * History of moves for quick visualization
@@ -99,6 +105,7 @@ public class AmazonUI extends AbstractAmazonUI
 	private static JPanel panel;
 	private static JLabel boardPanel;
 	private static JLayeredPane gameLayer;
+	private static MovementLayer movementLayer;
 	private static JTextPane log;
 	private static StyledDocument doc;
 	private static JScrollPane logScroll;
@@ -165,7 +172,12 @@ public class AmazonUI extends AbstractAmazonUI
 		gameLayer = new JLayeredPane();
 		gameLayer.setBounds(X_OFFSET,Y_OFFSET,500,500);
 		
-		pane.add(gameLayer, new Integer( 50 ));
+		pane.add(gameLayer, new Integer( 100 ));
+		
+		movementLayer = new MovementLayer();
+		movementLayer.setBounds(X_OFFSET,Y_OFFSET,500,500);
+		
+		pane.add( movementLayer, new Integer( 50 ) );
 		
 		if( boardImage != null )
 		{
@@ -299,6 +311,9 @@ public class AmazonUI extends AbstractAmazonUI
 			historicMove++;
 		}
 		
+		createMovementLine(row_s, col_s, row_f, col_f, whoseMove, false);
+		createMovementLine(row_f, col_f, row_a, col_a, whoseMove, true);
+		
 		/* Save move in history */
 		String move = row_s + "-" + col_s + "-" + row_f + "-" + col_f + "-" + row_a + "-" + col_a;
 		moveHistory.add(move);
@@ -317,6 +332,24 @@ public class AmazonUI extends AbstractAmazonUI
 		return true;
 	}
 	
+	private void createMovementLine( int row_s, int col_s, int row_f, int col_f, int whoseMove, boolean arrow )
+	{
+		int x1 = col_s * SQUARE_WIDTH + SQUARE_WIDTH/2;
+		int y1 = row_s * SQUARE_WIDTH + SQUARE_WIDTH/2;
+		
+		int x2 = col_f * SQUARE_WIDTH + SQUARE_WIDTH/2;
+		int y2 = row_f * SQUARE_WIDTH + SQUARE_WIDTH/2;
+		
+		movementLayer.addMovement(new Line( x1, y1, x2, y2, whoseMove, arrow));
+		repaintMovementLayerByHistoricMove();
+	}
+	
+	private void repaintMovementLayerByHistoricMove()
+	{
+		movementLayer.setHistoricMove(historicMove);
+		movementLayer.repaint();
+	}
+	
 	/**
 	 * Add a new arrow piece to the board
 	 */
@@ -326,7 +359,6 @@ public class AmazonUI extends AbstractAmazonUI
 		setPieceLocation(arrowImage, row_a, col_a);
 		gameLayer.add(arrowImage);
 	}
-	
 	
 	/**
 	 * Return the game to a previous state
@@ -352,6 +384,8 @@ public class AmazonUI extends AbstractAmazonUI
 			movePiece( row_f, col_f, row_s, col_s );
 			
 			historicMove--;
+			
+			repaintMovementLayerByHistoricMove();
 		}
 	}
 	
@@ -363,6 +397,8 @@ public class AmazonUI extends AbstractAmazonUI
 		if( historicMove < currentMove )
 		{
 			historicMove++;
+			
+			repaintMovementLayerByHistoricMove();
 			
 			String move = moveHistory.get( historicMove - 1 );
 			String[] params = move.split("-");
@@ -597,6 +633,67 @@ public class AmazonUI extends AbstractAmazonUI
 		v_labels.add( none );
 		
 		view.add( v_labels );
+		
+		JCheckBoxMenuItem seeBoard = new JCheckBoxMenuItem( "Board" );
+		seeBoard.setSelected( Boolean.TRUE );
+		
+		seeBoard.addActionListener( new ActionListener()
+		{
+			public void actionPerformed(ActionEvent event)
+			{
+				JCheckBoxMenuItem src = (JCheckBoxMenuItem) event.getSource();
+				if( src.isSelected() )
+				{
+					boardPanel.setVisible( Boolean.TRUE );
+				}
+				else
+				{
+					boardPanel.setVisible( Boolean.FALSE );
+				}
+			}
+		} );
+		
+		JCheckBoxMenuItem seeGameLayer = new JCheckBoxMenuItem( "Game Layer" );
+		seeGameLayer.setSelected( Boolean.TRUE );
+		seeGameLayer.addActionListener( new ActionListener()
+		{
+			public void actionPerformed(ActionEvent event)
+			{
+				JCheckBoxMenuItem src = (JCheckBoxMenuItem) event.getSource();
+				if( src.isSelected() )
+				{
+					gameLayer.setVisible( Boolean.TRUE );
+				}
+				else
+				{
+					gameLayer.setVisible( Boolean.FALSE );
+				}
+			}
+		} );
+		
+		JCheckBoxMenuItem seeMovementLayer = new JCheckBoxMenuItem( "Movement Layer" );
+		seeMovementLayer.addActionListener( new ActionListener()
+		{
+			public void actionPerformed(ActionEvent event)
+			{
+				JCheckBoxMenuItem src = (JCheckBoxMenuItem) event.getSource();
+				if( src.isSelected() )
+				{
+					movementLayer.setVisible( Boolean.TRUE );
+				}
+				else
+				{
+					movementLayer.setVisible( Boolean.FALSE );
+				}
+			}
+		} );
+		
+		seeBoard.setEnabled( Boolean.FALSE );
+		seeGameLayer.setEnabled( Boolean.FALSE );
+		
+		view.add( seeBoard );
+		view.add( seeGameLayer );
+		view.add( seeMovementLayer );
 		
 		menu.add( view );
 		
