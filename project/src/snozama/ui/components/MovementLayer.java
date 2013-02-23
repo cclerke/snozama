@@ -25,7 +25,6 @@ public class MovementLayer extends JLayeredPane
 		
 		if( movements != null )
 		{
-			System.out.println( historicMove );
 			for( int i = 0; i < Math.min( historicMove * 2, movements.size());i++ )
 			{
 				movements.get(i).paint( getComponentGraphics( g ) );
