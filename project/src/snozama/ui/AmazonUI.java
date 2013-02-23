@@ -280,6 +280,7 @@ public class AmazonUI extends AbstractAmazonUI
 		try
 		{
 			doc.insertString( doc.getLength(), "\n" + logId++ + " | " + message, null );
+			log.setCaretPosition( log.getText().length() );
 		}
 		catch(BadLocationException e)
 		{
