@@ -37,7 +37,6 @@ public class KillerTranspositionNegaScout {
 	int zkey;
 	
 	KillerTable ktable;
-	int kindex;
 	
 	long endTime;
 	
@@ -87,7 +86,7 @@ public class KillerTranspositionNegaScout {
 	 */
 	public int NegaScoutSearch(Board board, int depth, int maxDepth, int alpha, int beta, int colour, int turn)
 	{
-		kindex = ktable.getStartingIndex(turn-1);
+		int kindex = ktable.getStartingIndex(turn-1);
 		int zrecord[];
 		
 		// Check transposition table for previous board position.
@@ -142,7 +141,7 @@ public class KillerTranspositionNegaScout {
 		for (int i = 0; i < ktable.movesPerDepth && !gotoEnd; i++)
 		{
 			int move = ktable.get(kindex+i);
-			if (move == 0 || !board.isValidMove(move))
+			if (move == 0 || !board.isValidMove(move) || MoveManager.getPlayerColourFromUnmanagedMove(move, board) != colour)
 			{
 				continue;
 			}
