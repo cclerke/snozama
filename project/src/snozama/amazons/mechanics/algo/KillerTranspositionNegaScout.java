@@ -7,6 +7,7 @@ import snozama.amazons.mechanics.Board;
 import snozama.amazons.mechanics.MoveChoice;
 import snozama.amazons.mechanics.MoveManager;
 import snozama.amazons.mechanics.SnozamaHeuristic;
+import snozama.amazons.mechanics.killerheuristic.KillerTable;
 import snozama.amazons.mechanics.transtable.ZobristTTable;
 
 /**
@@ -16,7 +17,7 @@ import snozama.amazons.mechanics.transtable.ZobristTTable;
  *
  */
 
-public class TranspositionNegaScout {
+public class KillerTranspositionNegaScout {
 	
 	public static int POS_INFINITY = Integer.MAX_VALUE-2;
 	public static int NEG_INFINITY = Integer.MIN_VALUE+2;
@@ -32,8 +33,11 @@ public class TranspositionNegaScout {
 	int[] bestMoves = new int[absoluteMaxDepth]; //FIXME hard-coded as 20 for testing
 	int[] scores = new int[2176];
 	
-	ZobristTTable table;
+	ZobristTTable ttable;
 	int zkey;
+	
+	KillerTable ktable;
+	int kindex;
 	
 	long endTime;
 	
@@ -43,16 +47,18 @@ public class TranspositionNegaScout {
 	
 	Board board2 = new Board();		// TODO: Delete this once not needed for debugging.
 	
-	public TranspositionNegaScout(long end, int tableSize, Board startBoard)
+	public KillerTranspositionNegaScout(long end, int tableSize, Board startBoard)
 	{
-		table = new ZobristTTable(tableSize);
-		zkey = table.computeBoardHash(startBoard);
+		ttable = new ZobristTTable(tableSize);
+		zkey = ttable.computeBoardHash(startBoard);
 		
 		Arrays.fill(scores, NEG_INFINITY);
 		depthCompleted = 0;
 		endTime = end;
 		
 		gotoEnd = false;
+		
+		ktable = new KillerTable();
 	}
 	
 	/**
@@ -81,14 +87,12 @@ public class TranspositionNegaScout {
 	 */
 	public int NegaScoutSearch(Board board, int depth, int maxDepth, int alpha, int beta, int colour, int turn)
 	{
+		kindex = ktable.getStartingIndex(turn-1);
 		int zrecord[];
 		
 		// Check transposition table for previous board position.
-		// Ensure data is correct.
 		/// Transposition table code ///////////////////////////////////////////
-		// TODO: Is depth calculation right here?
-		// TODO: Only check if the position is actually this position.
-		if ((zrecord = table.get(zkey))[ZobristTTable.DEPTH] >= maxDepth - depth && board.isValidMove(zrecord[ZobristTTable.MOVE]) && zrecord[ZobristTTable.POS_INFO] == colour)
+		if ((zrecord = ttable.get(zkey))[ZobristTTable.DEPTH] >= maxDepth - depth && board.isValidMove(zrecord[ZobristTTable.MOVE]) && zrecord[ZobristTTable.POS_INFO] == colour)
 		{
 			switch (zrecord[ZobristTTable.FLAG])
 			{
@@ -101,10 +105,12 @@ public class TranspositionNegaScout {
 				case ZobristTTable.EXACT_SCORE:
 					return zrecord[ZobristTTable.SCORE];
 			}
+			/*
 			if (alpha >= beta)
 			{
 				return alpha;
 			}
+			*/
 			
 		}
 		else
@@ -131,6 +137,46 @@ public class TranspositionNegaScout {
 		int col_s;
 		
 		/**/
+		
+		/// Killer Heuristic Code //////////////////////////////////////////////
+		for (int i = 0; i < ktable.movesPerDepth && !gotoEnd; i++)
+		{
+			int move = ktable.get(kindex+i);
+			if (move == 0 || !board.isValidMove(move))
+			{
+				continue;
+			}
+			
+			int aindex = MoveManager.getAmazonIndexFromUnmanagedMove(move, board);
+			row_s = Board.decodeAmazonRow(board.amazons[colour][aindex]);
+			col_s = Board.decodeAmazonColumn(board.amazons[colour][aindex]);
+			
+			MoveManager.applyUnmanagedMove(board, move);
+			
+			int current = -NegaScoutSearch(board, depth+1, maxDepth, -beta, -alpha, GlobalFunctions.flip(colour), turn+1);
+			if (current > score)
+			{
+				score = current;
+			}
+			if (score > alpha)
+			{
+				alpha = score;
+				bestMoves[depth] = move;
+			}
+			
+			if (alpha >= beta)
+			{
+				gotoEnd = true;
+			}
+			else
+			{
+				scores[currentRoot] = score;
+			}
+			
+			MoveManager.undoUnmanagedMove(board, move, row_s, col_s);
+		}
+		////////////////////////////////////////////////////////////////////////
+		
 		/// Transposition table code - attempt found value FIRST ///////////////
 		if (zrecord[ZobristTTable.DEPTH] > -1)
 		{
@@ -139,7 +185,7 @@ public class TranspositionNegaScout {
 			col_s = Board.decodeAmazonColumn(board.amazons[colour][aindex]);
 			
 			MoveManager.applyUnmanagedMove(board, zrecord[ZobristTTable.MOVE]);
-			zkey = table.updateHashKeyByMove(zkey, zrecord[ZobristTTable.MOVE], row_s, col_s);
+			zkey = ttable.updateHashKeyByMove(zkey, zrecord[ZobristTTable.MOVE], row_s, col_s);
 			
 			int current = -NegaScoutSearch(board, depth+1, maxDepth, -beta, -alpha, GlobalFunctions.flip(colour), turn+1);
 			if (current > score)
@@ -154,7 +200,9 @@ public class TranspositionNegaScout {
 			
 			if (alpha >= beta)
 			{
-				//gotoEnd = true;
+				// Update killer heuristic.
+				ktable.put(zrecord[ZobristTTable.MOVE], turn-1);
+				gotoEnd = true;
 			}
 			else
 			{
@@ -162,7 +210,7 @@ public class TranspositionNegaScout {
 			}
 			
 			MoveManager.undoUnmanagedMove(board, zrecord[ZobristTTable.MOVE], row_s, col_s);
-			zkey = table.updateHashKeyByMove(zkey, zrecord[ZobristTTable.MOVE], row_s, col_s);
+			zkey = ttable.updateHashKeyByMove(zkey, zrecord[ZobristTTable.MOVE], row_s, col_s);
 		}
 		////////////////////////////////////////////////////////////////////////
 		
@@ -211,6 +259,8 @@ public class TranspositionNegaScout {
 			
 			if (alpha >= beta)
 			{
+				// Update killer heuristic.
+				ktable.put(successors.getMove(next), turn-1);
 				gotoEnd = true; //cut off
 			}
 			else
@@ -238,7 +288,7 @@ public class TranspositionNegaScout {
 		zrecord[ZobristTTable.SCORE] = score;
 		zrecord[ZobristTTable.MOVE] = bestMoves[depth];
 		zrecord[ZobristTTable.POS_INFO] = colour;
-		table.put(zkey, zrecord);
+		ttable.put(zkey, zrecord);
 		////////////////////////////////////////////////////////////////////////
 		
 		gotoEnd = false;
@@ -264,7 +314,7 @@ public class TranspositionNegaScout {
 			depth++;
 		}
 		boolean found = false;
-		System.out.println("Total collisions: " + table.collisions);
+		System.out.println("Total collisions: " + ttable.collisions);
 		for (int i = bestScore.length-1; i >= 0; i--)
 		{
 			if (found)
