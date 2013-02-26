@@ -30,6 +30,8 @@ public class KillerTableTest {
 		{
 			int index = table.getStartingIndex(depth);
 
+			assertEquals((depth*(table.movesPerDepth+1))+1, index);
+
 			assertEquals(2, table.movesPerDepth);
 
 			assertEquals(0, table.get(index));
@@ -37,8 +39,6 @@ public class KillerTableTest {
 
 			table.put(2, depth);
 			table.put(2, depth);
-
-			assertEquals((depth*(table.movesPerDepth+1))+1, index);
 
 			assertEquals(2, table.get(index));
 			assertEquals(2, table.get(index+1));
