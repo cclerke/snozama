@@ -51,6 +51,17 @@ public final class AUI
 	}
 	
 	/**
+	 * Start the game when both players are reading and the timer should be running.
+	 * 
+	 * @param whoseTurn - Board.BLACK, or BLACK.WHITE
+	 * @param seconds - number of seconds allotted for this turn
+	 */
+	public static void startTurn( int whoseTurn, int seconds )
+	{
+		ui.startTurn( whoseTurn, seconds );
+	}
+	
+	/**
 	 * Code to run when the UI is ready
 	 * @param rl - ReadyListner that contains the code to run
 	 */
