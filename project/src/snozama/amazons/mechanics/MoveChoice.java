@@ -95,11 +95,73 @@ public class MoveChoice {
 	
 	/**
 	 * Return a string representation of the move.
+	 * 
+	 * @return			The string representation of the move.
 	 */
 	public String toString()
 	{
 		return "(" + row_s + ", " + col_s + ") moves to (" + row_f + ", "+
 					col_f + ") and then shoots to ("+ arrowRow + ", " +
 					arrowCol+ ")";
+	}
+	
+	/**
+	 * Get the starting row from the choice object.
+	 * 
+	 * @return			The row of the starting position of the amazon.
+	 */
+	public int getStartingRow()
+	{
+		return row_s;
+	}
+	
+	/**
+	 * Get the starting column of the amazon from the choice object.
+	 * 
+	 * @return			The column of the starting position of the amazon.
+	 */
+	public int getStartingColumn()
+	{
+		return col_s;
+	}
+	
+	/**
+	 * Get the finishing row from the choice object.
+	 * 
+	 * @return			The row of the finishing position of the amazon.
+	 */
+	public int getFinishingRow()
+	{
+		return row_f;
+	}
+	
+	/**
+	 * Get the finishing column of the amazon from the choice object.
+	 * 
+	 * @return			The column of the finishing position of the amazon.
+	 */
+	public int getFinishingColumn()
+	{
+		return col_f;
+	}
+	
+	/**
+	 * Get the row of the amazon arrow.
+	 * 
+	 * @return			The row of the arrow placed.
+	 */
+	public int getArrowRow()
+	{
+		return arrowRow;
+	}
+	
+	/**
+	 * Get the column of the amazon arrow.
+	 * 
+	 * @return			The column of the arrow placed.
+	 */
+	public int getArrowColumn()
+	{
+		return arrowCol;
 	}
 }
