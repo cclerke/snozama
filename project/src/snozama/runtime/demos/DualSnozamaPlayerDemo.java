@@ -39,8 +39,17 @@ public class DualSnozamaPlayerDemo
 		
 		do
 		{
-			NegaScout search = new NegaScout(System.currentTimeMillis()+decisionTime);
-			move = search.chooseMove(board, colour, turn);
+			if (colour == Board.WHITE)
+			{
+				NegaScout search = new NegaScout(System.currentTimeMillis()+decisionTime);
+				move = search.chooseMove(board, colour, turn);
+			}
+			else
+			{
+				NegaScout search = new NegaScout(System.currentTimeMillis()+decisionTime);
+				move = search.chooseMove(board, colour, turn);
+			}
+			
 			if (move <= 0)
 			{
 				AUI.post("Game over.");
