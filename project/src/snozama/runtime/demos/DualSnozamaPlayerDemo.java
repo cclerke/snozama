@@ -39,6 +39,7 @@ public class DualSnozamaPlayerDemo
 		
 		do
 		{
+			AUI.startTurn(colour, 30);
 			if (colour == Board.WHITE)
 			{
 				NegaScout search = new NegaScout(System.currentTimeMillis()+decisionTime);
