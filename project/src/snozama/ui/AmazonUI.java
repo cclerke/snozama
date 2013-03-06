@@ -17,10 +17,12 @@ import javax.swing.*;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.StyledDocument;
 
+import snozama.amazons.global.GlobalFunctions;
 import snozama.amazons.mechanics.Board;
 import snozama.ui.components.Line;
 import snozama.ui.components.MovementLayer;
 import snozama.ui.eventListeners.*;
+import snozama.ui.exception.TimeNotSetException;
 
 /**
  * 
@@ -109,6 +111,8 @@ public class AmazonUI extends AbstractAmazonUI
 	private static JTextPane log;
 	private static StyledDocument doc;
 	private static JScrollPane logScroll;
+	private static JLabel timerDisplay;
+	private static JLabel turnDisplay;
 	
 	/**
 	 * Auto-increment logId
@@ -218,6 +222,20 @@ public class AmazonUI extends AbstractAmazonUI
 		
 		panel.add(back);
 		panel.add(forward);
+		
+		timerDisplay = new JLabel( "Timer" );
+		
+		timerDisplay.setBounds( 790, 50, 20, 50 );
+		timerDisplay.setForeground( new Color( 255, 255, 255 ) );
+		
+		panel.add( timerDisplay );
+		
+		turnDisplay = new JLabel( "Turn" );
+		
+		turnDisplay.setBounds( 810, 50, 150, 50 );
+		turnDisplay.setForeground( new Color( 255, 255, 255 ) );
+		
+		panel.add( turnDisplay );
 		
 		add(pane);
 		
@@ -500,6 +518,41 @@ public class AmazonUI extends AbstractAmazonUI
 			top+=SQUARE_WIDTH;
 		}
 		
+	}
+	
+	/**
+	 * Start a turn. Set the timer
+	 * @param whoseTurn
+	 * @param seconds
+	 */
+	public void startTurn( final int whoseTurn, final int seconds )
+	{
+		if( whoseTurn == Board.WHITE )
+		{
+			turnDisplay.setText( "WHITE is moving" );
+		}
+		else
+		{
+			turnDisplay.setText( "BLACK is moving" );
+		}
+		TurnTimer tt = new TurnTimer( seconds );
+		try
+		{
+			tt.interval( timerDisplay, new UITimerCompleteListener()
+			{
+				// This is the function when the timer completes.
+				@Override
+				public void complete()
+				{
+					// startTurn through AUI.startTurn called from the handleMessage
+					//startTurn( GlobalFunctions.flip( whoseTurn), seconds );
+				}
+			} );
+		}
+		catch( TimeNotSetException tnse )
+		{
+			System.out.println( tnse.getMessage() );
+		}
 	}
 	
 	/**

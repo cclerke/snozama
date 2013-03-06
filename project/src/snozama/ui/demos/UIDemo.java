@@ -2,6 +2,7 @@ package snozama.ui.demos;
 
 import java.util.Scanner;
 
+import snozama.amazons.mechanics.Board;
 import snozama.ui.api.AUI;
 import snozama.ui.eventListeners.UIReadyListener;
 import snozama.ui.exception.AUIException;
@@ -30,6 +31,8 @@ public class UIDemo {
 					
 				}
 				catch( AUIException e ) {}
+				
+				AUI.startTurn(Board.WHITE, 30);
 			}
 			
 		});
