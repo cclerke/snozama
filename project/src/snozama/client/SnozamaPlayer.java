@@ -37,7 +37,7 @@ public class SnozamaPlayer implements GamePlayer
 	private Board board;
 	private int turn = 0;
 	
-	private String teamName = "SnozamaCody3";
+	private String teamName = "SnozamaCody";
 	private String password = "alexcodygraeme";
 	
 	private String role = "";
@@ -184,7 +184,7 @@ public class SnozamaPlayer implements GamePlayer
 		else
 		{
 			System.out.println("The opponent moves first");
-			AUI.startTurn(GlobalFunctions.flip(Settings.teamColour), 30); //FIXME turn timer variable
+			AUI.startTurn(GlobalFunctions.flip(Settings.teamColour), Settings.turnTime);
 		}
 	}
 	
@@ -237,7 +237,7 @@ public class SnozamaPlayer implements GamePlayer
 		}
 		else
 		{
-			System.out.println("CHEATERS!!!"); //TODO Error if move fails (they're big fat cheaters!)
+			System.out.println("CHEATERS!!!");
 			AUI.post(move+ " is an illegal move.");
 			String opponent;
 			if (Settings.teamColour == Board.WHITE)
@@ -371,7 +371,7 @@ public class SnozamaPlayer implements GamePlayer
 	 */
 	public boolean makeMove()
 	{
-		AUI.startTurn(Settings.teamColour, 30); //FIXME turn time variable?
+		AUI.startTurn(Settings.teamColour, Settings.turnTime);
 		long endTime = System.currentTimeMillis()+25*1000; //starts 25 second timer
 		//NegaScout search = new NegaScout(endTime);
 		//TranspositionNegaScout search = new TranspositionNegaScout(endTime, 2000000, board);
@@ -423,7 +423,7 @@ public class SnozamaPlayer implements GamePlayer
 		sendToServer(row_s, col_s, row_f, col_f, arow, acol);
 		
 		//Start opponent's turn timer
-		AUI.startTurn(GlobalFunctions.flip(Settings.teamColour), 30); //FIXME variable for turn time
+		AUI.startTurn(GlobalFunctions.flip(Settings.teamColour), Settings.turnTime);
 		
 		return true;
 	}

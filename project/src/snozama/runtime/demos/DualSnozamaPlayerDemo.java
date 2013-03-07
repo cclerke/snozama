@@ -6,6 +6,7 @@ import snozama.amazons.mechanics.MoveChoice;
 import snozama.amazons.mechanics.MoveManager;
 import snozama.amazons.mechanics.algo.NegaScout;
 import snozama.amazons.mechanics.algo.TranspositionNegaScout;
+import snozama.amazons.settings.Settings;
 import snozama.client.SnozamaPlayer;
 import snozama.ui.api.AUI;
 import snozama.ui.eventListeners.UIReadyListener;
@@ -34,20 +35,19 @@ public class DualSnozamaPlayerDemo
 		int turn = 1;
 		int move = 0;
 		int colour = Board.WHITE;
-		long decisionTime = 1000;	// In milliseconds.
 		MoveChoice choice = null;
 		
 		do
 		{
-			AUI.startTurn(colour, 30);
+			AUI.startTurn(colour, Settings.turnTime);
 			if (colour == Board.WHITE)
 			{
-				NegaScout search = new NegaScout(System.currentTimeMillis()+decisionTime);
+				NegaScout search = new NegaScout(System.currentTimeMillis()+Settings.decisionTime);
 				move = search.chooseMove(board, colour, turn);
 			}
 			else
 			{
-				NegaScout search = new NegaScout(System.currentTimeMillis()+decisionTime);
+				NegaScout search = new NegaScout(System.currentTimeMillis()+Settings.decisionTime);
 				move = search.chooseMove(board, colour, turn);
 			}
 			
