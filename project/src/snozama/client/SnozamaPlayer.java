@@ -372,7 +372,7 @@ public class SnozamaPlayer implements GamePlayer
 	public boolean makeMove()
 	{
 		AUI.startTurn(Settings.teamColour, Settings.turnTime);
-		long endTime = System.currentTimeMillis()+25*1000; //starts 25 second timer
+		long endTime = System.currentTimeMillis()+Settings.decisionTime; //starts turn timer
 		//NegaScout search = new NegaScout(endTime);
 		//TranspositionNegaScout search = new TranspositionNegaScout(endTime, 2000000, board);
 		DummySearch search = new DummySearch(endTime);
