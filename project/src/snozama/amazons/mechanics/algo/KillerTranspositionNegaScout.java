@@ -65,7 +65,7 @@ public class KillerTranspositionNegaScout {
 	 * @param board		The current board position.
 	 * @param colour	The player for whom to find a move for.
 	 * @param turn		The current ply of the game.
-	 * @return			Returns the best move found by the search algorihm.
+	 * @return			Returns the best move found by the search algorithm.
 	 */
 	public int chooseMove(Board board, int colour, int turn)
 	{
@@ -91,7 +91,7 @@ public class KillerTranspositionNegaScout {
 		
 		// Check transposition table for previous board position.
 		/// Transposition table code ///////////////////////////////////////////
-		if ((zrecord = ttable.get(zkey))[ZobristTTable.DEPTH] >= maxDepth - depth && board.isValidMove(zrecord[ZobristTTable.MOVE]) && zrecord[ZobristTTable.POS_INFO] == colour)
+		if ((zrecord = ttable.get(zkey))[ZobristTTable.DEPTH] >= maxDepth - depth && zrecord[ZobristTTable.MOVE] != 0 && board.isValidMove(zrecord[ZobristTTable.MOVE]) && zrecord[ZobristTTable.POS_INFO] == colour)
 		{
 			switch (zrecord[ZobristTTable.FLAG])
 			{

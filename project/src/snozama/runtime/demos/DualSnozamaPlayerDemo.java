@@ -4,6 +4,7 @@ import snozama.amazons.global.GlobalFunctions;
 import snozama.amazons.mechanics.Board;
 import snozama.amazons.mechanics.MoveChoice;
 import snozama.amazons.mechanics.MoveManager;
+import snozama.amazons.mechanics.algo.KillerTranspositionNegaScout;
 import snozama.amazons.mechanics.algo.NegaScout;
 import snozama.amazons.mechanics.algo.TranspositionNegaScout;
 import snozama.amazons.settings.Settings;
@@ -16,6 +17,17 @@ public class DualSnozamaPlayerDemo
 {
 	public static void main(String args[])
 	{
+		// Debug data.
+		Runtime runtime = Runtime.getRuntime();
+		int mb = 1024*1024;
+		System.out.println("----");
+		//Print total available memory
+		System.out.println("Total Memory:" + runtime.totalMemory() / mb);
+		
+		//Print Maximum available memory
+		System.out.println("Max Memory:" + runtime.maxMemory() / mb);
+		System.out.println("----");
+		
 		Board board = new Board();
 		
 		AUI.getUI();
@@ -42,12 +54,16 @@ public class DualSnozamaPlayerDemo
 			AUI.startTurn(colour, Settings.turnTime);
 			if (colour == Board.WHITE)
 			{
-				NegaScout search = new NegaScout(System.currentTimeMillis()+Settings.decisionTime);
+				//NegaScout search = new NegaScout(System.currentTimeMillis()+Settings.decisionTime);
+				TranspositionNegaScout search = new TranspositionNegaScout(System.currentTimeMillis()+Settings.decisionTime, 16000000, board);
+				//KillerTranspositionNegaScout search = new KillerTranspositionNegaScout(System.currentTimeMillis()+Settings.decisionTime, 2000000, board);
 				move = search.chooseMove(board, colour, turn);
 			}
 			else
 			{
 				NegaScout search = new NegaScout(System.currentTimeMillis()+Settings.decisionTime);
+				//TranspositionNegaScout search = new TranspositionNegaScout(System.currentTimeMillis()+Settings.decisionTime, 10000000, board);
+				//KillerTranspositionNegaScout search = new KillerTranspositionNegaScout(System.currentTimeMillis()+Settings.decisionTime, 2000000, board);
 				move = search.chooseMove(board, colour, turn);
 			}
 			
