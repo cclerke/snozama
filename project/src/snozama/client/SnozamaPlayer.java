@@ -6,6 +6,7 @@ import java.util.Iterator;
 
 import net.n3.nanoxml.IXMLElement;
 
+import snozama.amazons.global.GlobalFunctions;
 import snozama.amazons.mechanics.Board;
 import snozama.amazons.mechanics.MoveManager;
 import snozama.amazons.mechanics.SnozamaHeuristic;
@@ -36,7 +37,7 @@ public class SnozamaPlayer implements GamePlayer
 	private Board board;
 	private int turn = 0;
 	
-	private String teamName = "Snozama";
+	private String teamName = "SnozamaCody";
 	private String password = "alexcodygraeme";
 	
 	private String role = "";
@@ -106,6 +107,10 @@ public class SnozamaPlayer implements GamePlayer
 		else if (type.equals(GameMessage.ACTION_MOVE)) //for spectating
 		{
 			handleMove(xml);
+		}
+		else if (type.equals(GameMessage.MSG_CHAT))
+		{
+			handleChat(xml);
 		}
 		
 		return true;
@@ -177,7 +182,10 @@ public class SnozamaPlayer implements GamePlayer
 			makeMove();
 		}
 		else
+		{
 			System.out.println("The opponent moves first");
+			AUI.startTurn(GlobalFunctions.flip(Settings.teamColour), Settings.turnTime);
+		}
 	}
 	
 	/**
@@ -229,7 +237,7 @@ public class SnozamaPlayer implements GamePlayer
 		}
 		else
 		{
-			System.out.println("CHEATERS!!!"); //TODO Error if move fails (they're big fat cheaters!)
+			System.out.println("CHEATERS!!!");
 			AUI.post(move+ " is an illegal move.");
 			String opponent;
 			if (Settings.teamColour == Board.WHITE)
@@ -308,6 +316,9 @@ public class SnozamaPlayer implements GamePlayer
 		gameClient.sendToServer(toSend, true);
 	}
 	
+	/**
+	 * Sends chat message to server when spectating to maintain connection.
+	 */
 	public void sendRandomChat()
 	{
 		// Message part for action tag
@@ -323,6 +334,13 @@ public class SnozamaPlayer implements GamePlayer
 		System.out.println("Chat message: " + message);
 		String toSend = ServerMessage.compileGameMessage(GameMessage.MSG_GAME, room.roomID, message);
 		gameClient.sendToServer(toSend, true);
+	}
+	
+	public void handleChat(IXMLElement xml)
+	{
+		IXMLElement chat = xml.getFirstChildNamed("chat");
+		String message = chat.getContent();
+		AUI.post(message);
 	}
 	
 	/**
@@ -353,10 +371,11 @@ public class SnozamaPlayer implements GamePlayer
 	 */
 	public boolean makeMove()
 	{
-		long endTime = System.currentTimeMillis()+25*1000; //starts 25 second timer
+		AUI.startTurn(Settings.teamColour, Settings.turnTime);
+		long endTime = System.currentTimeMillis()+Settings.decisionTime; //starts turn timer
 		//NegaScout search = new NegaScout(endTime);
-		TranspositionNegaScout search = new TranspositionNegaScout(endTime, 2000000, board);
-		//DummySearch search = new DummySearch(endTime);
+		//TranspositionNegaScout search = new TranspositionNegaScout(endTime, 2000000, board);
+		DummySearch search = new DummySearch(endTime);
 		int encodedMove = search.chooseMove(board, Settings.teamColour, turn);
 		
 		//Handle end of game situations
@@ -402,6 +421,9 @@ public class SnozamaPlayer implements GamePlayer
 		
 		//Send move to the server
 		sendToServer(row_s, col_s, row_f, col_f, arow, acol);
+		
+		//Start opponent's turn timer
+		AUI.startTurn(GlobalFunctions.flip(Settings.teamColour), Settings.turnTime);
 		
 		return true;
 	}
