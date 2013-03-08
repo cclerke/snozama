@@ -114,6 +114,8 @@ public class AmazonUI extends AbstractAmazonUI
 	private static JLabel timerDisplay;
 	private static JLabel turnDisplay;
 	
+	private static TurnTimer turnTimer;
+	
 	/**
 	 * Auto-increment logId
 	 */
@@ -535,10 +537,10 @@ public class AmazonUI extends AbstractAmazonUI
 		{
 			turnDisplay.setText( "BLACK is moving" );
 		}
-		TurnTimer tt = new TurnTimer( seconds );
+		turnTimer = new TurnTimer( seconds );
 		try
 		{
-			tt.interval( timerDisplay, new UITimerCompleteListener()
+			turnTimer.interval( timerDisplay, new UITimerCompleteListener()
 			{
 				// This is the function when the timer completes.
 				@Override
