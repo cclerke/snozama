@@ -77,7 +77,7 @@ public class ZobristTTable implements TranspositionTable
 	 * The hash table.  The key is the result of the Zobrist hash; the record
 	 * is a long with all the relevant information.
 	 */
-	public int[][] hashTable;
+	public int[] hashTable;
 	
 	/**
 	 * Default constructor for the transposition table.
@@ -86,10 +86,7 @@ public class ZobristTTable implements TranspositionTable
 	{
 		zobristValues = new int[3][10][10];
 		
-		// 
 		Random rand = new Random();
-		//for (int i = 0; i < 10000; i++)
-		//	rand.nextInt();
 		
 		// Create the Zobrist value lookup.
 		for (int t = 0; t < zobristValues.length; t++)
@@ -107,10 +104,10 @@ public class ZobristTTable implements TranspositionTable
 		
 		collisions = 0;
 		
-		hashTable = new int[size][5];
-		for (int i = 0; i < hashTable.length; i++)
+		hashTable = new int[size*5];
+		for (int i = 0; i < size; i++)
 		{
-			hashTable[i][DEPTH] = -1;
+			hashTable[(5*i)+DEPTH] = -1;
 		}
 	}
 	
@@ -243,6 +240,7 @@ public class ZobristTTable implements TranspositionTable
 	public boolean put(Board board, int prev_move, int depth, int lower, int upper, int move)
 	{
 		int key = computeBoardHash(board) % size;
+		key *= 5;
 		
 		// For now, we will use the "newest" replacement strategy.
 		if (get(key)[DEPTH] != -1)
@@ -250,11 +248,11 @@ public class ZobristTTable implements TranspositionTable
 			collisions++;
 		}
 		
-		hashTable[key][POS_INFO] = prev_move;
-		hashTable[key][DEPTH] = depth;
-		hashTable[key][FLAG] = lower;
-		hashTable[key][SCORE] = upper;
-		hashTable[key][MOVE]  = move;
+		hashTable[(key)+POS_INFO] = prev_move;
+		hashTable[(key)+DEPTH] = depth;
+		hashTable[(key)+FLAG] = lower;
+		hashTable[(key)+SCORE] = upper;
+		hashTable[(key)+MOVE]  = move;
 		
 		return true;
 	}
@@ -277,17 +275,18 @@ public class ZobristTTable implements TranspositionTable
 	public boolean put(int key, int prev_move, int depth, int lower, int upper, int move)
 	{
 		key %= size;
+		key *= 5;
 		// For now, we will use the "newest" replacement strategy.
-		if (get(key)[DEPTH] != -1)
+		if (hashTable[key+DEPTH] != -1)
 		{
 			collisions++;
 		}
 		
-		hashTable[key][POS_INFO] = prev_move;
-		hashTable[key][DEPTH] = depth;
-		hashTable[key][FLAG] = lower;
-		hashTable[key][SCORE] = upper;
-		hashTable[key][MOVE]  = move;
+		hashTable[(key)+POS_INFO] = prev_move;
+		hashTable[(key)+DEPTH] = depth;
+		hashTable[(key)+FLAG] = lower;
+		hashTable[(key)+SCORE] = upper;
+		hashTable[(key)+MOVE]  = move;
 		
 		return true;
 	}
@@ -303,13 +302,17 @@ public class ZobristTTable implements TranspositionTable
 	public boolean put(int key, int[] record)
 	{
 		key %= size;
+		key *= 5;
 		// For now, we will use the "newest" replacement strategy.
-		if (get(key)[DEPTH] != -1)
+		if (hashTable[key+DEPTH] != -1)
 		{
 			collisions++;
 		}
 		
-		hashTable[key] = record;
+		for (int i = 0; i < record.length; i++)
+		{
+			hashTable[key+i] = record[i];
+		}
 		
 		return true;
 	}
@@ -323,7 +326,16 @@ public class ZobristTTable implements TranspositionTable
 	public int[] get(int key)
 	{
 		key %= size;
-		return hashTable[key].clone();
+		key *= 5;
+		
+		int[] record = new int[5];
+		
+		for (int i = 0; i < record.length; i++)
+		{
+			record[i] = hashTable[key+i];
+		}
+		
+		return record;
 	}
 	
 	/**
@@ -336,7 +348,7 @@ public class ZobristTTable implements TranspositionTable
 	{
 		int key = computeBoardHash(board) % size;
 		
-		return hashTable[key].clone();
+		return get(key);
 	}
 	
 	/**
@@ -345,6 +357,6 @@ public class ZobristTTable implements TranspositionTable
 	 */
 	public int size()
 	{
-		return this.hashTable[0].length;
+		return this.hashTable.length / 5;
 	}
 }
