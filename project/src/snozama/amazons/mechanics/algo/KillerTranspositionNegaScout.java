@@ -107,6 +107,7 @@ public class KillerTranspositionNegaScout {
 			/*
 			if (alpha >= beta)
 			{
+				bestMoves[depth] = zrecord[ZobristTTable.MOVE];
 				return alpha;
 			}
 			*/
@@ -313,7 +314,8 @@ public class KillerTranspositionNegaScout {
 			depth++;
 		}
 		boolean found = false;
-		System.out.println("Total collisions: " + ttable.collisions);
+		System.out.println("Total collisions:     " + ttable.collisions);
+		System.out.println("Last depth attempted: " + depthCompleted);
 		for (int i = bestScore.length-1; i >= 0; i--)
 		{
 			if (found)

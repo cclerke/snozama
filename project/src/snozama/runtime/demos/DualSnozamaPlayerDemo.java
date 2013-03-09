@@ -54,15 +54,17 @@ public class DualSnozamaPlayerDemo
 			AUI.startTurn(colour, Settings.turnTime);
 			if (colour == Board.WHITE)
 			{
+				System.out.println("-- White --");
 				//NegaScout search = new NegaScout(System.currentTimeMillis()+Settings.decisionTime);
-				TranspositionNegaScout search = new TranspositionNegaScout(System.currentTimeMillis()+Settings.decisionTime, 16000000, board);
+				TranspositionNegaScout search = new TranspositionNegaScout(System.currentTimeMillis()+Settings.decisionTime, 18000000, board);
 				//KillerTranspositionNegaScout search = new KillerTranspositionNegaScout(System.currentTimeMillis()+Settings.decisionTime, 2000000, board);
 				move = search.chooseMove(board, colour, turn);
 			}
 			else
 			{
+				System.out.println("-- Black --");
 				NegaScout search = new NegaScout(System.currentTimeMillis()+Settings.decisionTime);
-				//TranspositionNegaScout search = new TranspositionNegaScout(System.currentTimeMillis()+Settings.decisionTime, 10000000, board);
+				//TranspositionNegaScout search = new TranspositionNegaScout(System.currentTimeMillis()+Settings.decisionTime, 18000000, board);
 				//KillerTranspositionNegaScout search = new KillerTranspositionNegaScout(System.currentTimeMillis()+Settings.decisionTime, 2000000, board);
 				move = search.chooseMove(board, colour, turn);
 			}

@@ -101,10 +101,13 @@ public class TranspositionNegaScout {
 				case ZobristTTable.EXACT_SCORE:
 					return zrecord[ZobristTTable.SCORE];
 			}
+			/* Leave commented out to always attempt the move first.
 			if (alpha >= beta)
 			{
+				bestMoves[depth] = zrecord[ZobristTTable.MOVE];
 				return alpha;
 			}
+			*/
 			
 		}
 		else
@@ -154,7 +157,7 @@ public class TranspositionNegaScout {
 			
 			if (alpha >= beta)
 			{
-				//gotoEnd = true;
+				gotoEnd = true;
 			}
 			else
 			{
@@ -264,7 +267,9 @@ public class TranspositionNegaScout {
 			depth++;
 		}
 		boolean found = false;
-		System.out.println("Total collisions: " + table.collisions);
+		System.out.println("Total collisions:     " + table.collisions);
+		System.out.println("Last depth attempted: " + depthCompleted);
+		System.out.println("Nodes expanded:       " + nodes);
 		for (int i = bestScore.length-1; i >= 0; i--)
 		{
 			if (found)

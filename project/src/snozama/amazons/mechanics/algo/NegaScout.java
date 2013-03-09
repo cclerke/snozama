@@ -159,6 +159,8 @@ public class NegaScout {
 			depth++;
 		}
 		boolean found = false;
+		System.out.println("Last depth attempted: " + depthCompleted);
+		System.out.println("Nodes expanded:       " + nodes);
 		for (int i = bestScore.length-1; i >= 0; i--)
 		{
 			if (found)
