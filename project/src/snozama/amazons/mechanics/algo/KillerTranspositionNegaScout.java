@@ -136,7 +136,7 @@ public class KillerTranspositionNegaScout {
 		
 		int next = 0;
 		
-		/*
+		/**/
 		
 		/// Killer Heuristic Code //////////////////////////////////////////////
 		for (int i = 0; i < ktable.movesPerDepth && !gotoEnd; i++)
@@ -177,7 +177,7 @@ public class KillerTranspositionNegaScout {
 			MoveManager.undoUnmanagedMove(board, move, row_s, col_s);
 		}
 		////////////////////////////////////////////////////////////////////////
-		*/
+		
 		
 		
 		/// Transposition table code - attempt found value FIRST ///////////////
