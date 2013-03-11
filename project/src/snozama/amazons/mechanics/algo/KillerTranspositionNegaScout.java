@@ -119,8 +119,6 @@ public class KillerTranspositionNegaScout {
 		}
 		////////////////////////////////////////////////////////////////////////
 		
-		int next = 0;
-		
 		if (depth == maxDepth || board.isTerminal())
 		{
 			int value = SnozamaHeuristic.evaluateBoard(board, colour, turn);
@@ -136,7 +134,9 @@ public class KillerTranspositionNegaScout {
 		int row_s;
 		int col_s;
 		
-		/**/
+		int next = 0;
+		
+		/*
 		
 		/// Killer Heuristic Code //////////////////////////////////////////////
 		for (int i = 0; i < ktable.movesPerDepth && !gotoEnd; i++)
@@ -166,6 +166,7 @@ public class KillerTranspositionNegaScout {
 			
 			if (alpha >= beta)
 			{
+				// Don't need to update killer code since 
 				gotoEnd = true;
 			}
 			else
@@ -176,9 +177,11 @@ public class KillerTranspositionNegaScout {
 			MoveManager.undoUnmanagedMove(board, move, row_s, col_s);
 		}
 		////////////////////////////////////////////////////////////////////////
+		*/
+		
 		
 		/// Transposition table code - attempt found value FIRST ///////////////
-		if (zrecord[ZobristTTable.DEPTH] > -1)
+		if (zrecord[ZobristTTable.DEPTH] > -1 && !gotoEnd)
 		{
 			int aindex = MoveManager.getAmazonIndexFromUnmanagedMove(zrecord[ZobristTTable.MOVE], board);
 			row_s = Board.decodeAmazonRow(board.amazons[colour][aindex]);
@@ -316,6 +319,7 @@ public class KillerTranspositionNegaScout {
 		boolean found = false;
 		System.out.println("Total collisions:     " + ttable.collisions);
 		System.out.println("Last depth attempted: " + depthCompleted);
+		System.out.println("Nodes expanded:       " + nodes);
 		for (int i = bestScore.length-1; i >= 0; i--)
 		{
 			if (found)

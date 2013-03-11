@@ -116,8 +116,6 @@ public class TranspositionNegaScout {
 		}
 		////////////////////////////////////////////////////////////////////////
 		
-		int next = 0;
-		
 		if (depth == maxDepth || board.isTerminal())
 		{
 			int value = SnozamaHeuristic.evaluateBoard(board, colour, turn);
@@ -133,7 +131,8 @@ public class TranspositionNegaScout {
 		int row_s;
 		int col_s;
 		
-		/**/
+		int next = 0;
+		
 		/// Transposition table code - attempt found value FIRST ///////////////
 		if (zrecord[ZobristTTable.DEPTH] > -1)
 		{
