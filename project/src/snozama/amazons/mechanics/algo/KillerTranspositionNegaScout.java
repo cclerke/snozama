@@ -137,6 +137,42 @@ public class KillerTranspositionNegaScout {
 		int next = 0;
 		
 		/**/
+		/// Transposition table code - attempt found value FIRST ///////////////
+		if (zrecord[ZobristTTable.DEPTH] > -1 && !gotoEnd)
+		{
+			int aindex = MoveManager.getAmazonIndexFromUnmanagedMove(zrecord[ZobristTTable.MOVE], board);
+			row_s = Board.decodeAmazonRow(board.amazons[colour][aindex]);
+			col_s = Board.decodeAmazonColumn(board.amazons[colour][aindex]);
+			
+			MoveManager.applyUnmanagedMove(board, zrecord[ZobristTTable.MOVE]);
+			zkey = ttable.updateHashKeyByMove(zkey, zrecord[ZobristTTable.MOVE], row_s, col_s);
+			
+			int current = -NegaScoutSearch(board, depth+1, maxDepth, -beta, -alpha, GlobalFunctions.flip(colour), turn+1);
+			if (current > score)
+			{
+				score = current;
+			}
+			if (score > alpha)
+			{
+				alpha = score;
+				bestMoves[depth] = zrecord[ZobristTTable.MOVE];
+			}
+			
+			if (alpha >= beta)
+			{
+				// Update killer heuristic.
+				ktable.put(zrecord[ZobristTTable.MOVE], turn-1);
+				gotoEnd = true;
+			}
+			else
+			{
+				scores[currentRoot] = score;
+			}
+			
+			MoveManager.undoUnmanagedMove(board, zrecord[ZobristTTable.MOVE], row_s, col_s);
+			zkey = ttable.updateHashKeyByMove(zkey, zrecord[ZobristTTable.MOVE], row_s, col_s);
+		}
+		////////////////////////////////////////////////////////////////////////
 		
 		/// Killer Heuristic Code //////////////////////////////////////////////
 		for (int i = 0; i < ktable.movesPerDepth && !gotoEnd; i++)
@@ -175,45 +211,6 @@ public class KillerTranspositionNegaScout {
 			}
 			
 			MoveManager.undoUnmanagedMove(board, move, row_s, col_s);
-		}
-		////////////////////////////////////////////////////////////////////////
-		
-		
-		
-		/// Transposition table code - attempt found value FIRST ///////////////
-		if (zrecord[ZobristTTable.DEPTH] > -1 && !gotoEnd)
-		{
-			int aindex = MoveManager.getAmazonIndexFromUnmanagedMove(zrecord[ZobristTTable.MOVE], board);
-			row_s = Board.decodeAmazonRow(board.amazons[colour][aindex]);
-			col_s = Board.decodeAmazonColumn(board.amazons[colour][aindex]);
-			
-			MoveManager.applyUnmanagedMove(board, zrecord[ZobristTTable.MOVE]);
-			zkey = ttable.updateHashKeyByMove(zkey, zrecord[ZobristTTable.MOVE], row_s, col_s);
-			
-			int current = -NegaScoutSearch(board, depth+1, maxDepth, -beta, -alpha, GlobalFunctions.flip(colour), turn+1);
-			if (current > score)
-			{
-				score = current;
-			}
-			if (score > alpha)
-			{
-				alpha = score;
-				bestMoves[depth] = zrecord[ZobristTTable.MOVE];
-			}
-			
-			if (alpha >= beta)
-			{
-				// Update killer heuristic.
-				ktable.put(zrecord[ZobristTTable.MOVE], turn-1);
-				gotoEnd = true;
-			}
-			else
-			{
-				scores[currentRoot] = score;
-			}
-			
-			MoveManager.undoUnmanagedMove(board, zrecord[ZobristTTable.MOVE], row_s, col_s);
-			zkey = ttable.updateHashKeyByMove(zkey, zrecord[ZobristTTable.MOVE], row_s, col_s);
 		}
 		////////////////////////////////////////////////////////////////////////
 		
