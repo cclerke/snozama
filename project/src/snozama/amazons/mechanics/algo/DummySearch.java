@@ -26,9 +26,9 @@ public class DummySearch {
 		}
 		// Choose your algorithm here.
 		
-		return fastRandomMove(board, colour);
+		//return fastRandomMove(board, colour);
 		
-		//return timedRandomMove();
+		return timedRandomMove(board, colour);
 	}
 	
 	private int fastRandomMove(Board board, int colour)

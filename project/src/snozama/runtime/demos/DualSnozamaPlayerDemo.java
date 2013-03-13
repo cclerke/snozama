@@ -4,6 +4,7 @@ import snozama.amazons.global.GlobalFunctions;
 import snozama.amazons.mechanics.Board;
 import snozama.amazons.mechanics.MoveChoice;
 import snozama.amazons.mechanics.MoveManager;
+import snozama.amazons.mechanics.algo.DummySearch;
 import snozama.amazons.mechanics.algo.KillerTranspositionNegaScout;
 import snozama.amazons.mechanics.algo.NegaScout;
 import snozama.amazons.mechanics.algo.TranspositionNegaScout;
@@ -55,6 +56,7 @@ public class DualSnozamaPlayerDemo
 			if (colour == Board.WHITE)
 			{
 				System.out.println("-- White --");
+				//DummySearch search = new DummySearch(System.currentTimeMillis()+Settings.decisionTime);
 				//NegaScout search = new NegaScout(System.currentTimeMillis()+Settings.decisionTime);
 				//TranspositionNegaScout search = new TranspositionNegaScout(System.currentTimeMillis()+Settings.decisionTime, 18000000, board);
 				KillerTranspositionNegaScout search = new KillerTranspositionNegaScout(System.currentTimeMillis()+Settings.decisionTime, 20000000, board);
@@ -63,6 +65,7 @@ public class DualSnozamaPlayerDemo
 			else
 			{
 				System.out.println("-- Black --");
+				//DummySearch search = new DummySearch(System.currentTimeMillis()+Settings.decisionTime);
 				NegaScout search = new NegaScout(System.currentTimeMillis()+Settings.decisionTime);
 				//TranspositionNegaScout search = new TranspositionNegaScout(System.currentTimeMillis()+Settings.decisionTime, 18000000, board);
 				//KillerTranspositionNegaScout search = new KillerTranspositionNegaScout(System.currentTimeMillis()+Settings.decisionTime, 2000000, board);
