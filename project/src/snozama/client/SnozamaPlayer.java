@@ -77,6 +77,8 @@ public class SnozamaPlayer implements GamePlayer
 	public boolean handleMessage(String msg) throws Exception
 	{
 		System.out.println("Time out: " + msg);
+		AUI.post("The opponent doesn't know what move to make!");
+		AUI.post("Snozama wins by default");
 		return false;
 	}
 
@@ -222,15 +224,15 @@ public class SnozamaPlayer implements GamePlayer
 		boolean validMove = board.moveAmazon(row_s, col_s, row_f, col_f, Math.abs(Settings.teamColour-1));
 		boolean validArrow = board.placeArrow(row_f, col_f, arow, acol);
 		
-		//Make opponent's move on the user interface
-		try {
-			AUI.moveAmazon(row_s, col_s, row_f, col_f, arow, acol);
-		} catch (AUIException e) {
-			e.printStackTrace();
-		}
-		
 		if (validMove && validArrow)
 		{
+			//Make opponent's move on the user interface
+			try {
+				AUI.moveAmazon(row_s, col_s, row_f, col_f, arow, acol);
+			} catch (AUIException e) {
+				e.printStackTrace();
+			}
+			
 			turn++;
 			//Inform us that it is now our turn. Start 30 sec timer.
 			makeMove();
@@ -373,9 +375,9 @@ public class SnozamaPlayer implements GamePlayer
 	{
 		AUI.startTurn(Settings.teamColour, Settings.turnTime);
 		long endTime = System.currentTimeMillis()+Settings.decisionTime; //starts turn timer
-		//NegaScout search = new NegaScout(endTime);
+		NegaScout search = new NegaScout(endTime);
 		//TranspositionNegaScout search = new TranspositionNegaScout(endTime, 2000000, board);
-		DummySearch search = new DummySearch(endTime);
+		//DummySearch search = new DummySearch(endTime);
 		int encodedMove = search.chooseMove(board, Settings.teamColour, turn);
 		
 		//Handle end of game situations
