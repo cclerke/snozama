@@ -1,5 +1,6 @@
 package snozama.ui.components;
 
+import java.awt.Color;
 import java.awt.Graphics;
 import java.util.ArrayList;
 import java.util.List;
@@ -27,6 +28,14 @@ public class MovementLayer extends JLayeredPane
 		{
 			for( int i = 0; i < Math.min( historicMove * 2, movements.size());i++ )
 			{
+				if( i == Math.min( historicMove * 2, movements.size())/2)
+				{
+					movements.get(i).setOpacity( 100 );
+				}
+				else
+				{
+					movements.get(i).setOpacity( Line.OPACITY );
+				}
 				movements.get(i).paint( getComponentGraphics( g ) );
 			}
 		}

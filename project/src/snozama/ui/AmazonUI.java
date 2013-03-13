@@ -78,6 +78,7 @@ public class AmazonUI extends AbstractAmazonUI
 	 * Main Images used in the game
 	 */
 	private static BufferedImage boardImage;
+	private static BufferedImage boardImageLogo;
 	private static BufferedImage whiteQueenImage;
 	private static BufferedImage blackQueenImage;
 	private static BufferedImage wallImage;
@@ -113,6 +114,7 @@ public class AmazonUI extends AbstractAmazonUI
 	private static JScrollPane logScroll;
 	private static JLabel timerDisplay;
 	private static JLabel turnDisplay;
+	private static JLabel turnCountDisplay;
 	
 	private static TurnTimer turnTimer;
 	
@@ -187,7 +189,7 @@ public class AmazonUI extends AbstractAmazonUI
 		
 		if( boardImage != null )
 		{
-			boardPanel = new JLabel( new ImageIcon( boardImage ));
+			boardPanel = new JLabel( new ImageIcon( boardImageLogo ));
 			boardPanel.setBounds(X_OFFSET,Y_OFFSET,500,500);
 			panel.add(boardPanel,new Integer(5));
 		}
@@ -227,17 +229,23 @@ public class AmazonUI extends AbstractAmazonUI
 		
 		timerDisplay = new JLabel( "Timer" );
 		
-		timerDisplay.setBounds( 790, 50, 20, 50 );
+		timerDisplay.setBounds( 790, 35, 20, 50 );
 		timerDisplay.setForeground( new Color( 255, 255, 255 ) );
 		
 		panel.add( timerDisplay );
 		
 		turnDisplay = new JLabel( "Turn" );
 		
-		turnDisplay.setBounds( 810, 50, 150, 50 );
+		turnDisplay.setBounds( 810, 35, 150, 50 );
 		turnDisplay.setForeground( new Color( 255, 255, 255 ) );
 		
 		panel.add( turnDisplay );
+		
+		turnCountDisplay = new JLabel( "Turn 0" );
+		turnCountDisplay.setBounds( 810, 50, 150, 50 );
+		turnCountDisplay.setForeground( new Color( 255, 255, 255 ) );
+		
+		panel.add( turnCountDisplay );
 		
 		add(pane);
 		
@@ -537,6 +545,11 @@ public class AmazonUI extends AbstractAmazonUI
 		{
 			turnDisplay.setText( "BLACK is moving" );
 		}
+		turnCountDisplay.setText( "Turn " + (currentMove + 1) );
+		if( turnTimer != null )
+		{
+			turnTimer.reset();
+		}
 		turnTimer = new TurnTimer( seconds );
 		try
 		{
@@ -555,6 +568,11 @@ public class AmazonUI extends AbstractAmazonUI
 		{
 			System.out.println( tnse.getMessage() );
 		}
+	}
+	
+	public void endGame()
+	{
+		turnTimer.end(timerDisplay);
 	}
 	
 	/**
@@ -751,6 +769,27 @@ public class AmazonUI extends AbstractAmazonUI
 		view.add( seeGameLayer );
 		view.add( seeMovementLayer );
 		
+		JCheckBoxMenuItem logo = new JCheckBoxMenuItem( "Logo" );
+		logo.setSelected( Boolean.TRUE );
+		
+		logo.addActionListener( new ActionListener()
+		{
+			public void actionPerformed(ActionEvent event)
+			{
+				JCheckBoxMenuItem src = (JCheckBoxMenuItem) event.getSource();
+				if( src.isSelected() )
+				{
+					boardPanel.setIcon( new ImageIcon( boardImageLogo ) );
+				}
+				else
+				{
+					boardPanel.setIcon( new ImageIcon( boardImage ) );
+				}
+			}
+		} );
+		
+		view.add( logo );
+		
 		menu.add( view );
 		
 		setJMenuBar(menu);
@@ -764,6 +803,7 @@ public class AmazonUI extends AbstractAmazonUI
 	private void setImages()
 	{
 		boardImage = null;
+		boardImageLogo = null;
 		whiteQueenImage = null;
 		blackQueenImage = null;
 		wallImage = null;
@@ -775,6 +815,14 @@ public class AmazonUI extends AbstractAmazonUI
 		catch(IOException ioe)
 		{
 			System.out.println("Error reading board.png");
+		}
+		try
+		{
+			 boardImageLogo = ImageIO.read( new File("src/snozama/ui/board_logo.png" ));
+		}
+		catch(IOException ioe)
+		{
+			System.out.println("Error reading board_logo.png");
 		}
 		try
 		{

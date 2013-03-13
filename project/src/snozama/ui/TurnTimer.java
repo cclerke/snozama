@@ -13,11 +13,13 @@ public class TurnTimer
 {
 	private Timer timer;
 	private Integer seconds;
+	private boolean reset;
 	
 	public TurnTimer( int seconds )
 	{
 		timer = new Timer();
 		this.seconds = seconds;
+		reset = false;
 	}
 	
 	public void interval( final JLabel timerDisplay, final CompleteListener complete )
@@ -44,13 +46,20 @@ public class TurnTimer
 
 				@Override
 				public void run() {
-					try
+					if( reset )
 					{
-						interval( timerDisplay, complete);
+						reset = false;
 					}
-					catch( TimeNotSetException tmse )
+					else
 					{
-						System.out.println( tmse.getMessage() );
+						try
+						{
+							interval( timerDisplay, complete);
+						}
+						catch( TimeNotSetException tmse )
+						{
+							System.out.println( tmse.getMessage() );
+						}
 					}
 					
 				}		
@@ -61,5 +70,15 @@ public class TurnTimer
 			// callback
 			complete.complete();
 		}
+	}
+	
+	public void reset()
+	{
+		reset = true;
+	}
+	
+	public void end( JLabel timerDisplay )
+	{
+		timerDisplay.setText( "OVER" );
 	}
 }

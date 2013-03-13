@@ -18,10 +18,13 @@ public class Line
 	private int y2;
 	private Color color;
 	private boolean arrow;
+	private int whoseTurn;
 	
-	private final int OPACITY = 80;
+	public static final int OPACITY = 80;
 	
-	public Line(int x1, int y1, int x2, int y2, int color, boolean arrow)
+	private int opacity = OPACITY;
+	
+	public Line(int x1, int y1, int x2, int y2, int whoseTurn, boolean arrow)
 	{
 		this.x1 = arrow ? x1 - 5 : x1;
 		this.x2 = arrow ? x2 - 5 : x2;
@@ -29,7 +32,9 @@ public class Line
 		this.y2 = arrow ? y2 - 5 : y2;
 		this.arrow = arrow;
 		
-		this.color = color == Board.WHITE ? new Color( 255, 255, 255, OPACITY ) : new Color(0,0,0, OPACITY);
+		this.whoseTurn = whoseTurn;
+		
+		setColor();
 	}
 	
 	public void paint( Graphics g )
@@ -47,6 +52,17 @@ public class Line
 		
 		g2.draw( new Line2D.Float(x1,y1,x2,y2) );
 		
+	}
+	
+	public void setOpacity( int opacity )
+	{
+		this.opacity = opacity;
+		setColor();
+	}
+	
+	private void setColor()
+	{
+		this.color = whoseTurn == Board.WHITE ? new Color( 255, 255, 255, opacity ) : new Color(0,0,0, opacity);
 	}
 	
 }

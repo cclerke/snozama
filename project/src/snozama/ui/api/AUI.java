@@ -62,6 +62,14 @@ public final class AUI
 	}
 	
 	/**
+	 * Final cleanup after the game is finished.
+	 */
+	public static void endGame()
+	{
+		ui.endGame();
+	}
+	
+	/**
 	 * Code to run when the UI is ready
 	 * @param rl - ReadyListner that contains the code to run
 	 */
