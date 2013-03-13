@@ -14,7 +14,7 @@ public class SnozamaPlayerDemo
 	private static final int JACKPINE = 5;
 	private static final int WOOD = 6;
 	
-	private static int room = JACKPINE;
+	private static int room = WOOD;
 	
 	public static void main(String args[])
 	{
