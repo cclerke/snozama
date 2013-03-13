@@ -19,6 +19,7 @@ import javax.swing.text.StyledDocument;
 
 import snozama.amazons.global.GlobalFunctions;
 import snozama.amazons.mechanics.Board;
+import snozama.amazons.settings.Settings;
 import snozama.ui.components.Line;
 import snozama.ui.components.MovementLayer;
 import snozama.ui.eventListeners.*;
@@ -174,8 +175,9 @@ public class AmazonUI extends AbstractAmazonUI
 		pane.add(panel, new Integer(20));
 		
 		panel.setBounds(0,0,WINDOW_WIDTH,WINDOW_HEIGHT);
-		panel.setBackground(new Color(66,66,66));
-		
+		if (Settings.teamColour == Board.WHITE)
+			panel.setBackground(new Color(66,66,66));
+		else panel.setBackground(new Color(250,250,250));
 		
 		gameLayer = new JLayeredPane();
 		gameLayer.setBounds(X_OFFSET,Y_OFFSET,500,500);

@@ -15,6 +15,7 @@ import snozama.amazons.mechanics.algo.NegaScout;
 import snozama.amazons.mechanics.algo.TranspositionNegaScout;
 import snozama.amazons.settings.Settings;
 import snozama.ui.api.AUI;
+import snozama.ui.eventListeners.UIReadyListener;
 import snozama.ui.exception.AUIException;
 import ubco.ai.GameRoom;
 import ubco.ai.connection.ServerMessage;
@@ -137,6 +138,7 @@ public class SnozamaPlayer implements GamePlayer
 		{
 			board = new Board();
 			this.role = "S";
+			AUI.getUI();
 		}
 	}
 	
@@ -173,6 +175,7 @@ public class SnozamaPlayer implements GamePlayer
 			}
 			
 			board = new Board();
+			AUI.getUI();
 		}
 		
 		System.out.println("The game has started!");
