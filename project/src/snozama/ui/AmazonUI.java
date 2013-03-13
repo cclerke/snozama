@@ -176,8 +176,8 @@ public class AmazonUI extends AbstractAmazonUI
 		
 		panel.setBounds(0,0,WINDOW_WIDTH,WINDOW_HEIGHT);
 		if (Settings.teamColour == Board.WHITE)
-			panel.setBackground(new Color(66,66,66));
-		else panel.setBackground(new Color(250,250,250));
+			panel.setBackground(new Color(250,250,250));
+		else panel.setBackground(new Color(66,66,66));
 		
 		gameLayer = new JLayeredPane();
 		gameLayer.setBounds(X_OFFSET,Y_OFFSET,500,500);
