@@ -15,7 +15,6 @@ import snozama.amazons.mechanics.algo.NegaScout;
 import snozama.amazons.mechanics.algo.TranspositionNegaScout;
 import snozama.amazons.settings.Settings;
 import snozama.ui.api.AUI;
-import snozama.ui.eventListeners.UIReadyListener;
 import snozama.ui.exception.AUIException;
 import ubco.ai.GameRoom;
 import ubco.ai.connection.ServerMessage;
@@ -80,6 +79,7 @@ public class SnozamaPlayer implements GamePlayer
 		System.out.println("Time out: " + msg);
 		AUI.post("The opponent doesn't know what move to make!");
 		AUI.post("Snozama wins by default");
+		AUI.endGame();
 		return false;
 	}
 
@@ -250,7 +250,7 @@ public class SnozamaPlayer implements GamePlayer
 			else opponent = "White";
 			AUI.post(opponent+" are big fat cheaters!");
 			AUI.post("Snozama wins by default.");
-			
+			AUI.endGame();
 		}
 	}
 	
@@ -394,11 +394,13 @@ public class SnozamaPlayer implements GamePlayer
 				encodedMove = successors.getMove(0); //make last move
 				System.out.println("Snozama wins by " + (score-1) +" points!");
 				AUI.post("Snozama wins by " + (score-1) + " points!");
+				AUI.endGame();
 			}
 			else // Unreachable code :P
 			{
 				System.out.println("The game is over.");
 				AUI.post("The game is over.");
+				AUI.endGame();
 				return false;
 			}
 		}

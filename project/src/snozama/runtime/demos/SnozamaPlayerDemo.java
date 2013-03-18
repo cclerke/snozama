@@ -1,8 +1,6 @@
 package snozama.runtime.demos;
 
 import snozama.client.SnozamaPlayer;
-import snozama.ui.api.AUI;
-import snozama.ui.eventListeners.UIReadyListener;
 
 public class SnozamaPlayerDemo
 {
@@ -20,5 +18,6 @@ public class SnozamaPlayerDemo
 	{
 		SnozamaPlayer player = new SnozamaPlayer();
 		player.joinRoom(room);
+		//player.printRooms();
 	}
 }

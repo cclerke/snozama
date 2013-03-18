@@ -67,6 +67,7 @@ public final class AUI
 	public static void endGame()
 	{
 		ui.endGame();
+		ui.exportLog();
 	}
 	
 	/**

@@ -7,8 +7,10 @@ import java.awt.event.ActionListener;
 import java.awt.geom.Line2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
@@ -16,6 +18,7 @@ import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.StyledDocument;
+import javax.swing.text.rtf.RTFEditorKit;
 
 import snozama.amazons.global.GlobalFunctions;
 import snozama.amazons.mechanics.Board;
@@ -897,9 +900,20 @@ public class AmazonUI extends AbstractAmazonUI
 	/**
 	 * export the log to text
 	 */
-	private void exportLog()
+	public void exportLog()
 	{
-		
+		RTFEditorKit writer = new RTFEditorKit();
+		try {
+			String file = (new Date(System.currentTimeMillis()).toString()+".rtf").replaceAll(":", "-");
+			File gameDataFile = new File("gamelogs", file);
+			if (!gameDataFile.exists())
+				gameDataFile.createNewFile();
+			writer.write(new FileOutputStream(gameDataFile, true), doc, 0, doc.getLength());
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (BadLocationException e) {
+			e.printStackTrace();
+		}
 	}
 
 }
