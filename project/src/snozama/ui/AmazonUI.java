@@ -127,6 +127,16 @@ public class AmazonUI extends AbstractAmazonUI
 	 */
 	private static int logId = 1;
 	
+	/**
+	 * Colour of the background
+	 */
+	private Color background_colour;
+	
+	/**
+	 * Colour of the text labels for the axes, timer, turn counter
+	 */
+	private Color text_colour;
+	
 	private AmazonUI()
 	{
 		this.board = new Board();
@@ -146,6 +156,16 @@ public class AmazonUI extends AbstractAmazonUI
 		initWindowSettings();
 		createMenuBar();
 		
+		if (Settings.teamColour == Board.WHITE)
+		{
+			background_colour = new Color(255, 255, 255);
+			text_colour = new Color(0, 0, 0);
+		}
+		else
+		{
+			background_colour = new Color(66, 66, 66);
+			text_colour = new Color(255, 255, 255);
+		}
 		setImages();
 	    createMainPanel();
 	    setUpLabels();
@@ -178,9 +198,7 @@ public class AmazonUI extends AbstractAmazonUI
 		pane.add(panel, new Integer(20));
 		
 		panel.setBounds(0,0,WINDOW_WIDTH,WINDOW_HEIGHT);
-		if (Settings.teamColour == Board.WHITE)
-			panel.setBackground(new Color(250,250,250));
-		else panel.setBackground(new Color(66,66,66));
+		panel.setBackground(background_colour);
 		
 		gameLayer = new JLayeredPane();
 		gameLayer.setBounds(X_OFFSET,Y_OFFSET,500,500);
@@ -234,21 +252,21 @@ public class AmazonUI extends AbstractAmazonUI
 		
 		timerDisplay = new JLabel( "Timer" );
 		
-		timerDisplay.setBounds( 790, 35, 20, 50 );
-		timerDisplay.setForeground( new Color( 255, 255, 255 ) );
+		timerDisplay.setBounds(790, 35, 20, 50);
+		timerDisplay.setForeground(text_colour);
 		
 		panel.add( timerDisplay );
 		
 		turnDisplay = new JLabel( "Turn" );
 		
-		turnDisplay.setBounds( 810, 35, 150, 50 );
-		turnDisplay.setForeground( new Color( 255, 255, 255 ) );
+		turnDisplay.setBounds(810, 35, 150, 50);
+		turnDisplay.setForeground(text_colour);
 		
 		panel.add( turnDisplay );
 		
-		turnCountDisplay = new JLabel( "Turn 0" );
-		turnCountDisplay.setBounds( 810, 50, 150, 50 );
-		turnCountDisplay.setForeground( new Color( 255, 255, 255 ) );
+		turnCountDisplay = new JLabel("Turn 0");
+		turnCountDisplay.setBounds(810, 50, 150, 50);
+		turnCountDisplay.setForeground(text_colour);
 		
 		panel.add( turnCountDisplay );
 		
@@ -507,12 +525,12 @@ public class AmazonUI extends AbstractAmazonUI
 		JLabel[] x_s =  new JLabel[10];
 		for( int i = 0; i < x_s.length ; i ++ )
 		{
-			x_s[i] = new JLabel( labels[0][i] );
-			x_s[i].setBounds( left, top, 30, 30 );
-			x_s[i].setFont( font );
-			x_s[i].setForeground( new Color( 240, 240, 240 ) );
-			x_s[i].setHorizontalTextPosition( SwingConstants.CENTER );
-			panel.add( x_s[i] );
+			x_s[i] = new JLabel(labels[0][i]);
+			x_s[i].setBounds(left, top, 30, 30);
+			x_s[i].setFont(font);
+			x_s[i].setForeground(text_colour);
+			x_s[i].setHorizontalTextPosition(SwingConstants.CENTER);
+			panel.add(x_s[i]);
 			
 			left+=SQUARE_WIDTH;
 		}
@@ -523,12 +541,12 @@ public class AmazonUI extends AbstractAmazonUI
 		JLabel[] y_s =  new JLabel[10];
 		for( int i = 0; i < 10 ; i ++ )
 		{
-			y_s[i] = new JLabel( labels[1][i] );
-			y_s[i].setBounds( left, top, 30, 30 );
-			y_s[i].setFont( font );
-			y_s[i].setForeground( new Color( 240, 240, 240 ) );
-			y_s[i].setHorizontalTextPosition( SwingConstants.RIGHT );
-			panel.add( y_s[i] );
+			y_s[i] = new JLabel(labels[1][i]);
+			y_s[i].setBounds(left, top, 30, 30);
+			y_s[i].setFont(font);
+			y_s[i].setForeground(text_colour);
+			y_s[i].setHorizontalTextPosition(SwingConstants.RIGHT);
+			panel.add(y_s[i]);
 			
 			top+=SQUARE_WIDTH;
 		}
