@@ -391,7 +391,7 @@ public class SnozamaPlayer implements GamePlayer
 			if (score > 0)
 			{
 				MoveManager successors = board.getSuccessors(Settings.teamColour);
-				encodedMove = successors.getMove(0); //make last move
+				encodedMove = findLastMove(successors); //make last move
 				System.out.println("Snozama wins by " + (score-1) +" points!");
 				AUI.post("Snozama wins by " + (score-1) + " points!");
 				AUI.endGame();
@@ -433,6 +433,29 @@ public class SnozamaPlayer implements GamePlayer
 		AUI.startTurn(GlobalFunctions.flip(Settings.teamColour), Settings.turnTime);
 		
 		return true;
+	}
+	
+	/**
+	 * Finds Snozama's last move of the game after it is known Snozama has won.
+	 * This is required because search algorithms won't return a move if the board is terminal.
+	 * @param successors	The available moves to Snozama on the last turn.
+	 * @return		The best move of the available moves as determined by the evaluation function.
+	 */
+	public int findLastMove(MoveManager successors)
+	{
+		int[] scores = new int[successors.size()];
+		while (successors.hasIterations())
+		{
+			int index = successors.nextIterableIndex();
+			int row_s = Board.decodeAmazonRow(board.amazons[Settings.teamColour][successors.getAmazonIndex(index)]);
+			int col_s = Board.decodeAmazonColumn(board.amazons[Settings.teamColour][successors.getAmazonIndex(index)]);
+			successors.applyMove(board, index);
+			scores[index] = SnozamaHeuristic.evaluateBoard(board, Settings.teamColour, turn);
+			successors.undoMove(board, index, row_s, col_s);
+		}
+		successors.sort(scores);
+		successors.clearIteratorState();
+		return successors.getMove(0);
 	}
 	
 	/**
