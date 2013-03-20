@@ -55,6 +55,18 @@ public class TranspositionNegaScout {
 		gotoEnd = false;
 	}
 	
+	public TranspositionNegaScout(long end, ZobristTTable table, Board startBoard)
+	{
+		this.table = table;
+		zkey = table.computeBoardHash(startBoard);
+		
+		Arrays.fill(scores, NEG_INFINITY);
+		depthCompleted = 0;
+		endTime = end;
+		
+		gotoEnd = false;
+	}
+	
 	/**
 	 * Chooses the best move for Snozama based on search algorithm.
 	 * @param board		The current board position.
