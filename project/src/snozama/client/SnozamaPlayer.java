@@ -15,7 +15,6 @@ import snozama.amazons.mechanics.algo.NegaScout;
 import snozama.amazons.mechanics.algo.TranspositionNegaScout;
 import snozama.amazons.settings.Settings;
 import snozama.ui.api.AUI;
-import snozama.ui.eventListeners.UIReadyListener;
 import snozama.ui.exception.AUIException;
 import ubco.ai.GameRoom;
 import ubco.ai.connection.ServerMessage;
@@ -80,6 +79,7 @@ public class SnozamaPlayer implements GamePlayer
 		System.out.println("Time out: " + msg);
 		AUI.post("The opponent doesn't know what move to make!");
 		AUI.post("Snozama wins by default");
+		AUI.endGame();
 		return false;
 	}
 
@@ -250,7 +250,7 @@ public class SnozamaPlayer implements GamePlayer
 			else opponent = "White";
 			AUI.post(opponent+" are big fat cheaters!");
 			AUI.post("Snozama wins by default.");
-			
+			AUI.endGame();
 		}
 	}
 	
@@ -391,14 +391,16 @@ public class SnozamaPlayer implements GamePlayer
 			if (score > 0)
 			{
 				MoveManager successors = board.getSuccessors(Settings.teamColour);
-				encodedMove = successors.getMove(0); //make last move
+				encodedMove = findLastMove(successors); //make last move
 				System.out.println("Snozama wins by " + (score-1) +" points!");
 				AUI.post("Snozama wins by " + (score-1) + " points!");
+				AUI.endGame();
 			}
 			else // Unreachable code :P
 			{
 				System.out.println("The game is over.");
 				AUI.post("The game is over.");
+				AUI.endGame();
 				return false;
 			}
 		}
@@ -431,6 +433,29 @@ public class SnozamaPlayer implements GamePlayer
 		AUI.startTurn(GlobalFunctions.flip(Settings.teamColour), Settings.turnTime);
 		
 		return true;
+	}
+	
+	/**
+	 * Finds Snozama's last move of the game after it is known Snozama has won.
+	 * This is required because search algorithms won't return a move if the board is terminal.
+	 * @param successors	The available moves to Snozama on the last turn.
+	 * @return		The best move of the available moves as determined by the evaluation function.
+	 */
+	public int findLastMove(MoveManager successors)
+	{
+		int[] scores = new int[successors.size()];
+		while (successors.hasIterations())
+		{
+			int index = successors.nextIterableIndex();
+			int row_s = Board.decodeAmazonRow(board.amazons[Settings.teamColour][successors.getAmazonIndex(index)]);
+			int col_s = Board.decodeAmazonColumn(board.amazons[Settings.teamColour][successors.getAmazonIndex(index)]);
+			successors.applyMove(board, index);
+			scores[index] = SnozamaHeuristic.evaluateBoard(board, Settings.teamColour, turn);
+			successors.undoMove(board, index, row_s, col_s);
+		}
+		successors.sort(scores);
+		successors.clearIteratorState();
+		return successors.getMove(0);
 	}
 	
 	/**
