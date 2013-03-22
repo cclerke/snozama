@@ -6,6 +6,8 @@ import java.util.TimerTask;
 
 import javax.swing.JLabel;
 
+import snozama.amazons.mechanics.Board;
+import snozama.amazons.settings.Settings;
 import snozama.ui.eventListeners.CompleteListener;
 import snozama.ui.exception.TimeNotSetException;
 
@@ -38,7 +40,10 @@ public class TurnTimer
 			}
 			else
 			{
-				timerDisplay.setForeground( new Color( 255, 255, 255 ) );
+				if (Settings.teamColour == Board.WHITE)
+					timerDisplay.setForeground(new Color(0, 0, 0));
+				else
+					timerDisplay.setForeground( new Color( 255, 255, 255 ) );
 			}
 			seconds --;
 			
