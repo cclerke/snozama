@@ -71,6 +71,15 @@ public final class AUI
 	}
 	
 	/**
+	 * Set the default name for the game export
+	 * @param fileName
+	 */
+	public static void setFileName( String fileName )
+	{
+		ui.setFileName( fileName );
+	}
+	
+	/**
 	 * Code to run when the UI is ready
 	 * @param rl - ReadyListner that contains the code to run
 	 */

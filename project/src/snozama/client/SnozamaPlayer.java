@@ -191,6 +191,9 @@ public class SnozamaPlayer implements GamePlayer
 			System.out.println("The opponent moves first");
 			AUI.startTurn(GlobalFunctions.flip(Settings.teamColour), Settings.turnTime);
 		}
+		
+		// Set the default filename
+		// TODO: can we get the opponents team name?
 	}
 	
 	/**

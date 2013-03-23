@@ -4,11 +4,19 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.awt.geom.Line2D;
 import java.awt.image.BufferedImage;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
@@ -25,6 +33,7 @@ import snozama.amazons.mechanics.Board;
 import snozama.amazons.settings.Settings;
 import snozama.ui.components.Line;
 import snozama.ui.components.MovementLayer;
+import snozama.ui.components.SnozamaFileFilter;
 import snozama.ui.eventListeners.*;
 import snozama.ui.exception.TimeNotSetException;
 
@@ -39,6 +48,8 @@ import snozama.ui.exception.TimeNotSetException;
 
 public class AmazonUI extends AbstractAmazonUI
 {
+	
+	private static boolean gameChanged = false;
 	
 	/**
 	 * Ready Functions to run when the UI is ready for them
@@ -78,6 +89,8 @@ public class AmazonUI extends AbstractAmazonUI
 	 */
 	private static final int WINDOW_HEIGHT = 620;
 	
+	private static String saveFileName = "saveGame";
+	
 	/**
 	 * Main Images used in the game
 	 */
@@ -86,6 +99,9 @@ public class AmazonUI extends AbstractAmazonUI
 	private static BufferedImage whiteQueenImage;
 	private static BufferedImage blackQueenImage;
 	private static BufferedImage wallImage;
+	
+	private static final Color BLACK = new Color(66,66,66);
+	private static final Color WHITE = new Color(255,255,255);
 	
 	/**
 	 * Amazon Game Board passed in
@@ -153,26 +169,53 @@ public class AmazonUI extends AbstractAmazonUI
 	{
 		currentMove = 0;
 		historicMove = 0;
+		
 		initWindowSettings();
 		createMenuBar();
 		
 		if (Settings.teamColour == Board.WHITE)
 		{
-			background_colour = new Color(255, 255, 255);
-			text_colour = new Color(0, 0, 0);
+			background_colour = WHITE;
+			text_colour = BLACK;
 		}
 		else
 		{
-			background_colour = new Color(66, 66, 66);
-			text_colour = new Color(255, 255, 255);
+			background_colour = BLACK;
+			text_colour = WHITE;
 		}
+		
 		setImages();
-	    createMainPanel();
+		
+		createMainPanel();
 	    setUpLabels();
 	    
 	    createLogPanel();
 	    
 	    ready();
+	}
+	
+	public void reset()
+	{
+		this.board = new Board();
+		currentMove = 0;
+		historicMove = 0;
+		logId = 1;
+		
+		gameLayer.removeAll();
+		movementLayer.removeAll();
+		moveHistory.clear();
+		
+		panel.setBackground( background_colour );
+		timerDisplay.setForeground( text_colour );
+		turnDisplay.setForeground( text_colour );
+		turnCountDisplay.setForeground( text_colour );
+		
+		changeLabels( labels );
+
+		panel.remove(logScroll);
+		createLogPanel();
+		
+		readBoard();
 	}
 	
 	/**
@@ -351,6 +394,8 @@ public class AmazonUI extends AbstractAmazonUI
 	 */
 	public Boolean moveAmazon( int row_s, int col_s, int row_f, int col_f, int row_a, int col_a)
 	{
+		gameChanged = true;
+		
 		int whoseMove = board.isWhite( row_s, col_s ) ? Board.WHITE : Board.BLACK;
 		
 		if( historicMove == currentMove )
@@ -612,6 +657,7 @@ public class AmazonUI extends AbstractAmazonUI
 		for( int i = 0; i < 10 ; i ++ )
 		{
 			JLabel t = (JLabel) panel.findComponentAt( left, top );
+			t.setForeground( text_colour );
 			if( labels == null )
 			{
 				t.setText( "" );
@@ -629,6 +675,7 @@ public class AmazonUI extends AbstractAmazonUI
 		for( int i = 0; i < 10 ; i++ )
 		{
 			JLabel t = (JLabel) panel.findComponentAt( left, top );
+			t.setForeground(text_colour);
 			if( labels == null )
 			{
 				t.setText( "" );
@@ -649,14 +696,54 @@ public class AmazonUI extends AbstractAmazonUI
 	{
 		JMenuBar menu = new JMenuBar();
 		JMenu file = new JMenu("File");
+		
+		JMenuItem importGame = new JMenuItem("Import...");
+		
+		importGame.addActionListener( new ActionListener()
+		{
+			public void actionPerformed(ActionEvent event)
+			{
+				int n = JOptionPane.showConfirmDialog(panel, "This action will overwrite any existing progress. Continue?" );
+				if( n == JOptionPane.YES_OPTION )
+				{
+					JFileChooser fc = new JFileChooser();
+					fc.setAcceptAllFileFilterUsed( false );
+					fc.setFileFilter( new SnozamaFileFilter() );
+					
+					int returnVal = fc.showOpenDialog( panel );
+					
+					if( returnVal == JFileChooser.APPROVE_OPTION )
+					{
+						File file = fc.getSelectedFile();
+						importGame( file );
+					}
+				}
+			}
+		} );
+		
+		JMenuItem exportGame = new JMenuItem("Export...");
+		
+		exportGame.addActionListener( new ActionListener()
+		{
+			public void actionPerformed( ActionEvent event )
+			{
+				exportDialog( false );
+			}
+		} );
+		
 		JMenuItem quit = new JMenuItem("Quit");
 		quit.addActionListener(new ActionListener()
 		{
 			public void actionPerformed(ActionEvent event)
 			{
-				System.exit(0);
+				exitGameChanged();
 			}
 		} );
+		
+		
+		file.add(importGame);
+		file.add(exportGame);
+		file.add(new JSeparator());
 		file.add(quit);
 		menu.add(file);
 		
@@ -886,7 +973,16 @@ public class AmazonUI extends AbstractAmazonUI
 		setTitle("Amazons");
 	    setSize(WINDOW_WIDTH, WINDOW_HEIGHT);
 	    setLocationRelativeTo(null);
-	    setDefaultCloseOperation(EXIT_ON_CLOSE);
+	    setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+	    
+	    addWindowListener( new WindowAdapter()
+	    {
+	    	@Override
+	    	public void windowClosing( WindowEvent e )
+	    	{
+	    		exitGameChanged();
+	    	}
+	    });
 	}
 	
 	/**
@@ -915,6 +1011,102 @@ public class AmazonUI extends AbstractAmazonUI
 		copy.clear();
 	}
 	
+	public void importGame( File file )
+	{
+		
+		
+		BufferedReader reader = null;
+		
+		try
+		{
+			reader = new BufferedReader(new InputStreamReader(new FileInputStream(file)));
+			try
+			{
+				String set = reader.readLine();
+				int teamColor = Integer.parseInt( set.substring( set.indexOf("#COLOR") + 6 ) );
+				
+				background_colour = teamColor == Board.WHITE ? WHITE : BLACK;
+				text_colour = teamColor == Board.WHITE ? BLACK : WHITE;
+				reset();
+				
+				
+				String moves = set.substring( set.indexOf("#MOVES") + 6, set.indexOf("#COLOR"));
+				while( !moves.equals("") )
+				{
+					String[] params = moves.substring(0,11).split("-");
+					int col_s = Integer.parseInt(params[1]);
+					int row_s = Integer.parseInt(params[0]);
+					int col_f = Integer.parseInt(params[3]);
+					int row_f = Integer.parseInt(params[2]);
+					int col_a = Integer.parseInt(params[5]);
+					int row_a = Integer.parseInt(params[4]);
+					
+					moveAmazon(row_s, col_s, row_f, col_f, row_a, col_a);
+					
+					moves = moves.substring(11);
+				}
+				
+				gameChanged = false;
+				panel.repaint();
+			}
+			catch(IOException ioe )
+			{
+				throw new IOException( "Error reading save game file at line 1." );
+			}
+			
+		}
+		catch( FileNotFoundException fnfe )
+		{
+			System.out.println("Error reading save game file. File not found.");
+		}
+		catch( IOException ioe )
+		{
+			System.out.println( ioe.getMessage() );
+		}
+		finally
+		{
+			if( reader != null )
+			{
+				try
+				{
+					reader.close();
+				}
+				catch( IOException ioe ) {}
+			}
+		}
+
+	}
+	
+	public void exportGame( String absoluteFilename )
+	{
+		try
+		{
+			BufferedWriter writer = new BufferedWriter(
+				new FileWriter( absoluteFilename ) );
+			String moves = "";
+			for( String m : moveHistory )
+			{
+				moves += m;
+			}
+			
+			// Save moves
+			writer.write("#MOVES");
+			
+			writer.write(moves);
+			
+			writer.write("#COLOR" + Settings.teamColour);
+			
+			writer.close();
+			
+			gameChanged = false;
+			
+		}
+		catch( IOException ioe )
+		{
+			ioe.printStackTrace();
+		}
+	}
+	
 	/**
 	 * export the log to text
 	 */
@@ -931,6 +1123,51 @@ public class AmazonUI extends AbstractAmazonUI
 			e.printStackTrace();
 		} catch (BadLocationException e) {
 			e.printStackTrace();
+		}
+	}
+	
+	public void setFileName( String filename )
+	{
+		saveFileName = filename;
+	}
+	
+	private void exportDialog( boolean exitAfterExport )
+	{
+		JFileChooser fc = new JFileChooser();
+		fc.setAcceptAllFileFilterUsed( false );
+		fc.setFileFilter( new SnozamaFileFilter() );
+		
+		fc.setSelectedFile( new File( saveFileName ));
+		int returnVal = fc.showSaveDialog(panel);
+		
+		if( returnVal == JFileChooser.APPROVE_OPTION)
+		{
+			exportGame(fc.getSelectedFile().getAbsolutePath() );
+		}
+		
+		if( exitAfterExport )
+		{
+			System.exit(0);
+		}
+	}
+	
+	private void exitGameChanged()
+	{
+		if( gameChanged )
+		{
+			int confirm = JOptionPane.showConfirmDialog(panel, "The game has changed. Do you want to export the game to file before closing?");
+			if( confirm == JOptionPane.NO_OPTION )
+			{
+				System.exit(0);
+			}
+			else if( confirm == JOptionPane.YES_OPTION )
+			{
+				exportDialog( true );
+			}
+		}
+		else
+		{
+			System.exit(0);
 		}
 	}
 
