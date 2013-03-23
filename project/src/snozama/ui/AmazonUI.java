@@ -89,7 +89,7 @@ public class AmazonUI extends AbstractAmazonUI
 	 */
 	private static final int WINDOW_HEIGHT = 620;
 	
-	private static String saveFileName = "saveGame";
+	private static String saveFileName = "saveGame.snozama";
 	
 	/**
 	 * Main Images used in the game
