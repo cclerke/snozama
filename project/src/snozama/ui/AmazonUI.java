@@ -48,7 +48,10 @@ import snozama.ui.exception.TimeNotSetException;
 
 public class AmazonUI extends AbstractAmazonUI
 {
-	
+	/**
+	 * Is set to true when a move is made, so that you cannot accidentally close a window
+	 * without being prompted for an export.
+	 */
 	private static boolean gameChanged = false;
 	
 	/**
@@ -100,6 +103,9 @@ public class AmazonUI extends AbstractAmazonUI
 	private static BufferedImage blackQueenImage;
 	private static BufferedImage wallImage;
 	
+	/**
+	 * Colors used in the UI
+	 */
 	private static final Color BLACK = new Color(66,66,66);
 	private static final Color WHITE = new Color(255,255,255);
 	
@@ -136,10 +142,13 @@ public class AmazonUI extends AbstractAmazonUI
 	private static JLabel turnDisplay;
 	private static JLabel turnCountDisplay;
 	
+	/**
+	 * Visual Turn Timer
+	 */
 	private static TurnTimer turnTimer;
 	
 	/**
-	 * Auto-increment logId
+	 * Auto-incremented logId for the onscreen log
 	 */
 	private static int logId = 1;
 	
@@ -153,18 +162,28 @@ public class AmazonUI extends AbstractAmazonUI
 	 */
 	private Color text_colour;
 	
+	/**
+	 * Constructor
+	 */
 	private AmazonUI()
 	{
 		this.board = new Board();
 		initCommon();
 	}
 	
+	/**
+	 * Pass in a different game board to start
+	 * @param board
+	 */
 	private AmazonUI( Board board )
 	{
 		this.board = board;
 		initCommon();
 	}
 	
+	/**
+	 * Initiates main properties and components
+	 */
 	private void initCommon()
 	{
 		currentMove = 0;
@@ -194,6 +213,9 @@ public class AmazonUI extends AbstractAmazonUI
 	    ready();
 	}
 	
+	/**
+	 * Reset the UI when doing an import, to override current state.
+	 */
 	public void reset()
 	{
 		this.board = new Board();
@@ -317,7 +339,9 @@ public class AmazonUI extends AbstractAmazonUI
 		
 	}
 	
-	/* Create the game log for seeing moves etc */
+	/**
+	 *  Create the game log for seeing moves etc
+	 */
 	public void createLogPanel()
 	{
 		log = new JTextPane();
@@ -369,11 +393,16 @@ public class AmazonUI extends AbstractAmazonUI
 		}
 	}
 	
+	/**
+	 * Post a message to the log
+	 * @param message
+	 */
 	public void post( String message )
 	{
 		try
 		{
 			doc.insertString( doc.getLength(), "\n" + logId++ + " | " + message, null );
+			// Scroll to the bottom
 			log.setCaretPosition( log.getText().length() );
 		}
 		catch(BadLocationException e)
@@ -429,6 +458,16 @@ public class AmazonUI extends AbstractAmazonUI
 		return true;
 	}
 	
+	/**
+	 * Creates a line on the movement layer to track where the Amazons have moved
+	 * @param row_s Starting position row [0-9]
+	 * @param col_s Starting position column [0-9]
+	 * @param row_f Ending position row [0-9]
+	 * @param col_f Ending position column [0-9]
+	 * @param whoseMove Whose line is this? Board.WHITE or Board.BLACK
+	 * @param arrow Is it an arrow movement or an amazon movement? True = arrow.
+	 * 		Arrows are a dashed line, amazons are solid.
+	 */
 	private void createMovementLine( int row_s, int col_s, int row_f, int col_f, int whoseMove, boolean arrow )
 	{
 		int x1 = col_s * SQUARE_WIDTH + SQUARE_WIDTH/2;
@@ -441,6 +480,9 @@ public class AmazonUI extends AbstractAmazonUI
 		repaintMovementLayerByHistoricMove();
 	}
 	
+	/**
+	 * Repaint the layer when it changes to properly reflect the movements
+	 */
 	private void repaintMovementLayerByHistoricMove()
 	{
 		movementLayer.setHistoricMove(historicMove);
@@ -511,8 +553,8 @@ public class AmazonUI extends AbstractAmazonUI
 		}
 	}
 	
-	/* Returns the JLabel at the given location
-	 * 
+	/** 
+	 * Returns the JLabel at the given location
 	 */
 	private JLabel getPiece( int row_s, int col_s )
 	{
@@ -556,7 +598,7 @@ public class AmazonUI extends AbstractAmazonUI
 	}
 	
 	/**
-	 * Base Labels for the axises
+	 * Base Labels for the axes
 	 */
 	private void setUpLabels()
 	{
@@ -600,7 +642,7 @@ public class AmazonUI extends AbstractAmazonUI
 	
 	/**
 	 * Start a turn. Set the timer
-	 * @param whoseTurn
+	 * @param whoseTurn Board.BLACK or Board.WHITE
 	 * @param seconds
 	 */
 	public void startTurn( final int whoseTurn, final int seconds )
@@ -960,6 +1002,10 @@ public class AmazonUI extends AbstractAmazonUI
 		}
 	}
 	
+	/**
+	 * Add a ready listener to the UI
+	 * @param rl
+	 */
 	public void addReadyListener( final ReadyListener rl )
 	{
 		readyFunctions.add( rl );
@@ -1011,10 +1057,12 @@ public class AmazonUI extends AbstractAmazonUI
 		copy.clear();
 	}
 	
-	public void importGame( File file )
+	/**
+	 * Import a game file
+	 * @param file
+	 */
+	private void importGame( File file )
 	{
-		
-		
 		BufferedReader reader = null;
 		
 		try
@@ -1077,7 +1125,11 @@ public class AmazonUI extends AbstractAmazonUI
 
 	}
 	
-	public void exportGame( String absoluteFilename )
+	/**
+	 * Export the current state to a file
+	 * @param absoluteFilename
+	 */
+	private void exportGame( String absoluteFilename )
 	{
 		try
 		{
