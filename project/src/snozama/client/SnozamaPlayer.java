@@ -40,6 +40,8 @@ public class SnozamaPlayer implements GamePlayer
 	private String teamName = "SnozamaCody";
 	private String password = "alexcodygraeme";
 	
+	private String opponent;
+	
 	private String role = "";
 	
 	/**
@@ -160,9 +162,11 @@ public class SnozamaPlayer implements GamePlayer
 			
 			// Loop continues until finds team name "Snozama"
 			if (!name.equalsIgnoreCase(teamName))
+			{
+				opponent = name;
 				continue;
+			}
 			
-			// TODO: What if we are spectators? should default be different?
 			String role = user.getAttribute("role", "W"); //default to first player
 			if (role.equalsIgnoreCase("W"))
 				Settings.teamColour = Board.WHITE;
@@ -170,7 +174,7 @@ public class SnozamaPlayer implements GamePlayer
 				Settings.teamColour = Board.BLACK;
 			else if (role.equalsIgnoreCase("S"))
 			{
-				// TODO: Spectate and stuff.
+				// Spectate
 				this.role = "S";
 			}
 			
@@ -193,7 +197,6 @@ public class SnozamaPlayer implements GamePlayer
 		}
 		
 		// Set the default filename
-		// TODO: can we get the opponents team name?
 	}
 	
 	/**
@@ -210,7 +213,7 @@ public class SnozamaPlayer implements GamePlayer
 		IXMLElement amazon = xml.getFirstChildNamed("queen");
 		String move = amazon.getAttribute("move", "default");
 		int row_s = decodeMove(move.charAt(0));
-		int col_s = Integer.parseInt(""+move.charAt(1)); //FIXME Is there a better way to do this?
+		int col_s = Integer.parseInt(""+move.charAt(1));
 		int row_f = decodeMove(move.charAt(3));
 		int col_f= Integer.parseInt(""+move.charAt(4));
 		
@@ -266,7 +269,7 @@ public class SnozamaPlayer implements GamePlayer
 		IXMLElement amazon = xml.getFirstChildNamed("queen");
 		String move = amazon.getAttribute("move", "default");
 		int row_s = decodeMove(move.charAt(0));
-		int col_s = Integer.parseInt(""+move.charAt(1)); //FIXME Is there a better way to do this?
+		int col_s = Integer.parseInt(""+move.charAt(1));
 		int row_f = decodeMove(move.charAt(3));
 		int col_f= Integer.parseInt(""+move.charAt(4));
 
