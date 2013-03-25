@@ -31,13 +31,24 @@ import ubco.ai.games.GamePlayer;
  */
 public class SnozamaPlayer implements GamePlayer
 {
+	public static final int OK = 0;
+	public static final int KAL = 1;
+	public static final int YELLOW = 2;
+	public static final int BEAR = 3;
+	public static final int BEAVER = 4;
+	public static final int JACKPINE = 5;
+	public static final int WOOD = 6;
+	
+	public static final int[] ROOMS = { OK, KAL, YELLOW, BEAR, BEAVER, JACKPINE, WOOD };
+	public static final String[] ROOM_NAMES = { "OK", "KAL","YELLOW","BEAR","BEAVER","JACKPINE","WOOD"};
+	
 	private GameClient gameClient;
 	private GameRoom room;
 	
 	private Board board;
 	private int turn = 0;
 	
-	private String teamName = "SnozamaCody";
+	private static String teamName = "SnozamaCody";
 	private String password = "alexcodygraeme";
 	
 	private String opponent;
@@ -53,13 +64,13 @@ public class SnozamaPlayer implements GamePlayer
 	{	
 		if (name == null)
 		{
-			name = teamName;
+			teamName = name;
 		}
 		if (passwd == null)
 		{
-			passwd = password;
+			password = passwd;
 		}
-	    gameClient = new GameClient(name, passwd, this);
+	    gameClient = new GameClient(teamName, password, this);
 	}
 	
 	/**
@@ -68,6 +79,11 @@ public class SnozamaPlayer implements GamePlayer
 	public SnozamaPlayer()
 	{  
 	    gameClient = new GameClient(teamName, password, this);
+	}
+	
+	public static void setTeamName(String name)
+	{
+		teamName = name;
 	}
 	
 	/**

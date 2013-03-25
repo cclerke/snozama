@@ -32,6 +32,7 @@ import snozama.amazons.global.GlobalFunctions;
 import snozama.amazons.mechanics.Board;
 import snozama.amazons.mechanics.Regions;
 import snozama.amazons.settings.Settings;
+import snozama.client.SnozamaPlayer;
 import snozama.ui.components.Line;
 import snozama.ui.components.MovementLayer;
 import snozama.ui.components.SnozamaFileFilter;
@@ -1045,6 +1046,51 @@ public class AmazonUI extends AbstractAmazonUI
 		view.add( logo );
 		
 		menu.add( view );
+		
+		JMenu connection = new JMenu("Connection");
+		
+		JMenuItem connectAs = new JMenuItem("Connect as...");
+		
+		connectAs.addActionListener( new ActionListener()
+		{
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				String name = (String) JOptionPane.showInputDialog(null);
+				
+				SnozamaPlayer.setTeamName(name);
+			}
+			
+		} );
+		
+		connection.add(connectAs);
+		
+		JMenu connectTo = new JMenu("Connect to...");
+		
+		for( int i = 0; i < SnozamaPlayer.ROOMS.length; i++ )
+		{
+			final int index = i;
+			JMenuItem room = new JMenuItem( SnozamaPlayer.ROOM_NAMES[ i ] );
+			
+			room.addActionListener( new ActionListener()
+			{
+
+				@Override
+				public void actionPerformed(ActionEvent arg0)
+				{
+					SnozamaPlayer p = new SnozamaPlayer();
+					p.joinRoom( SnozamaPlayer.ROOMS[ index ] );
+				}
+				
+			} );
+			
+			connectTo.add(room);
+		}
+		
+		connection.add(connectTo);
+		
+		menu.add(connection);
 		
 		setJMenuBar(menu);
 	}
