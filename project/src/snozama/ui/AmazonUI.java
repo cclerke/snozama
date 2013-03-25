@@ -30,10 +30,12 @@ import javax.swing.text.rtf.RTFEditorKit;
 
 import snozama.amazons.global.GlobalFunctions;
 import snozama.amazons.mechanics.Board;
+import snozama.amazons.mechanics.Regions;
 import snozama.amazons.settings.Settings;
 import snozama.ui.components.Line;
 import snozama.ui.components.MovementLayer;
 import snozama.ui.components.SnozamaFileFilter;
+import snozama.ui.components.VisualRegions;
 import snozama.ui.eventListeners.*;
 import snozama.ui.exception.TimeNotSetException;
 
@@ -114,6 +116,8 @@ public class AmazonUI extends AbstractAmazonUI
 	 */
 	private Board board;
 	
+	private Board historicBoard;
+	
 	/**
 	 * Axis labels
 	 */
@@ -122,7 +126,7 @@ public class AmazonUI extends AbstractAmazonUI
 	/**
 	 * Width of a square on the board in pixels;
 	 */
-	private static final int SQUARE_WIDTH = 50;
+	public static final int SQUARE_WIDTH = 50;
 	/**
 	 * Distance from the left/top of the window to the board
 	 */
@@ -135,6 +139,7 @@ public class AmazonUI extends AbstractAmazonUI
 	private static JLabel boardPanel;
 	private static JLayeredPane gameLayer;
 	private static MovementLayer movementLayer;
+	private static VisualRegions regionsLayer;
 	private static JTextPane log;
 	private static StyledDocument doc;
 	private static JScrollPane logScroll;
@@ -168,6 +173,7 @@ public class AmazonUI extends AbstractAmazonUI
 	private AmazonUI()
 	{
 		this.board = new Board();
+		this.historicBoard = new Board();
 		initCommon();
 	}
 	
@@ -178,6 +184,7 @@ public class AmazonUI extends AbstractAmazonUI
 	private AmazonUI( Board board )
 	{
 		this.board = board;
+		this.historicBoard = board;
 		initCommon();
 	}
 	
@@ -219,12 +226,15 @@ public class AmazonUI extends AbstractAmazonUI
 	public void reset()
 	{
 		this.board = new Board();
+		this.historicBoard = new Board();
 		currentMove = 0;
 		historicMove = 0;
 		logId = 1;
 		
 		gameLayer.removeAll();
+		movementLayer.resetMovements();
 		movementLayer.removeAll();
+		regionsLayer.removeAll();
 		moveHistory.clear();
 		
 		panel.setBackground( background_colour );
@@ -274,6 +284,11 @@ public class AmazonUI extends AbstractAmazonUI
 		movementLayer.setBounds(X_OFFSET,Y_OFFSET,500,500);
 		
 		pane.add( movementLayer, new Integer( 50 ) );
+		
+		regionsLayer = new VisualRegions();
+		regionsLayer.setBounds(X_OFFSET,Y_OFFSET,500,500);
+		
+		pane.add( regionsLayer, new Integer( 40 ) );
 		
 		if( boardImage != null )
 		{
@@ -435,6 +450,8 @@ public class AmazonUI extends AbstractAmazonUI
 			/* Place arrow */
 			placeArrow(row_a, col_a);
 			historicMove++;
+			
+			historicBoard.move( row_s, col_s, row_f, col_f, row_a, col_a, whoseMove );
 		}
 		
 		createMovementLine(row_s, col_s, row_f, col_f, whoseMove, false);
@@ -451,6 +468,8 @@ public class AmazonUI extends AbstractAmazonUI
 		post( message );
 		
 		board.move( row_s, col_s, row_f, col_f, row_a, col_a, whoseMove );
+		
+		repaintRegionsLayer();
 		
 		currentMove++;
 		
@@ -478,6 +497,12 @@ public class AmazonUI extends AbstractAmazonUI
 		
 		movementLayer.addMovement(new Line( x1, y1, x2, y2, whoseMove, arrow));
 		repaintMovementLayerByHistoricMove();
+	}
+	
+	private void repaintRegionsLayer()
+	{
+		regionsLayer.setRegions( Regions.calcRegions(historicBoard));
+		regionsLayer.repaint();
 	}
 	
 	/**
@@ -516,6 +541,9 @@ public class AmazonUI extends AbstractAmazonUI
 			int col_a = Integer.parseInt(params[5]);
 			int row_a = Integer.parseInt(params[4]);
 			
+			historicBoard.removeArrow(row_a, col_a);
+			historicBoard.moveAmazon( row_f, col_f, row_s, col_s, historicBoard.isWhite(row_f, col_f ) ? Board.WHITE : Board.BLACK );
+			
 			/*Remove arrow*/
 			removePiece(row_a, col_a);
 			
@@ -524,6 +552,7 @@ public class AmazonUI extends AbstractAmazonUI
 			
 			historicMove--;
 			
+			repaintRegionsLayer();
 			repaintMovementLayerByHistoricMove();
 		}
 	}
@@ -536,9 +565,7 @@ public class AmazonUI extends AbstractAmazonUI
 		if( historicMove < currentMove )
 		{
 			historicMove++;
-			
-			repaintMovementLayerByHistoricMove();
-			
+
 			String move = moveHistory.get( historicMove - 1 );
 			String[] params = move.split("-");
 			int col_s = Integer.parseInt(params[1]);
@@ -548,8 +575,13 @@ public class AmazonUI extends AbstractAmazonUI
 			int col_a = Integer.parseInt(params[5]);
 			int row_a = Integer.parseInt(params[4]);
 			
+			historicBoard.move( row_s, col_s, row_f, col_f, row_a, col_a, historicBoard.isWhite(row_s,col_s) ? Board.WHITE : Board.BLACK );
+			
 			movePiece(row_s, col_s, row_f, col_f);
 			placeArrow(row_a, col_a);
+			
+			repaintRegionsLayer();
+			repaintMovementLayerByHistoricMove();
 		}
 	}
 	
@@ -789,6 +821,58 @@ public class AmazonUI extends AbstractAmazonUI
 		file.add(quit);
 		menu.add(file);
 		
+		JMenu edit = new JMenu("Edit");
+		JMenu regions = new JMenu("Regions");
+		
+		JMenuItem fullRegions = new JMenuItem("Full");
+		JMenuItem lateralRegions = new JMenuItem("Lateral");
+		JMenuItem diagonalRegions = new JMenuItem("Diagonal");
+		
+		fullRegions.addActionListener( new ActionListener()
+		{
+
+			@Override
+			public void actionPerformed(ActionEvent event)
+			{
+				Regions.setRegionType( Regions.FULL );
+				repaintRegionsLayer();
+			}
+			
+		} );
+		
+		lateralRegions.addActionListener( new ActionListener()
+		{
+
+			@Override
+			public void actionPerformed(ActionEvent event)
+			{
+				Regions.setRegionType( Regions.LATERAL );
+				repaintRegionsLayer();
+			}
+			
+		} );
+		
+		diagonalRegions.addActionListener( new ActionListener()
+		{
+
+			@Override
+			public void actionPerformed(ActionEvent event)
+			{
+				Regions.setRegionType( Regions.DIAGONAL );
+				repaintRegionsLayer();
+			}
+			
+		} );
+		
+		regions.add(fullRegions);
+		regions.add(lateralRegions);
+		regions.add(diagonalRegions);
+		
+		edit.add(regions);
+		
+		menu.add(edit);
+		
+		
 		/* Labels */
 		
 		JMenu view = new JMenu("View");
@@ -914,12 +998,30 @@ public class AmazonUI extends AbstractAmazonUI
 			}
 		} );
 		
+		JCheckBoxMenuItem seeRegionsLayer = new JCheckBoxMenuItem( "Regions Layer" );
+		seeRegionsLayer.addActionListener( new ActionListener()
+		{
+			public void actionPerformed(ActionEvent event)
+			{
+				JCheckBoxMenuItem src = (JCheckBoxMenuItem) event.getSource();
+				if( src.isSelected() )
+				{
+					regionsLayer.setVisible( Boolean.TRUE );
+				}
+				else
+				{
+					regionsLayer.setVisible( Boolean.FALSE );
+				}
+			}
+		} );
+		
 		seeBoard.setEnabled( Boolean.FALSE );
 		seeGameLayer.setEnabled( Boolean.FALSE );
 		
 		view.add( seeBoard );
 		view.add( seeGameLayer );
 		view.add( seeMovementLayer );
+		view.add( seeRegionsLayer );
 		
 		JCheckBoxMenuItem logo = new JCheckBoxMenuItem( "Logo" );
 		logo.setSelected( Boolean.TRUE );

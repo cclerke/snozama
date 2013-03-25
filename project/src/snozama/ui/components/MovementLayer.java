@@ -51,6 +51,11 @@ public class MovementLayer extends JLayeredPane
 		MovementLayer.movements = movements;
 	}
 	
+	public void resetMovements()
+	{
+		MovementLayer.movements = new ArrayList<Line>();
+	}
+	
 	public void setHistoricMove( int historicMove )
 	{
 		MovementLayer.historicMove = historicMove;

@@ -410,6 +410,25 @@ public class Board
 	}
 	
 	/**
+	 * Undo an arrow placement. Used in UI Regions
+	 * @param arow row position of the arrow
+	 * @param acol col position of the arrow
+	 * @return @true if arrow was removed, false otherwise
+	 */
+	public boolean removeArrow( int arow, int acol )
+	{
+		if( isArrow( arow, acol) )
+		{
+			board[arow][acol] = EMPTY;
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+	
+	/**
 	 * Move an amazon and shoot an arrow.
 	 * 
 	 * @param row_s		Row of the starting position of the amazon
