@@ -195,7 +195,8 @@ public class SnozamaPlayer implements GamePlayer
 			}
 			
 			board = new Board();
-			AUI.getUI();
+			AUI.setColors();
+			//AUI.getUI();
 		}
 		
 		System.out.println("The game has started!");

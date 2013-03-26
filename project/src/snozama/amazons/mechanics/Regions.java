@@ -16,20 +16,38 @@ public class Regions
 	private static int regionCount = 1;
 	private static int[] regionSquareCount = new int[100];
 	
+	/* For display only */
 	private static boolean lateral = true;
 	private static boolean diagonal = true;
 	
+	/** Set to true when actually evaluation, false for display */
+	private static boolean eval = false;
+	
+	/* For playing */
+	private static boolean evalLateral = true;
+	private static boolean evalDiagonal = true;
+	
 	public static int region( Board board, int whoseTurn )
 	{
+		return region( board, whoseTurn, FULL );
+	}
+	
+	public static int region( Board board, int whoseTurn, int type )
+	{
+		
+		setEvalRegionType( type );
+		
+		eval = true;
 		calcRegions( board );
+		eval = false;
 		
 		int[] numWhiteByRegion = new int[regionCount + 1];
 		int[] numBlackByRegion = new int[regionCount + 1];
-		for( int i : numWhiteByRegion )
+		for( int i = 0; i < numWhiteByRegion.length; i++ )
 		{
 			numWhiteByRegion[ i ] = 0;
 		}
-		for(int i : numBlackByRegion )
+		for(int i = 0; i < numBlackByRegion.length; i++ )
 		{
 			numBlackByRegion[ i ] = 0;
 		}
@@ -63,6 +81,30 @@ public class Regions
 		return whoseTurn == Board.WHITE ? score : -score;
 	}
 	
+	/**
+	 * For evaluation
+	 * @param regionType
+	 */
+	public static void setEvalRegionType( int regionType )
+	{
+		if( regionType == FULL )
+		{
+			evalLateral = true;
+			evalDiagonal = true;
+		}
+		else if ( regionType == LATERAL )
+		{
+			evalLateral = true;
+			evalDiagonal = false;
+		}
+		else if ( regionType == DIAGONAL )
+		{
+			evalLateral = false;
+			evalDiagonal = true;
+		}
+	}
+	
+	/** For Display ONLY */
 	public static void setRegionType( int regionType )
 	{
 		if( regionType == FULL )
@@ -125,7 +167,7 @@ public class Regions
 		regions[row][col] = (byte) regionCount;
 		regionSquareCount[ regionCount ] ++;
 		
-		if( lateral )
+		if( (eval && evalLateral) || (!eval && lateral) )
 		{
 			// go up
 			if( row > 0 && !board.isArrow( row - 1, col ) && regions[row-1][col] == 0 )
@@ -153,7 +195,7 @@ public class Regions
 			
 		}
 		
-		if( diagonal )
+		if( (eval && evalDiagonal) || (!eval && diagonal) )
 		{
 		
 			//go diagonal left up (\)

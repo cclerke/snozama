@@ -71,6 +71,14 @@ public final class AUI
 	}
 	
 	/**
+	 * Set board colors;
+	 */
+	public static void setColors()
+	{
+		ui.setColors();
+	}
+	
+	/**
 	 * Set the default name for the game export
 	 * @param fileName
 	 */

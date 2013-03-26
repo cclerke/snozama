@@ -251,6 +251,17 @@ public class AmazonUI extends AbstractAmazonUI
 		readBoard();
 	}
 	
+	public void setColors()
+	{
+		background_colour = Settings.teamColour == Board.WHITE ? WHITE : BLACK;
+		text_colour = Settings.teamColour == Board.WHITE? BLACK : WHITE;
+		
+		panel.setBackground( background_colour );
+		timerDisplay.setForeground( text_colour );
+		turnDisplay.setForeground( text_colour );
+		turnCountDisplay.setForeground( text_colour );
+	}
+	
 	/**
 	 * Get the UI
 	 * @return a new UI Instance
