@@ -260,6 +260,8 @@ public class AmazonUI extends AbstractAmazonUI
 		timerDisplay.setForeground( text_colour );
 		turnDisplay.setForeground( text_colour );
 		turnCountDisplay.setForeground( text_colour );
+		
+		changeLabels( labels );
 	}
 	
 	/**
