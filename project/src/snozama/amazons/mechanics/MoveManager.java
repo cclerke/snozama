@@ -445,6 +445,20 @@ public class MoveManager
 	}
 	
 	/**
+	 * Set size of the move list.  Right now. this assumes what you put in is
+	 * sane, so don't you dare mess with it!
+	 * 
+	 * @param size		The desired size of the move manager.
+	 * @return			{@code true} if size set successfully, false otherwise.
+	 */
+	public boolean setSize(int size)
+	{
+		this.nextPos = size;
+		
+		return true;
+	}
+	
+	/**
 	 * Sort the moves according to some other array, in descending order.
 	 * 
 	 * @param sortBy	The array to the moves according to.  Likely going to be

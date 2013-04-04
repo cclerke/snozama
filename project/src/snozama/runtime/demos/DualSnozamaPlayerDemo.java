@@ -7,6 +7,8 @@ import snozama.amazons.mechanics.MoveManager;
 import snozama.amazons.mechanics.algo.DummySearch;
 import snozama.amazons.mechanics.algo.KillerTranspositionNegaScout;
 import snozama.amazons.mechanics.algo.NegaScout;
+import snozama.amazons.mechanics.algo.RandomNegaScout;
+import snozama.amazons.mechanics.algo.SelectiveNegaScout;
 import snozama.amazons.mechanics.algo.TranspositionNegaScout;
 import snozama.amazons.mechanics.transtable.ZobristTTable;
 import snozama.amazons.settings.Settings;
@@ -45,7 +47,7 @@ public class DualSnozamaPlayerDemo
 			}
 		});
 		
-		ZobristTTable persistentWZTable = new ZobristTTable(20000000);
+		//ZobristTTable persistentWZTable = new ZobristTTable(20000000);
 		//ZobristTTable persistentBZTable = new ZobristTTable(20000000);
 		
 		// Play the game.
@@ -62,8 +64,10 @@ public class DualSnozamaPlayerDemo
 				System.out.println("-- White --");
 				//DummySearch search = new DummySearch(System.currentTimeMillis()+Settings.decisionTime);
 				//NegaScout search = new NegaScout(System.currentTimeMillis()+Settings.decisionTime);
+				//RandomNegaScout search = new RandomNegaScout(System.currentTimeMillis()+Settings.decisionTime);
+				SelectiveNegaScout search = new SelectiveNegaScout(System.currentTimeMillis()+Settings.decisionTime);
 				//TranspositionNegaScout search = new TranspositionNegaScout(System.currentTimeMillis()+Settings.decisionTime, 20000000, board);
-				TranspositionNegaScout search = new TranspositionNegaScout(System.currentTimeMillis()+Settings.decisionTime, persistentWZTable, board);
+				//TranspositionNegaScout search = new TranspositionNegaScout(System.currentTimeMillis()+Settings.decisionTime, persistentWZTable, board);
 				//KillerTranspositionNegaScout search = new KillerTranspositionNegaScout(System.currentTimeMillis()+Settings.decisionTime, 20000000, board);
 				move = search.chooseMove(board, colour, turn);
 			}
