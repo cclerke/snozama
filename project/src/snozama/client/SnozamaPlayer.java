@@ -24,8 +24,9 @@ import ubco.ai.games.GamePlayer;
 
 /**
  * The player class for the snozama AI system.
- * @author Graeme Douglas
+ * 
  * @author Cody Clerke
+ * @author Graeme Douglas
  * 
  * Note that this code is based off of Yong Gao's COSC322TestA.java
  */
@@ -57,6 +58,7 @@ public class SnozamaPlayer implements GamePlayer
 	
 	/**
 	 * Constructor where player name and password may be arbitrarily set.
+	 * 
 	 * @param name		User name to be used on the game server.
 	 * @param passwd	Password to be used on the game server.
 	 */
@@ -74,7 +76,7 @@ public class SnozamaPlayer implements GamePlayer
 	}
 	
 	/**
-	 * Constructor where player name and password may be arbitrarily set.
+	 * Constructor where player name and password may not be arbitrarily set.
 	 */
 	public SnozamaPlayer()
 	{  
@@ -88,8 +90,10 @@ public class SnozamaPlayer implements GamePlayer
 	
 	/**
 	 * Handle a game message in String form.
+	 * 
 	 * @param msg		String object containing message to handle.
-	 * @return @value true if message handled successfully, @value false otherwise.
+	 * @return @value	{@code true} if message handled successfully,
+	 * 					{@code false} otherwise.
 	 */
 	@Override
 	public boolean handleMessage(String msg) throws Exception
@@ -103,8 +107,10 @@ public class SnozamaPlayer implements GamePlayer
 
 	/**
 	 * Handle a game message from GameMessage object.
+	 * 
 	 * @param msg		GameMessage object containing message to handle.
-	 * @return @value true if message handled successfully, @value false otherwise.
+	 * @return 			{@code true} if message handled successfully,
+	 * 					{@code false} otherwise.
 	 */
 	@Override
 	public boolean handleMessage(GameMessage msg) throws Exception
@@ -137,8 +143,11 @@ public class SnozamaPlayer implements GamePlayer
 		return true;
 	}
 	
-	//onJoinRoom function written by Yong
-	//what does this do? these variable aren't used anywhere
+	/**
+	 * Necessary actions to perform on joining a game room.
+	 * 
+	 * @param xml		XML message received from server.
+	 */
 	private void onJoinRoom(IXMLElement xml)
 	{
 		IXMLElement users = xml.getFirstChildNamed("usrlist");
@@ -147,9 +156,9 @@ public class SnozamaPlayer implements GamePlayer
 		Enumeration<?> children = users.enumerateChildren();
 		while (children.hasMoreElements())
 		{
-			IXMLElement user = (IXMLElement)children.nextElement();
-			int id = user.getAttribute("id", -1);
-			String name = user.getAttribute("name", teamName);
+			//IXMLElement user = (IXMLElement)children.nextElement();
+			//int id = user.getAttribute("id", -1);
+			//String name = user.getAttribute("name", teamName);
 		}
 		
 		if (userCount > 2)
@@ -167,13 +176,13 @@ public class SnozamaPlayer implements GamePlayer
 	private void onGameStart(IXMLElement xml)
 	{
 		IXMLElement users = xml.getFirstChildNamed("usrlist");
-		int userCount = users.getAttribute("ucount", -1);
+		//int userCount = users.getAttribute("ucount", -1);
 		
 		Enumeration<?> children = users.enumerateChildren();
 		while (children.hasMoreElements())
 		{
 			IXMLElement user = (IXMLElement)children.nextElement();
-			int id = user.getAttribute("id", -1);
+			//int id = user.getAttribute("id", -1);
 			String name = user.getAttribute("name", teamName);
 			
 			// Loop continues until finds team name "Snozama"
@@ -218,7 +227,9 @@ public class SnozamaPlayer implements GamePlayer
 	
 	/**
 	 * Receives and makes opponent's move.
+	 * 
 	 * Notifies us that our turn has begun.
+	 * 
 	 * @param xml	XML message received from the server
 	 */
 	private void handleOpponentMove(IXMLElement xml)
@@ -277,6 +288,11 @@ public class SnozamaPlayer implements GamePlayer
 		}
 	}
 	
+	/**
+	 * Generalized move handling for spectating.
+	 * 
+	 * @param xml	XML message received from the server.
+	 */
 	private void handleMove(IXMLElement xml)
 	{
 		/*
@@ -314,6 +330,7 @@ public class SnozamaPlayer implements GamePlayer
 	
 	/**
 	 * Sends Snozama's move to the server.
+	 * 
 	 * @param row_s		The starting row of the moving amazon.
 	 * @param col_s		The starting column of the moving amazon.
 	 * @param row_f		The row where the amazon finishes her move.
@@ -364,6 +381,11 @@ public class SnozamaPlayer implements GamePlayer
 		gameClient.sendToServer(toSend, true);
 	}
 	
+	/**
+	 * Handle a chat message.
+	 * 
+	 * @param xml	XML message received from the server.
+	 */
 	public void handleChat(IXMLElement xml)
 	{
 		IXMLElement chat = xml.getFirstChildNamed("chat");
@@ -373,6 +395,7 @@ public class SnozamaPlayer implements GamePlayer
 	
 	/**
 	 * Converts opponent move's row value to the indexing used by Snozama board.
+	 * 
 	 * @param row	Row index as a char from the XML message.
 	 * @return		Row index as an int.
 	 */
@@ -383,6 +406,7 @@ public class SnozamaPlayer implements GamePlayer
 	
 	/**
 	 * Encodes Snozama move's row value to the indexing required for server messages.
+	 * 
 	 * @param row	Row index as an int from Snozama's move selection.
 	 * @return		Row index a char to be sent to server.
 	 */
@@ -392,10 +416,12 @@ public class SnozamaPlayer implements GamePlayer
 	}
 	
 	/**
-	 * Completes the process of making Snozama's move. This process includes searching the game tree for a move,
-	 *  decoding the move into its component parts, making the move on the program's internal board, moving the
-	 *  piece on the program's user interface and sending the move to the server.
-	 * @return	<code>True</code>
+	 * Completes the process of making Snozama's move. This process includes
+	 * searching the game tree for a move, decoding the move into its component
+	 * parts, making the move on the program's internal board, moving the
+	 * piece on the program's user interface and sending the move to the server.
+	 * 
+	 * @return	{@code true}
 	 */
 	public boolean makeMove()
 	{
@@ -460,9 +486,13 @@ public class SnozamaPlayer implements GamePlayer
 	
 	/**
 	 * Finds Snozama's last move of the game after it is known Snozama has won.
-	 * This is required because search algorithms won't return a move if the board is terminal.
+	 * 
+	 * This is required because search algorithms won't return a move if the
+	 * board is terminal.
+	 * 
 	 * @param successors	The available moves to Snozama on the last turn.
-	 * @return		The best move of the available moves as determined by the evaluation function.
+	 * @return				The best move of the available moves as determined
+	 * 						by the evaluation function.
 	 */
 	public int findLastMove(MoveManager successors)
 	{
@@ -497,8 +527,9 @@ public class SnozamaPlayer implements GamePlayer
 	}
 	
 	/**
-	 * Request to join a room
-	 * @param roomIndex	The index of the room the client will join (0-6)
+	 * Request to join a room.
+	 * 
+	 * @param roomIndex	The index of the room the client will join (0-6).
 	 */
 	public void joinRoom(int roomId)
 	{

@@ -1,7 +1,5 @@
 package snozama.client;
 
-import java.util.ArrayList;
-import ubco.ai.GameRoom;
 import ubco.ai.connection.ServerMessage;
 import ubco.ai.games.GameClient;
 import ubco.ai.games.GameMessage;
