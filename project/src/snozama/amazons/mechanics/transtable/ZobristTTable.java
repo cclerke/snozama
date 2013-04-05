@@ -67,7 +67,6 @@ public class ZobristTTable implements TranspositionTable
 	public static final int EXACT_SCORE = 0;
 	public static final int UPPER_BOUND = 1;
 	
-	// TODO: Can we make this general to all ZobristTTables?  Does it matter? (should it be static)
 	/**
 	 * Table storing all possible Zobrist values.
 	 */
@@ -353,7 +352,9 @@ public class ZobristTTable implements TranspositionTable
 	
 	/**
 	 * Get the number of entries of the transposition table.
-	 * @return
+	 * 
+	 * @return			The size of the hash table in terms
+	 * 					of the number of records it can store.
 	 */
 	public int size()
 	{
