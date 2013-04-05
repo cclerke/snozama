@@ -31,8 +31,6 @@ public class BoardTest {
 		assertTrue(board.isBlack(0, 3));
 		assertTrue(board.isBlack(0, 6));
 		assertTrue(board.isBlack(3, 9));
-		
-		// TODO: Maybe test everything else is empty?
 	}
 	
 	/**
@@ -60,8 +58,6 @@ public class BoardTest {
 		assertTrue(board.isValidMove(0, 9, 9, 0));
 		
 		assertTrue(board.isValidMove(2, 1, 2, 3));
-		
-		// TODO: Add some tests
 	}
 	
 	/**
@@ -89,7 +85,6 @@ public class BoardTest {
 		
 		assertFalse(board.isValidMove(0, 0, 1, 2));
 		
-		// TODO: Test for amazons.
 		assertTrue(board.moveAmazon(9, 3, 1, 3, Board.WHITE));
 		
 		assertFalse(board.moveAmazon(1, 3, 0, 3, Board.WHITE));
