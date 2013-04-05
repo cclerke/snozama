@@ -21,10 +21,12 @@ public class SnozamaHeuristic {
 
 	/**
 	 * Evaluates the board based on the heuristics MSP and min-mobility.
+	 * 
 	 * @param board			The current board state.
 	 * @param activePlayer	The player whose turn it is.
 	 * @param turn			The current turn number.
-	 * @return	The score for the active player of the given board position.
+	 * @return				The score for the active player of the given board
+	 * 						position.
 	 */
 	public static int evaluateBoard(Board board, int activePlayer, int turn)
 	{
@@ -42,10 +44,14 @@ public class SnozamaHeuristic {
 
 	/**
 	 * Calculates closest player to each open square on the board.
+	 * 
 	 * The closest player to a square owns that square.
 	 * @param board			The current board state.
-	 * @param activePlayer	The player (white or black) whose turn it is.
-	 * @return	The difference between the number of squares the active player owns and the number of squares the inactive player owns.
+	 * @param activePlayer	The player ({@code WHITE} or {@code BLACK}) whose
+	 * 						turn it is.
+	 * @return				The difference between the number of squares the
+	 * 						active player owns and the number of squares the
+	 * 						inactive player owns.
 	 */
 	public static int MSP(byte[][] markedBoard, int activePlayer)
 	{
@@ -74,10 +80,13 @@ public class SnozamaHeuristic {
 
 	/**
 	 * Calculates the number of moves available to the amazon of each colour with the minimum mobility.
-	 * @param board	The current board state.
-	 * @param activePlayer	The player (white or black) whose turn it is.
-	 * @return	The difference between the minimum moves across all amazons of the active player and
-	 *  the minimum moves across all amazons of the inactive player.
+	 * 
+	 * @param board			The current board state.
+	 * @param activePlayer	The player ({@code WHITE} or {@code BLACK}) whose
+	 * 						turn it is.
+	 * @return				The difference between the minimum moves across all
+	 * 						amazons of the active player and
+	 *						the minimum moves across all amazons of the inactive player.
 	 */
 	public static int minMobility(Board board, int activePlayer)
 	{
@@ -112,11 +121,16 @@ public class SnozamaHeuristic {
 
 	/**
 	 * Heuristic designed to distribute amazons evenly across the board.
-	 * The heuristic awards points for amazons all being in separate quadrants and evenly distributed in board halves.
-	 * The heuristic deducts points for too many amazons being in the same quadrant or same half of the board.
+	 * 
+	 * The heuristic awards points for amazons all being in separate quadrants
+	 * and evenly distributed in board halves.  The heuristic deducts points for
+	 * too many amazons being in the same quadrant or same half of the board.
+	 * 
 	 * @param board			The current state of the board.
-	 * @param activePlayer	The colour of the active player.
-	 * @return		A score based on how evenly distributed the amazons of the given colour are.
+	 * @param activePlayer	The player ({@code WHITE} or {@code BLACK}) whose
+	 * 						turn it is.
+	 * @return				A score based on how evenly distributed the amazons
+	 * 						of the given colour are.
 	 */
 	public static int quadrants(Board board, int activePlayer)
 	{
@@ -157,13 +171,19 @@ public class SnozamaHeuristic {
 	}
 
 	/**
-	 * Variation of minimum stone play (MSP) that values larger contiguous areas over smaller areas.
+	 * Variation of minimum stone play (MSP) that values larger contiguous areas
+	 * over smaller areas.
+	 * 
 	 * The heuristic finds each region on the board owned by each colour.
 	 * A region is scored as the number of squares in the region squared.
-	 * The score for each region is added to the score for the colour owning that region.
+	 * The score for each region is added to the score for the colour owning
+	 * that region.
+	 * 
 	 * @param markedBoard	The board maintaining the owners of each square.
-	 * @param activePlayer	The player whose turn it is.
-	 * @return	The value of the regions owned by the active player in this board position.
+	 * @param activePlayer	The player ({@code WHITE} or {@code BLACK}) whose
+	 * 						turn it is.
+	 * @return				The value of the regions owned by the active player
+	 * 						in this board position.
 	 */
 	public static int areaMSP(byte[][] markedBoard, int activePlayer)
 	{
@@ -196,11 +216,17 @@ public class SnozamaHeuristic {
 	}
 	
 	/**
-	 * Variation of minimum stone play (MSP) that values squares that can be reached in fewer plies.
-	 * The heuristic weights each square owned by the player by the number of plies it will take to reach.
+	 * Variation of minimum stone play (MSP) that values squares that can be
+	 * reached in fewer plies.
+	 * 
+	 * The heuristic weights each square owned by the player by the number of
+	 * plies it will take to reach.
+	 * 
 	 * @param markedBoard	The board maintaining the owners of each square.
-	 * @param ActivePlayer	The player whose turn it is.
-	 * @return	The value of the squares owned by the active player in this board position.
+	 * @param activePlayer	The player ({@code WHITE} or {@code BLACK}) whose
+	 * 						turn it is.
+	 * @return				The value of the squares owned by the active player
+	 * 						in this board position.
 	 */
 	public static int distanceMSP(byte[][] markedBoard, int activePlayer)
 	{
@@ -262,9 +288,11 @@ public class SnozamaHeuristic {
 	/**
 	 * Calculates closest player to each open square on the board.
 	 * The closest player to a square owns that square.
-	 * @param board	The current board state.
-	 * @return	Returns a copy of the board that is coloured by which players owns each square
-	 * 	and the number of plies it takes to reach that square.
+	 * 
+	 * @param board		The current board state.
+	 * @return			Returns a copy of the board that is coloured by which
+	 * 					players owns each square and the number of plies it
+	 * 					takes to reach that square.
 	 */
 	public static byte[][] colourBoard(Board board)
 	{
@@ -431,14 +459,18 @@ public class SnozamaHeuristic {
 	}
 
 	/**
-	 * Used for the first iteration of <code>colourBoard</code>.
-	 * Marks square with a colour (white=10, black=20) plus the number of moves for the closest player to reach that square.
-	 * A square reached by a white player in one move will be marked 11, for example.
-	 * Squares that can be reached in equal number of turns by both colours with be marked 'N'.
+	 * Used for the first iteration of {@code colourBoard}.
+	 * Marks square with a colour {@code (white=10, black=20)} plus the number
+	 * of moves for the closest player to reach that square.
+	 * 
+	 * A square reached by a white player in one move will be marked 11, for
+	 * example.  Squares that can be reached in equal number of turns by both
+	 * colours with be marked 'N'.
+	 * 
 	 * @param markedBoard	The board maintaining the owners of each square.
-	 * @param row	The row of the square being marked.
-	 * @param col	The column of the square being marked.
-	 * @param colour	The colour of the amazon able to reach this square.
+	 * @param row			The row of the square being marked.
+	 * @param col			The column of the square being marked.
+	 * @param colour		The colour of the amazon able to reach this square.
 	 */
 	private static void markSquare(byte[][] markedBoard, int row, int col, int colour)
 	{
@@ -455,13 +487,16 @@ public class SnozamaHeuristic {
 	}
 
 	/**
-	 * Used for the second part of <code>colourBoard</code>.
-	 * From each unmarked square attempts to find a path to the nearest amazon(s).
-	 * @param board		The current state of the entire board.
+	 * Used for the second part of {@code colourBoard}.
+	 * From each unmarked square attempts to find a path to the nearest
+	 * amazon(s).
+	 * 
+	 * @param board			The current state of the entire board.
 	 * @param markedBoard	The board maintaining the owners of each square.
-	 * @param row		The row of the square being marked.
-	 * @param col		The column of the square being marked.
-	 * @param iteration	The minimum number of turns to reach an amazon from this square.
+	 * @param row			The row of the square being marked.
+	 * @param col			The column of the square being marked.
+	 * @param iteration		The minimum number of turns to reach an amazon from
+	 * 						this square.
 	 */
 	private static void findMarkedSquares(Board board, byte[][] markedBoard, int row, int col, int iteration)
 	{
@@ -597,15 +632,20 @@ public class SnozamaHeuristic {
 	}
 
 	/**
-	 * Used for the second part of <code>colourBoard</code>.
-	 * Marks an unmarked square with the colour of the player who can reach the square fastest.
-	 * If both players can reach the square equally fast, the square will be marked neutral.
+	 * Used for the second part of {@code colourBoard}.
+	 * Marks an unmarked square with the colour of the player who can reach the
+	 * square fastest.  If both players can reach the square equally fast, the
+	 * square will be marked neutral.
+	 * 
 	 * @param markedBoard	The board maintaining the owners of each square.
-	 * @param row		The row of a previously marked square indicating a path to an amazon in this iteration.
-	 * @param col		The column of a previously marked square indicating a path to an amazon in this iteration.
-	 * @param row_s		The row of the square being marked.
-	 * @param col_s		The column of the square being marked.
-	 * @param itr		The minimum number of turns to reach an amazon from the square being marked.
+	 * @param row			The row of a previously marked square indicating a
+	 * 						path to an amazon in this iteration.
+	 * @param col			The column of a previously marked square indicating
+	 * 						a path to an amazon in this iteration.
+	 * @param row_s			The row of the square being marked.
+	 * @param col_s			The column of the square being marked.
+	 * @param itr			The minimum number of turns to reach an amazon from
+	 * 						the square being marked.
 	 */
 	private static void markSquare(byte[][] markedBoard, int row, int col, int row_s, int col_s, int itr)
 	{	
@@ -642,9 +682,10 @@ public class SnozamaHeuristic {
 
 	/**
 	 * Calculates the number of moves available to the amazon.
-	 * @param board	The current board state.
+	 * 
+	 * @param board		The current board state.
 	 * @param amazon	An individual amazon to find possible moves for.
-	 * @return	The number of moves available to the amazon.
+	 * @return			The number of moves available to the amazon.
 	 */
 	private static int getNumberAvailableMoves(Board board, byte amazon)
 	{
@@ -755,13 +796,16 @@ public class SnozamaHeuristic {
 	}
 
 	/**
-	 * Finds and returns the number of places an arrow can be placed from a specified square.
+	 * Finds and returns the number of places an arrow can be placed from a
+	 * specified square.
+	 * 
 	 * @param board		The current state of the board.
 	 * @param arow		The row the amazon is in.
 	 * @param acol		The column the amazon is in.
 	 * @param row_s		The row the amazon began the move in.
 	 * @param col_s		The column the amazon began the move in.
-	 * @return		The number of places an arrow can be placed from specified square.
+	 * @return			The number of places an arrow can be placed from
+	 * 					specified square.
 	 */
 	private static int findAvailableArrowPlacements(Board board, int arow, int acol, int row_s, int col_s)
 	{
@@ -867,14 +911,19 @@ public class SnozamaHeuristic {
 	}
 
 	/**
-	 * Counts the number of amazons of given colour that are within given region.
+	 * Counts the number of amazons of given colour that are within given
+	 * region.
+	 * 
 	 * @param board		The current board position.
 	 * @param top		The first row to search in.
-	 * @param bottom	The bottom bounds of the search. This row is not searched.
+	 * @param bottom	The bottom bounds of the search. This row is not
+	 * 					searched.
 	 * @param left		The first column to search in.
-	 * @param right		The right bounds of the search. This column is not searched.
+	 * @param right		The right bounds of the search. This column is not
+	 * 					searched.
 	 * @param colour	The colour of the amazons to count.
-	 * @return		The number of amazons of the given colour found in the region.
+	 * @return			The number of amazons of the given colour found in the
+	 * 					region.
 	 */
 	private static int findInRegion(Board board, int top, int bottom, int left, int right, int colour)
 	{
@@ -902,12 +951,15 @@ public class SnozamaHeuristic {
 
 	/**
 	 * Counts the number of contiguous squares in a region.
-	 * The function works recursively checking if the neighbours of the current square are the same colour.
-	 * It is modelled after the flood fill algorithm using a depth-first approach.
+	 * The function works recursively checking if the neighbours of the current
+	 * square are the same colour.  It is modelled after the flood fill
+	 * algorithm using a depth-first approach.
+	 * 
 	 * @param row		The row of the current square being visited.
 	 * @param col		The column of the current square being visited.
 	 * @param colour	The colour the current region belongs to.
-	 * @return		The number of unvisited squares connected to the starting square.
+	 * @return			The number of unvisited squares connected to the starting
+	 * 					square.
 	 */
 	public static int visit(byte[][] markedBoard, int row, int col, int colour)
 	{

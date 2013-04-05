@@ -2,7 +2,7 @@ package snozama.amazons.mechanics;
 
 /**
  * 
- * @author alex
+ * @author Alex Yakovlev
  *
  */
 public class Regions

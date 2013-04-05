@@ -116,8 +116,8 @@ public class MoveManager
 	 * 
 	 * @param board		The board to apply the move to.
 	 * @param index		The index of the move to apply.
-	 * @return	{@code true} if the move was applied successfully, 
-	 * 			{@code false} otherwise.
+	 * @return			{@code true} if the move was applied successfully,
+	 * 					{@code false} otherwise.
 	 */
 	public boolean applyMove(Board board, int index)
 	{
@@ -131,8 +131,8 @@ public class MoveManager
 	 * 
 	 * @param board		The board to apply the move to.
 	 * @param move		The move to apply.
-	 * @return	{@code true} if the move was applied successfully, 
-	 * 			{@code false} otherwise.
+	 * @return			{@code true} if the move was applied successfully,
+	 * 					{@code false} otherwise.
 	 */
 	public static boolean applyUnmanagedMove(Board board, int move)
 	{
@@ -154,8 +154,8 @@ public class MoveManager
 	 * @param index		The index of the move to undo.
 	 * @param row_s		Row where amazon previously was.
 	 * @param col_s		Column where amazon previously was.
-	 * @return	{@code true} if the move was undone successfully,
-	 * 			{@code false} otherwise.
+	 * @return			{@code true} if the move was undone successfully,
+	 * 					{@code false} otherwise.
 	 */
 	public boolean undoMove(Board board, int index, int row_s, int col_s)
 	{
@@ -200,9 +200,10 @@ public class MoveManager
 	
 	/**
 	 * Decode a portion of a move.
+	 * 
 	 * @param index		The index of the move to be decoded.
 	 * @param portion	Which set of 4 bits to be decoded.		
-	 * @return	The decoded portion of the move at index.
+	 * @return			The decoded portion of the move at index.
 	 */
 	private int decodePortion(int index, int portion)
 	{
@@ -211,9 +212,10 @@ public class MoveManager
 	
 	/**
 	 * Decode a portion of an arbitrary move.
+	 * 
 	 * @param move		The move to decode from.
 	 * @param portion	Which set of 4 bits to be decoded.		
-	 * @return	The decoded portion of the move at index.
+	 * @return			The decoded portion of the move at index.
 	 */
 	private static int staticDecodePortion(int move, int portion)
 	{
@@ -246,11 +248,12 @@ public class MoveManager
 	
 	/**
 	 * Encode information to a portion of a move at an index.
+	 * 
 	 * @param index		The index of the move to encode data into.
 	 * @param portion	The portion of the m0e to encode the data to.
 	 * @param toEncode	The data that is to be encoded. Necessary data should
 	 * 					be in the lowest 4 bits.
-	 * @return	{@value true} if the data was encoded, {@value false} otherwise.
+	 * @return			{@code true} if the data was encoded, {@code false} otherwise.
 	 */
 	private boolean encodePortion(int index, int portion, int toEncode)
 	{
@@ -264,14 +267,15 @@ public class MoveManager
 	
 	/**
 	 * Decodes an encoded move and returns each part in an array.
+	 * 
 	 * Part 0: Colour of the moving amazon.
 	 * Part 1: Index of the moving amazon.
 	 * Part 2: Finishing row of the moving amazon.
 	 * Part 3: Finishing column of the moving amazon.
 	 * Part 4: Row of the arrow.
 	 * Part 5: Column of the arrow.
-	 * @param move The move to be decoded.
-	 * @return	Returns an array of move parts.
+	 * @param move		The move to be decoded.
+	 * @return			An array of move parts.
 	 */
 	public static int[] decodeMove(int move)
 	{
@@ -287,7 +291,8 @@ public class MoveManager
 	 * Add an encoded move to the set of moves.
 	 * 
 	 * @param move		The encoded move.
-	 * @return	{@value false} if the move was not added, {@value true} otherwise.
+	 * @return			{@code false} if the move was not added, {@code true}
+	 * 					otherwise.
 	 */
 	public boolean add(int move)
 	{
@@ -307,7 +312,8 @@ public class MoveManager
 	 * @param acol_f	The column the amazon ends in.
 	 * @param arrowrow	The row the arrow is placed.
 	 * @param arrowcol	The row the arrow is placed.
-	 * @return	{@value true} if the move was added, {@value false otherwise}.
+	 * @return			{@code true} if the move was added, {@code false }
+	 * 					otherwise.
 	 */
 	public boolean add(int colour, int arr_i, int arow_f, int acol_f, int arrowrow, int arrowcol)
 	{
@@ -330,7 +336,7 @@ public class MoveManager
 	 * Get the colour of the amazon that is moved.
 	 * 
 	 * @param index		The index of the move to be decoded.
-	 * @return	The colour of the amazon that will be moved.
+	 * @return			The colour of the amazon that will be moved.
 	 */
 	public int getColour(int index)
 	{
@@ -341,7 +347,7 @@ public class MoveManager
 	 * Get the index of the amazon.
 	 * 
 	 * @param index		The index of the move to be decoded.
-	 * @return	The index within the board's amazons array.
+	 * @return			The index within the board's amazons array.
 	 */
 	public int getAmazonIndex(int index)
 	{
@@ -352,7 +358,7 @@ public class MoveManager
 	 * Get the row the amazon finishes in.
 	 * 
 	 * @param index		The index of the move to be decoded.
-	 * @return	The row the amazon finish at.
+	 * @return			The row the amazon finish at.
 	 */
 	public int getFinishRow(int index)
 	{
@@ -363,7 +369,7 @@ public class MoveManager
 	 * Get the column the amazon finishes in.
 	 * 
 	 * @param index		The index of the move to be decoded.
-	 * @return	The column the amazon finishes at.
+	 * @return			The column the amazon finishes at.
 	 */
 	public int getFinishColumn(int index)
 	{
@@ -374,7 +380,7 @@ public class MoveManager
 	 * Get the row the arrow is placed in.
 	 * 
 	 * @param index		The index of the move to be decoded.
-	 * @return	The row the arrow is placed.
+	 * @return			The row the arrow is placed.
 	 */
 	public int getArrowRow(int index)
 	{
@@ -385,7 +391,7 @@ public class MoveManager
 	 * Get the column the arrow is placed at.
 	 * 
 	 * @param index		The index of the move to be decoded.
-	 * @return	The column the arrow is placed.
+	 * @return			The column the arrow is placed.
 	 */
 	public int getArrowColumn(int index)
 	{
@@ -404,8 +410,8 @@ public class MoveManager
 	/**
 	 * Check if there are any more moves to iterate over.
 	 * 
-	 * @return	{@value true} if there are more moves to iterate over,
-	 * 			{@value false} otherwise.
+	 * @return	{@code true} if there are more moves to iterate over,
+	 * 			{@code false} otherwise.
 	 */
 	public boolean hasIterations()
 	{
@@ -426,11 +432,10 @@ public class MoveManager
 	 * Create a new array to hold moves that is exactly the number of elements
 	 * in the current move array.
 	 * 
-	 * @return	{@value true} if procedure completed, {@value false} otherwise.
+	 * @return	{@code true} if procedure completed, {@code false} otherwise.
 	 */
 	public boolean condense()
 	{
-		// TODO: Make it use statistics instead.?
 		if (nextPos == moves.length)
 			return true;
 		
@@ -449,7 +454,8 @@ public class MoveManager
 	 * sane, so don't you dare mess with it!
 	 * 
 	 * @param size		The desired size of the move manager.
-	 * @return			{@code true} if size set successfully, false otherwise.
+	 * @return			{@code true} if size set successfully, {@code false}
+	 * 					otherwise.
 	 */
 	public boolean setSize(int size)
 	{
@@ -483,6 +489,12 @@ public class MoveManager
 		}
 	}
 	
+	/**
+	 * Get the move at a given index.
+	 * 
+	 * @param index		The index of the move to return.
+	 * @return			The encoded move.
+	 */
 	public int getMove(int index)
 	{
 		return moves[index];
