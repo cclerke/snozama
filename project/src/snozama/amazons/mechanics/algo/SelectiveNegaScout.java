@@ -24,13 +24,18 @@ public class SelectiveNegaScout {
 	public int nodes = 0;
 	public int depthCompleted;
 	
-	int[] bestMoves = new int[20]; //FIXME hard-coded as 20 for testing
+	int[] bestMoves = new int[100];
 	int[] scores = new int[2176];
 	
 	long endTime;
 	
 	int currentRoot;
 	
+	/**
+	 * Default constructor.
+	 * 
+	 * @param end		The system milliseconds time to not search past.
+	 */
 	public SelectiveNegaScout(long end)
 	{
 		endTime = end;
@@ -41,18 +46,14 @@ public class SelectiveNegaScout {
 	
 	/**
 	 * Chooses the best move for Snozama based on search algorithm.
+	 * 
 	 * @param board		The current board position.
 	 * @param colour	The player for whom to find a move for.
 	 * @param turn		The current ply of the game.
-	 * @return			Returns the best move found by the search algorihm.
+	 * @return			Returns the best move found by the search algorithm.
 	 */
 	public int chooseMove(Board board, int colour, int turn)
 	{
-		int maxDepth = 2;
-		//probably don't need to keep the score?
-		//NegaScoutSearch(board, 0, maxDepth, NEG_INFINITY, POS_INFINITY, colour, turn);
-		//return bestMoves[0];
-		
 		//Iterative deepening NegaScout (plays better than regular fixed depth search)
 		return IDNegaScoutSearch(board, colour, turn);
 	}
@@ -60,7 +61,8 @@ public class SelectiveNegaScout {
 	/**
 	 * NegaScout search algorithm.
 	 * @param board			The current board position.
-	 * @param depth			The starting depth of the search. Should always start at <code>depth = 0</code>.
+	 * @param depth			The starting depth of the search. Should always
+	 * 						start at {@code depth = 0}.
 	 * @param maxDepth		The maximum depth to be searched.
 	 * @param alpha			The lower bound of the search window.
 	 * @param beta			The upper bound of the search window.
@@ -151,7 +153,7 @@ public class SelectiveNegaScout {
 	public int IDNegaScoutSearch(Board board, int colour, int turn)
 	{
 		int depth = 1;
-		int[] bestScore = new int[20];	// Really an array of best moves at a given depth.  TODO: Rename.
+		int[] bestScore = new int[20];	// Really an array of best moves at a given depth.
 		while (depth <= 20 && System.currentTimeMillis() < endTime)
 		{
 			NegaScoutSearch(board, 0, depth, NEG_INFINITY, POS_INFINITY, colour, turn);
@@ -177,7 +179,6 @@ public class SelectiveNegaScout {
 	{
 		int cursor = 0;
 		
-		// TODO: Make this binary search!  Must write own since length is not guaranteed to be scores.length
 		while (cursor < moves.size() && scores[cursor] >= 0)
 		{
 			cursor++;

@@ -4,7 +4,6 @@ import java.util.Arrays;
 
 import snozama.amazons.global.GlobalFunctions;
 import snozama.amazons.mechanics.Board;
-import snozama.amazons.mechanics.MoveChoice;
 import snozama.amazons.mechanics.MoveManager;
 import snozama.amazons.mechanics.SnozamaHeuristic;
 import snozama.amazons.mechanics.killerheuristic.KillerTable;
@@ -13,6 +12,7 @@ import snozama.amazons.mechanics.transtable.ZobristTTable;
 /**
  * Class containing NegaScout search as described in Qian Liang's paper.
  * 
+ * @author Graeme Douglas
  * @author Cody Clerke
  *
  */
@@ -30,7 +30,7 @@ public class KillerTranspositionNegaScout {
 	public int nodes = 0;
 	public int depthCompleted;
 	
-	int[] bestMoves = new int[absoluteMaxDepth]; //FIXME hard-coded as 20 for testing
+	int[] bestMoves = new int[absoluteMaxDepth];
 	int[] scores = new int[2176];
 	
 	ZobristTTable ttable;
@@ -44,8 +44,13 @@ public class KillerTranspositionNegaScout {
 	
 	boolean gotoEnd;
 	
-	Board board2 = new Board();		// TODO: Delete this once not needed for debugging.
-	
+	/**
+	 * Default constructor.
+	 * 
+	 * @param end			The system milliseconds time to not search past.
+	 * @param tableSize		The size of the transposition table.
+	 * @param startBoard	The size of the starting board.
+	 */
 	public KillerTranspositionNegaScout(long end, int tableSize, Board startBoard)
 	{
 		ttable = new ZobristTTable(tableSize);
@@ -62,6 +67,7 @@ public class KillerTranspositionNegaScout {
 	
 	/**
 	 * Chooses the best move for Snozama based on search algorithm.
+	 * 
 	 * @param board		The current board position.
 	 * @param colour	The player for whom to find a move for.
 	 * @param turn		The current ply of the game.
@@ -75,8 +81,10 @@ public class KillerTranspositionNegaScout {
 	
 	/**
 	 * NegaScout search algorithm.
+	 * 
 	 * @param board			The current board position.
-	 * @param depth			The starting depth of the search. Should always start at <code>depth = 0</code>.
+	 * @param depth			The starting depth of the search. Should always
+	 * 						start at {@code codedepth = 0}.
 	 * @param maxDepth		The maximum depth to be searched.
 	 * @param alpha			The lower bound of the search window.
 	 * @param beta			The upper bound of the search window.
@@ -300,12 +308,13 @@ public class KillerTranspositionNegaScout {
 	 * @param board		The current board position.
 	 * @param colour	The active player's colour.
 	 * @param turn		The current ply of the game.
-	 * @return		Returns the best move found for the current turn from the deepest fully searched depth.
+	 * @return			Returns the best move found for the current turn from
+	 * 					the deepest fully searched depth.
 	 */
 	public int IDNegaScoutSearch(Board board, int colour, int turn)
 	{
 		int depth = 1;
-		int[] bestScore = new int[absoluteMaxDepth];	// Really an array of best moves at a given depth.  TODO: Rename.
+		int[] bestScore = new int[absoluteMaxDepth];	// Really an array of best moves at a given depth.
 		while (depth <= absoluteMaxDepth && System.currentTimeMillis() < endTime)
 		{
 			NegaScoutSearch(board, 0, depth, NEG_INFINITY, POS_INFINITY, colour, turn);

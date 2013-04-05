@@ -4,7 +4,6 @@ import java.util.Arrays;
 
 import snozama.amazons.global.GlobalFunctions;
 import snozama.amazons.mechanics.Board;
-import snozama.amazons.mechanics.MoveChoice;
 import snozama.amazons.mechanics.MoveManager;
 import snozama.amazons.mechanics.SnozamaHeuristic;
 import snozama.amazons.mechanics.transtable.ZobristTTable;
@@ -23,13 +22,13 @@ public class TranspositionNegaScout {
 	
 	public static int firstN = 500; //for possible use with N-best selection search
 	
-	int absoluteMaxDepth = 100;
+	final int absoluteMaxDepth = 100;
 	
 	// Statistical fields.
 	public int nodes = 0;
 	public int depthCompleted;
 	
-	int[] bestMoves = new int[absoluteMaxDepth]; //FIXME hard-coded as 20 for testing
+	int[] bestMoves = new int[absoluteMaxDepth];
 	int[] scores = new int[2176];
 	
 	ZobristTTable table;
@@ -40,8 +39,6 @@ public class TranspositionNegaScout {
 	int currentRoot;
 	
 	boolean gotoEnd;
-	
-	Board board2 = new Board();		// TODO: Delete this once not needed for debugging.
 	
 	public TranspositionNegaScout(long end, int tableSize, Board startBoard)
 	{
@@ -83,7 +80,8 @@ public class TranspositionNegaScout {
 	/**
 	 * NegaScout search algorithm.
 	 * @param board			The current board position.
-	 * @param depth			The starting depth of the search. Should always start at <code>depth = 0</code>.
+	 * @param depth			The starting depth of the search. Should always
+	 * 						start at {@code depth = 0}.
 	 * @param maxDepth		The maximum depth to be searched.
 	 * @param alpha			The lower bound of the search window.
 	 * @param beta			The upper bound of the search window.
@@ -98,8 +96,6 @@ public class TranspositionNegaScout {
 		// Check transposition table for previous board position.
 		// Ensure data is correct.
 		/// Transposition table code ///////////////////////////////////////////
-		// TODO: Is depth calculation right here?
-		// TODO: Only check if the position is actually this position.
 		if ((zrecord = table.get(zkey))[ZobristTTable.DEPTH] >= maxDepth - depth && board.isValidMove(zrecord[ZobristTTable.MOVE]) && zrecord[ZobristTTable.POS_INFO] == colour)
 		{
 			switch (zrecord[ZobristTTable.FLAG])
@@ -264,12 +260,13 @@ public class TranspositionNegaScout {
 	 * @param board		The current board position.
 	 * @param colour	The active player's colour.
 	 * @param turn		The current ply of the game.
-	 * @return		Returns the best move found for the current turn from the deepest fully searched depth.
+	 * @return			Returns the best move found for the current turn from
+	 * 					the deepest fully searched depth.
 	 */
 	public int IDNegaScoutSearch(Board board, int colour, int turn)
 	{
 		int depth = 1;
-		int[] bestScore = new int[absoluteMaxDepth];	// Really an array of best moves at a given depth.  TODO: Rename.
+		int[] bestScore = new int[absoluteMaxDepth];	// Really an array of best moves at a given depth.
 		while (depth <= absoluteMaxDepth && System.currentTimeMillis() < endTime)
 		{
 			NegaScoutSearch(board, 0, depth, NEG_INFINITY, POS_INFINITY, colour, turn);

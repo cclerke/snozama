@@ -18,7 +18,7 @@ public class KillerTable {
 	private int[] table;
 	
 	/**
-	 * The maximum depth of move storable in the table.
+	 * The maximum depth of move store-able in the table.
 	 */
 	public final int maxDepth = 92;
 	
@@ -55,7 +55,7 @@ public class KillerTable {
 	 * @param move		The move to be remembered.
 	 * @param depth		The depth of the move to be remembered.
 	 * @return			{@code true} if the move was added without overwriting
-	 * 					a previous move, false otherwise.
+	 * 					a previous move, {@code false} otherwise.
 	 */
 	public void put(int move, int depth)
 	{
