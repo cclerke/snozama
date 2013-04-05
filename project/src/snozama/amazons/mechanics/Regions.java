@@ -1,6 +1,7 @@
 package snozama.amazons.mechanics;
 
 /**
+ * Regions calculation code.
  * 
  * @author Alex Yakovlev
  * 
@@ -26,12 +27,30 @@ public class Regions
 	/* For playing */
 	private static boolean evalLateral = true;
 	private static boolean evalDiagonal = true;
-
+	
+	/**
+	 * Calculate full region region heuristic.
+	 * 
+	 * @param board			The board state to evaluate the heuristic over.
+	 * @param whoseTurn		Either {@code Board.BLACK} or {@code Board.WHITE}.
+	 * @return				The full regions heuristic value of the board.
+	 */
 	public static int region(Board board, int whoseTurn)
 	{
 		return region(board, whoseTurn, FULL);
 	}
-
+	
+	/**
+	 * Calculate region region heuristic.
+	 * 
+	 * @param board			The board state to evaluate the heuristic over.
+	 * @param whoseTurn		Either {@code Board.BLACK} or {@code Board.WHITE}.
+	 * @param type			Either:
+	 * 							{@code this.LATERAL} for lateral regions.
+	 * 							{@code this.DIAGONAL} for diagonal regions.
+	 * 							{@code this.FULL} for full regions.
+	 * @return				The regions heuristic value of the board.
+	 */
 	public static int region(Board board, int whoseTurn, int type)
 	{
 
@@ -81,9 +100,12 @@ public class Regions
 	}
 
 	/**
-	 * For evaluation
+	 * Set the evaluation type for the heuristic.
 	 * 
-	 * @param regionType
+	 * @param regionType		The region type; one of:
+	 * 								{@code this.LATERAL} for lateral regions.
+	 * 								{@code this.DIAGONAL} for diagonal regions.
+	 * 								{@code this.FULL} for full regions.
 	 */
 	public static void setEvalRegionType(int regionType)
 	{
@@ -102,7 +124,16 @@ public class Regions
 		}
 	}
 
-	/** For Display ONLY */
+	/**
+	 * Set the region tye for displaying.
+	 * 
+	 * NOTE: For Display ONLY.
+	 * 
+	 * @param regionType		The region type; one of:
+	 * 								{@code this.LATERAL} for lateral regions.
+	 * 								{@code this.DIAGONAL} for diagonal regions.
+	 * 								{@code this.FULL} for full regions.
+	 */
 	public static void setRegionType(int regionType)
 	{
 		if (regionType == FULL)
@@ -119,7 +150,13 @@ public class Regions
 			diagonal = true;
 		}
 	}
-
+	
+	/**
+	 * Find the regions of a board.
+	 * 
+	 * @param board		The board to calculate the regions for.
+	 * @return			A two-dimensional array with regions found.
+	 */
 	public static byte[][] calcRegions(Board board)
 	{
 		regions = new byte[Board.SIZE][Board.SIZE];
@@ -156,7 +193,14 @@ public class Regions
 
 		return regions;
 	}
-
+	
+	/**
+	 * Mark a part of the board to belong to a specific region.
+	 * 
+	 * @param row			The row of the location to claim.
+	 * @param col			The column of the location to claim.
+	 * @param regionCount	Which region the location is claimed by.
+	 */
 	public static void claimRegion(int row, int col, int regionCount)
 	{
 		regions[row][col] = (byte) regionCount;
@@ -231,6 +275,11 @@ public class Regions
 
 	}
 
+	/**
+	 * Create an initial simulated board to use in computing regions.
+	 * 
+	 * @return	Unclaimed regions board.
+	 */
 	public static byte[][] initRegions()
 	{
 		byte[][] regions = new byte[Board.SIZE][Board.SIZE];
