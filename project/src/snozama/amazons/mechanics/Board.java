@@ -94,7 +94,7 @@ public class Board
 	 */
 	public Board(Board toClone)
 	{
-		this.board = toClone.copy();
+		this.board = toClone.makeCopy();
 		amazons = new byte[2][4];
 		
 		for (int i = 0; i < amazons.length; i++)
@@ -108,7 +108,8 @@ public class Board
 	
 	/**
 	 * Constructor for creating a smaller board for debugging purposes
-	 * @param size
+	 * 
+	 * @param size		The dimensional size of the board.
 	 */
 	public Board(int size)
 	{
@@ -155,9 +156,10 @@ public class Board
 	
 	/**
 	 * Determine if a board position is currently occupied.
+	 * 
 	 * @param row		The row of the position to check.
 	 * @param col		The column of the position to check.
-	 * @return	@value true if it is occupied, @value false otherwise.
+	 * @return			{@code true} if it is occupied, {@code false} otherwise.
 	 */
 	public boolean isOccupied(int row, int col)
 	{
@@ -166,10 +168,11 @@ public class Board
 	
 	/**
 	 * Determine if a board position is currently occupied by a white amazon.
+	 * 
 	 * @param row		The row of the position to check.
 	 * @param col		The column of the position to check.
-	 * @return	@value true if it is occupied by a white amazon, @value false
-	 * 			otherwise.
+	 * @return			{@code true} if it is occupied by a white amazon,
+	 * 					{@code false} otherwise.
 	 */
 	public boolean isWhite(int row, int col)
 	{
@@ -189,10 +192,11 @@ public class Board
 	
 	/**
 	 * Determine if a board position is currently occupied by a black amazon.
+	 * 
 	 * @param row		The row of the position to check.
 	 * @param col		The column of the position to check.
-	 * @return	@value true if it is occupied by a black amazon, @value false
-	 * 			otherwise.
+	 * @return			{@code true} if it is occupied by a black amazon,
+	 * 					{@code false} otherwise.
 	 */
 	public boolean isBlack(int row, int col)
 	{
@@ -213,11 +217,13 @@ public class Board
 	/**
 	 * Determine if a board position is currently occupied by an arrow.
 	 * 
-	 * Note: If you can avoid using this method, do so.  Use isOccupied() instead.
+	 * Note:	If you can avoid using this method, do so.  Use isOccupied()
+	 * 			instead.
+	 * 
 	 * @param row		The row of the position to check.
 	 * @param col		The column of the position to check.
-	 * @return	@value true if it is occupied by an arrow, @value false
-	 * 			otherwise.
+	 * @return			{@code true} if it is occupied by an arrow,
+	 * 					{@code false} otherwise.
 	 */
 	public boolean isArrow(int row, int col)
 	{
@@ -231,7 +237,8 @@ public class Board
 	 * @param col_s		Column of starting position.
 	 * @param row_f		Row of finishing position.
 	 * @param col_f		Column of finishing position.
-	 * @return	@value true if the move is allowed, @value false otherwise.
+	 * @return			{@code true} if the move is allowed, {@code false}
+	 * 					otherwise.
 	 */
 	public boolean isValidMove(int row_s, int col_s, int row_f, int col_f)
 	{
@@ -353,14 +360,15 @@ public class Board
 	
 	/**
 	 * Move amazon from the desired location to the desired location.
+	 * 
 	 * @param row_s		Row of the starting position of the amazon.
 	 * @param col_s		Column of the starting position of the amazon.
 	 * @param row_f		Row of the finishing position of the amazon.
 	 * @param col_f		Column of the finishing position of the amazon.
-	 * @param colour	Colour of the amazon.  Must be @value BLACK or
-	 * 					@value WHITE.
-	 * @return	@value true if the amazon was successfully moved,
-	 * 			@value false otherwise.
+	 * @param colour	Colour of the amazon.  Must be {@code BLACK} or
+	 * 					{@code WHITE}.
+	 * @return			{@code true} if the amazon was successfully moved,
+	 * 					{@code false} otherwise.
 	 */
 	public boolean moveAmazon(int row_s, int col_s, int row_f, int col_f, int colour)
 	{
@@ -391,11 +399,13 @@ public class Board
 	
 	/**
 	 * Place an arrow in the desired location.
+	 * 
 	 * @param arow		Row of the position of amazon shooting arrow.
 	 * @param acol		Column of the position of amazon shooting arrow.
 	 * @param row_f		Row of the position where arrow is desired.
 	 * @param col_f		Column of the position where arrow is desired.
-	 * @return	@value true if arrow was placed, @value false otherwise.
+	 * @return			{@code true} if arrow was placed, {@code false}
+	 * 					otherwise.
 	 */
 	public boolean placeArrow(int arow, int acol, int row_f, int col_f)
 	{
@@ -410,10 +420,11 @@ public class Board
 	}
 	
 	/**
-	 * Undo an arrow placement. Used in UI Regions
-	 * @param arow row position of the arrow
-	 * @param acol col position of the arrow
-	 * @return @true if arrow was removed, false otherwise
+	 * Undo an arrow placement. Used in UI Regions.
+	 * 
+	 * @param arow row position of the arrow.
+	 * @param acol col position of the arrow.
+	 * @return {@code true} if arrow was removed, {@code false} otherwise.
 	 */
 	public boolean removeArrow( int arow, int acol )
 	{
@@ -431,14 +442,14 @@ public class Board
 	/**
 	 * Move an amazon and shoot an arrow.
 	 * 
-	 * @param row_s		Row of the starting position of the amazon
-	 * @param col_s		Column of the starting position of the amazon
-	 * @param row_f		Row of the finishing position of the amazon
-	 * @param col_f		Column of the finishing position of the amazon
-	 * @param arow		Row of the position where arrow is desired
-	 * @param acol		Column of the position where arrow is desired
-	 * @return	@value true if complete move was successful
-	 * 			@value false otherwise
+	 * @param row_s		Row of the starting position of the amazon.
+	 * @param col_s		Column of the starting position of the amazon.
+	 * @param row_f		Row of the finishing position of the amazon.
+	 * @param col_f		Column of the finishing position of the amazon.
+	 * @param arow		Row of the position where arrow is desired.
+	 * @param acol		Column of the position where arrow is desired.
+	 * @return			{@code true} if complete move was successful.
+	 * 					{@code false} otherwise.
 	 */
 	public boolean move(int row_s, int col_s, int row_f, int col_f, int arow, int acol, int colour)
 	{
@@ -450,12 +461,12 @@ public class Board
 	 * Move an amazon and shoot an arrow.
 	 * 
 	 * @param arr_i		Index of the amazon being moved.
-	 * @param row_f		Row of the finishing position of the amazon
-	 * @param col_f		Column of the finishing position of the amazon
-	 * @param arow		Row of the position where arrow is desired
-	 * @param acol		Column of the position where arrow is desired
-	 * @return	@value true if complete move was successful
-	 * 			@value false otherwise
+	 * @param row_f		Row of the finishing position of the amazon.
+	 * @param col_f		Column of the finishing position of the amazon.
+	 * @param arow		Row of the position where arrow is desired.
+	 * @param acol		Column of the position where arrow is desired.
+	 * @return			{@code true} if complete move was successful
+	 * 					{@code false} otherwise.
 	 */
 	public boolean move(int arr_i, int row_f, int col_f, int arow, int acol, byte colour)
 	{
@@ -468,7 +479,7 @@ public class Board
 	 * Get the row of an amazon from its encoded position.
 	 * 
 	 * @param encodedPosition	The encoded position of the amazon.
-	 * @return	The row of the position of the amazon.
+	 * @return					The row of the position of the amazon.
 	 */
 	public static int decodeAmazonRow(byte encodedPosition)
 	{
@@ -480,7 +491,7 @@ public class Board
 	 * Get the column of an amazon from its encoded position.
 	 * 
 	 * @param encodedPosition	The encoded position of the amazon.
-	 * @return	The column of the position of the amazon.
+	 * @return					The column of the position of the amazon.
 	 */
 	public static int decodeAmazonColumn(byte encodedPosition)
 	{
@@ -493,7 +504,7 @@ public class Board
 	 * 
 	 * @param row		The row of the position of the amazon.
 	 * @param col		The column of the position of the amazon.
-	 * @return	The encoded position of the amazon.
+	 * @return			The encoded position of the amazon.
 	 */
 	public static byte encodeAmazonPosition(int row, int col)
 	{
@@ -616,7 +627,7 @@ public class Board
 	 * possible moves.
 	 * 
 	 * @param colour	The colour of the player that is currently playing.
-	 * @return	A set of possible moves from the current board.
+	 * @return			A set of possible moves from the current board.
 	 */
 	public MoveManager getSuccessors(int colour)
 	{
@@ -728,12 +739,11 @@ public class Board
 		return successors;
 	}
 	
-	// TODO: This needs to be renamed.  Copy is deceiving.
 	/**
 	 * Makes a copy of the game board.
 	 * @return	The copy of the game board.
 	 */
-	public byte[][] copy()
+	public byte[][] makeCopy()
 	{
 		byte[][] original = board;
 		byte[][] copy = new byte[SIZE][SIZE];
@@ -751,8 +761,8 @@ public class Board
 	/**
 	 * Determines if the board is a terminal state or not.
 	 * 
-	 * @return	{@value true} if the board is a terminal state board,
-	 * 			{@value false} otherwise.
+	 * @return	{@code true} if the board is a terminal state board,
+	 * 			{@code false} otherwise.
 	 */
 	public boolean isTerminal()
 	{
@@ -779,8 +789,8 @@ public class Board
 	 * Determines if an amazon has an available move.
 	 * 
 	 * @param amazon	The amazon for which to check if there is an available move.
-	 * @return	{@value} TRUE if amazon has at least one available move,
-	 * 			{@value} FALSE if amazon cannot move.
+	 * @return			{@code true} if amazon has at least one available move,
+	 * 					{@code false} if amazon cannot move.
 	 */
 	private boolean hasMove(byte amazon)
 	{

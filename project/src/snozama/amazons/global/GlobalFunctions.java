@@ -12,7 +12,7 @@ public final class GlobalFunctions {
 	 * Function that flips input from 1 to 0 or 0 to 1.
 	 * 
 	 * @param input		The integer whose value one wants to flip.
-	 * @return	{@value 1} if input is {@value 0}, {@value 1} otherwise.
+	 * @return	{@code 1} if input is {@code 0}, {@code 1} otherwise.
 	 */
 	public static int flip(int input)
 	{
@@ -31,7 +31,7 @@ public final class GlobalFunctions {
 	 * 
 	 * @param a		An integer to be compared.
 	 * @param b		An integer to be compared.
-	 * @return	The maximum of {@value a} and {@value b}.
+	 * @return		The maximum of {@code a} and {@code b}.
 	 */
 	public static int max(int a, int b)
 	{
@@ -50,7 +50,7 @@ public final class GlobalFunctions {
 	 * 
 	 * @param a		An integer to be compared.
 	 * @param b		An integer to be compared.
-	 * @return	The minimum of {@value a} and {@value b}.
+	 * @return		The minimum of {@code a} and {@code b}.
 	 */
 	public static int min(int a, int b)
 	{
@@ -73,8 +73,8 @@ public final class GlobalFunctions {
 	 * @param sortBy	Secondary array to be sorted, determines the sort order.
 	 * @param a			Index of first item to sort from.
 	 * @param b			Index of last item to sort to.
-	 * @param order		<code> 1 </code> to be sorted in ascending order,
-	 * 					<code> -1 </code> (or otherwise) to sort in descending
+	 * @param order		{@code 1} to be sorted in ascending order,
+	 * 					{@code -1} (or otherwise) to sort in descending
 	 * 					order.
 	 */
 	public static void dualQuickSort(int[] toSort, int[] sortBy, int a, int b, byte order)
@@ -93,11 +93,11 @@ public final class GlobalFunctions {
 	 * @param sortBy	Secondary array to be sorted, determines the sort order.
 	 * @param a			Index of first item to sort from.
 	 * @param b			Index of last item to sort to.
-	 * @param order		<code> 1 </code> to be sorted in ascending order,
-	 * 					<code> -1 </code> (or otherwise) to sort in descending
+	 * @param order		{@code 1} to be sorted in ascending order,
+	 * 					{@code -1} (or otherwise) to sort in descending
 	 * 					order.	
-	 * @return			The index of the item between <code> a </code> and
-	 * 					<code> b </code> that divides the arrays into partitions.
+	 * @return			The index of the item between {@code a} and
+	 * 					{@code b} that divides the arrays into partitions.
 	 */
 	private static int partition(int[] toSort, int[] sortBy, int a, int b, byte order) {
 
@@ -134,8 +134,8 @@ public final class GlobalFunctions {
     }
 	
 	/**
-	 * Swap values at indices <code> i </code> and <code> j </code> in array
-	 * <code> a </code>.
+	 * Swap values at indices {@code i} and {@code j} in array
+	 * {@code a}.
 	 * 
 	 * @param a		The array whose items need to be swapped.
 	 * @param i		The index of the first item to swap.

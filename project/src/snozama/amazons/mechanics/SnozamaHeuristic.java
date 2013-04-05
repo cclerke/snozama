@@ -268,7 +268,7 @@ public class SnozamaHeuristic {
 	 */
 	public static byte[][] colourBoard(Board board)
 	{
-		byte[][] markedBoard = board.copy();
+		byte[][] markedBoard = board.makeCopy();
 
 		/*
 		 * Given a square on the board, find the closest player of the given player
