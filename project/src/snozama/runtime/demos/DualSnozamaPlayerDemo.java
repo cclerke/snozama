@@ -17,6 +17,12 @@ import snozama.ui.api.AUI;
 import snozama.ui.eventListeners.UIReadyListener;
 import snozama.ui.exception.AUIException;
 
+/**
+ * A testing ground for different algorithms.
+ * 
+ * @author gdouglas
+ *
+ */
 public class DualSnozamaPlayerDemo
 {
 	public static void main(String args[])

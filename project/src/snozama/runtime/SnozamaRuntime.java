@@ -1,15 +1,15 @@
-package snozama.runtime.demos;
+package snozama.runtime;
 
 import snozama.ui.api.AUI;
 
 /**
- * A demo of the UI.
+ * The Snozama runtime.
  * 
  * @author Cody Clerke
  * @author Alex Yakovlev
  *
  */
-public class SnozamaPlayerDemo
+public class SnozamaRuntime
 {
 	
 	public static void main(String args[])
